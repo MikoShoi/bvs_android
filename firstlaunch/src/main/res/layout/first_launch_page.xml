@@ -22,10 +22,10 @@
                 android:src                 = "@drawable/default_icon" />
 
             <TextView
-                android:id                  = "@+id/text_view_header"
+                android:id                  = "@+id/text_view_title"
                 android:layout_width        = "wrap_content"
                 android:layout_height       = "wrap_content"
-                android:text                = "@string/default_header"
+                android:text                = "@string/default_title"
                 android:textColor           = "@android:color/white"
                 android:textSize            = "@dimen/slide_title"
                 android:textStyle           = "bold" />

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.firstlaunch.databinding.FirstLaunchBinding;
-
 
 public class FirstLaunch extends Fragment
 {
@@ -27,7 +25,6 @@ public class FirstLaunch extends Fragment
 
     private int NUMBER_OF_PAGES
             ,LAST_PAGE_NUMBER
-            ,FIRST_PAGE_NUMBER
             ,CURRENT_PAGE_NUMBER;
 
     public FirstLaunch()
@@ -81,10 +78,6 @@ public class FirstLaunch extends Fragment
         parentObject = null;
     }
 
-    private void init()
-    {
-
-    }
 
 //--view pager
     private void setViewPager()
@@ -93,7 +86,6 @@ public class FirstLaunch extends Fragment
         //--special counting method for simpler manipulate arrays
         //--LAST and FIRST are in array notation, NUMBER_OF_PAGES is in normal notation
         NUMBER_OF_PAGES     = 4;
-        FIRST_PAGE_NUMBER   = 0;
         LAST_PAGE_NUMBER    = NUMBER_OF_PAGES - 1;
 
         FirstLaunchAdapter adapter = new FirstLaunchAdapter( getActivity().getSupportFragmentManager() );

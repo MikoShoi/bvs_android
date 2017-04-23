@@ -1,1 +1,1 @@
-include ':app', ':firstlaunch'
+include ':app', ':firstlaunch', ':menupages', ':camera'

@@ -12,7 +12,6 @@
 
         <android.support.v4.view.ViewPager
             android:id              = "@+id/view_pager"
-            android:background      = "@color/bg_screen4"
             android:layout_width    = "match_parent"
             android:layout_height   = "match_parent" />
 

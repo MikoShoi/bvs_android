@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">FirstLaunch</string>
 
-    <string name="default_header">      Default header          </string>
+    <string name="default_title">       Default title           </string>
     <string name="default_description"> Default Description     </string>
 
-    <string name="my_header">           My header               </string>
-    <string name="my_description">      My description          </string>
 
     //--welcome nav buttons
     <string name="next">NEXT</string>

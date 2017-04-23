@@ -49,7 +49,7 @@ public class FirstLaunchPage extends Fragment
         int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);
 
         //--set for this page title
-        firstLaunchPage.textViewHeader.setText( getTitle(pageNumber) );
+        firstLaunchPage.textViewTitle.setText( getTitle(pageNumber) );
 
         //--, description
         firstLaunchPage.textViewDescription.setText( getDescription(pageNumber) );
@@ -122,7 +122,7 @@ public class FirstLaunchPage extends Fragment
                 titleId = R.string.enjoy_title;
                 break;
             default:
-                titleId = R.string.default_header;
+                titleId = R.string.default_title;
                 break;
         }
 
