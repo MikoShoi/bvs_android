@@ -70,7 +70,7 @@ public class MenuPages extends Fragment
     //--view pager
     private void setViewPager()
     {
-        MenuPagesAdapter adapter = new MenuPagesAdapter( getActivity().getSupportFragmentManager() );
+        MenuPagesAdapter adapter = new MenuPagesAdapter( getChildFragmentManager() );
         viewPager.setAdapter(adapter);
     }
 

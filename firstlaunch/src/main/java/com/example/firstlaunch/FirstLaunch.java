@@ -88,7 +88,7 @@ public class FirstLaunch extends Fragment
         NUMBER_OF_PAGES     = 4;
         LAST_PAGE_NUMBER    = NUMBER_OF_PAGES - 1;
 
-        FirstLaunchAdapter adapter = new FirstLaunchAdapter( getActivity().getSupportFragmentManager() );
+        FirstLaunchAdapter adapter = new FirstLaunchAdapter( getChildFragmentManager() );
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener( getViewPagerPageChangeListener() );
     }

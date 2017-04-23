@@ -12,7 +12,7 @@
     <group android:checkableBehavior    = "single">
         <item
             android:id      = "@+id/nav_item_quit"
-            android:icon    = "@drawable/ic_power_settings_new_black_48dp"
+            android:icon    = "@drawable/ic_power_settings_new_white_48dp"
             android:title   = "@string/nav_item_quit"/>
     </group>
 

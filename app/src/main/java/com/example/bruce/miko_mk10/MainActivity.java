@@ -26,7 +26,7 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hideAppBar();
+//        hideAppBar();
         setTabHost();
     }
 
@@ -41,6 +41,7 @@ public class MainActivity
     public void menuPagesCompleted()
     {
         Log.i("MenuPagesCompleted","Mam");
+        tabHost.setCurrentTab( tabHost.getCurrentTab() - 1 );
     }
 
     private void hideAppBar()
@@ -52,10 +53,10 @@ public class MainActivity
         ActivityMainBinding mainActivity =
                 DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        tabHost = mainActivity.tahHost;
+        tabHost = mainActivity.tabhost;
 
     //--setup tabHost
-        tabHost.setup(this, getSupportFragmentManager(), R.layout.tab_host_content);
+        tabHost.setup(this, getSupportFragmentManager(), R.id.tabhost);
 
     //--hide tab bar
         tabHost.getTabWidget().setVisibility(View.GONE);
