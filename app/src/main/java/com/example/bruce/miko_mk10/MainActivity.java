@@ -15,15 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.bruce.miko_mk10.databinding.ActivityMainBinding;
+import com.example.camera.Camera;
 import com.example.camera.CameraInterface;
-import com.example.camera.CameraPage;
+import com.example.firstlaunch.InstructionViewerInterface;
 import com.example.menupages.DocumentViewer;
 import com.example.networkcontroller.UploadFileMessage;
 import com.example.networkcontroller.DownloadFileMessage;
-import com.example.firstlaunch.FirstLaunch;
-import com.example.firstlaunch.OnFirstLaunchCompletedHandle;
+import com.example.firstlaunch.InstructionViewer;
 import com.example.handytools.AppConfigManager;
-import com.example.menupages.DocumentVIewerInterface;
+import com.example.menupages.DocumentViewerInterface;
 import com.example.networkcontroller.NetworkController;
 import com.example.viewer3d.Viewer3D;
 
@@ -31,8 +31,8 @@ import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity
         extends AppCompatActivity
-        implements OnFirstLaunchCompletedHandle
-                    ,DocumentVIewerInterface
+        implements InstructionViewerInterface
+                    ,DocumentViewerInterface
                     ,CameraInterface
 {
     private FragmentTabHost tabHost;
@@ -57,29 +57,29 @@ public class MainActivity
         if( new AppConfigManager(this).isAppFirstTimeLaunch() )
             setCurrentTab(TAB.FIRST_LAUNCH);
         else
-            setCurrentTab(TAB.FIRST_LAUNCH);
+            setCurrentTab(TAB.CAMERA);
     }
 
     @Override
-    public void firstLaunchCompleted()
+    public void onInstructionViewerCompletedHandle()
     {
         setCurrentTab(TAB.VIEWER_3D);
     }
     @Override
-    public void menuPagesCompleted()
+    public void onDocumentViewerCompletedHandle()
     {
         Log.i("MenuPagesCompleted","Mam");
         tabHost.setCurrentTab( tabHost.getCurrentTab() - 1 );
     }
     @Override
-    public void cameraDoneEventHandle()
+    public void onDoneHandle()
     {
         eventBus.postSticky( new DownloadFileMessage() );
         Log.i(  "\n\n------ MainActivity" ,"- wysyłam request GET");
     }
 
     @Override
-    public void cameraCaptureEventHandle(String absoluteFilePath)
+    public void onCapturedHandle(String absoluteFilePath)
     {
     //--tell networkController service to send captured image to server
         eventBus.postSticky( new UploadFileMessage(absoluteFilePath) );
@@ -109,10 +109,10 @@ public class MainActivity
         tabHost.setup(this, getSupportFragmentManager(), R.id.tabhost);
         tabHost.getTabWidget().setVisibility(View.GONE);
 
-        tabHost.addTab(tabHost.newTabSpec("FirstLaunch").setIndicator("fl")
-                ,FirstLaunch.class, null);
-        tabHost.addTab(tabHost.newTabSpec("CameraPage").setIndicator("cp")
-                ,CameraPage.class, null);
+        tabHost.addTab(tabHost.newTabSpec("InstructionViewer").setIndicator("fl")
+                ,InstructionViewer.class, null);
+        tabHost.addTab(tabHost.newTabSpec("Camera").setIndicator("cp")
+                ,Camera.class, null);
         tabHost.addTab(tabHost.newTabSpec("DocumentViewer").setIndicator("mp")
                 ,DocumentViewer.class, null);
         tabHost.addTab(tabHost.newTabSpec("Viewer3D").setIndicator("v3D")

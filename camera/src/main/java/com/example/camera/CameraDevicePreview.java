@@ -5,23 +5,23 @@ import android.util.AttributeSet;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
 
-public class CameraPreview
+public class CameraDevicePreview
         extends SurfaceView
         implements SurfaceHolder.Callback
 {
-    Camera camera = null;
+    CameraDevice cameraDevice = null;
 
-    public CameraPreview    (Context context)
+    public CameraDevicePreview(Context context)
     {
         super(context);
         getHolder().addCallback(this);
     }
-    public CameraPreview    (Context context, AttributeSet attrs, int defStyle)
+    public CameraDevicePreview(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         getHolder().addCallback(this);
     }
-    public CameraPreview    (Context context, AttributeSet attrs)
+    public CameraDevicePreview(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         getHolder().addCallback(this);
@@ -30,24 +30,24 @@ public class CameraPreview
     @Override
     public void surfaceCreated      (SurfaceHolder holder)
     {
-        if( camera != null )
-            camera.restart();
+        if( cameraDevice != null )
+            cameraDevice.restart();
     }
     @Override
     public void surfaceChanged      (SurfaceHolder holder, int format, int w, int h)
     {
-        if( camera != null )
-            camera.restart();
+        if( cameraDevice != null )
+            cameraDevice.restart();
     }
     @Override
     public void surfaceDestroyed    (SurfaceHolder holder)
     {
-        if (camera != null)
-            camera.turnOff();
+        if (cameraDevice != null)
+            cameraDevice.turnOff();
     }
 
-    public void setPreviewSource    (Camera cam)
+    public void setPreviewSource    (CameraDevice cam)
     {
-        camera = cam;
+        cameraDevice = cam;
     }
 }

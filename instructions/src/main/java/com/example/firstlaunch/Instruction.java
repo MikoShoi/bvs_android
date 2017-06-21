@@ -2,32 +2,25 @@ package com.example.firstlaunch;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.database.DatabaseUtilsCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.example.firstlaunch.databinding.FirstLaunchBinding;
 import com.example.firstlaunch.databinding.FirstLaunchPageBinding;
 
-import java.util.concurrent.PriorityBlockingQueue;
-
-public class FirstLaunchPage extends Fragment
+public class Instruction extends Fragment
 {
-    public FirstLaunchPage()
+    public Instruction()
     {}
-    public static FirstLaunchPage newInstance(int sectionNumber)
+    public static Instruction newInstance(int sectionNumber)
     {
-        FirstLaunchPage fragment = new FirstLaunchPage();
-        Bundle args = new Bundle();
+        Instruction fragment = new Instruction();
+        Bundle      args     = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;

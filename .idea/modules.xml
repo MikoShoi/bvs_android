@@ -6,10 +6,10 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/camera/camera.iml" filepath="$PROJECT_DIR$/camera/camera.iml" />
       <module fileurl="file://$PROJECT_DIR$/documents/documents.iml" filepath="$PROJECT_DIR$/documents/documents.iml" />
-      <module fileurl="file://$PROJECT_DIR$/firstlaunch/firstlaunch.iml" filepath="$PROJECT_DIR$/firstlaunch/firstlaunch.iml" />
       <module fileurl="file://$PROJECT_DIR$/handytools/handytools.iml" filepath="$PROJECT_DIR$/handytools/handytools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/instructions/instructions.iml" filepath="$PROJECT_DIR$/instructions/instructions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/model3D/model3D.iml" filepath="$PROJECT_DIR$/model3D/model3D.iml" />
       <module fileurl="file://$PROJECT_DIR$/networkcontroller/networkcontroller.iml" filepath="$PROJECT_DIR$/networkcontroller/networkcontroller.iml" />
-      <module fileurl="file://$PROJECT_DIR$/viewer3d/viewer3d.iml" filepath="$PROJECT_DIR$/viewer3d/viewer3d.iml" />
     </modules>
   </component>
 </project>

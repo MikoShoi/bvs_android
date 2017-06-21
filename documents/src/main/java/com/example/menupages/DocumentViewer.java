@@ -47,8 +47,8 @@ public class DocumentViewer extends Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof DocumentVIewerInterface)
-            parentObject = (DocumentVIewerInterface) context;
+        if (context instanceof DocumentViewerInterface)
+            parentObject = (DocumentViewerInterface) context;
         else
             throw new Error("\n\n-------\tError source:\tDocumentViewer:onAttach");
     }
@@ -77,10 +77,10 @@ public class DocumentViewer extends Fragment
     }
     private void closeActivity          ()
     {
-        parentObject.menuPagesCompleted();
+        parentObject.onDocumentViewerCompletedHandle();
     }
 
     private FloatingActionButton    closeFab;
     private ViewPager               viewPager;
-    private DocumentVIewerInterface parentObject;
+    private DocumentViewerInterface parentObject;
 }

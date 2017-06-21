@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import com.example.firstlaunch.databinding.FirstLaunchBinding;
 
-public class FirstLaunch extends Fragment
+public class InstructionViewer extends Fragment
 {
-    public FirstLaunch()
+    public InstructionViewer()
     {
         // Required empty public constructor
     }
@@ -55,11 +55,11 @@ public class FirstLaunch extends Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof OnFirstLaunchCompletedHandle)
-            parentObject = (OnFirstLaunchCompletedHandle) context;
+        if (context instanceof InstructionViewerInterface)
+            parentObject = (InstructionViewerInterface) context;
         else
-            //--viewPager must implement OnFirstLaunchCompletedHandle
-            throw new Error("\n\n-------\tError source:\tFirstLaunch:onAttach");
+            //--viewPager must implement InstructionViewerInterface
+            throw new Error("\n\n-------\tError source:\tInstructionViewer:onAttach");
     }
     @Override
     public void onDetach()
@@ -76,7 +76,7 @@ public class FirstLaunch extends Fragment
         NUMBER_OF_PAGES     = 4;
         LAST_PAGE_NUMBER    = NUMBER_OF_PAGES - 1;
 
-        FirstLaunchAdapter adapter = new FirstLaunchAdapter( getChildFragmentManager() );
+        InstructionViewerAdapter adapter = new InstructionViewerAdapter( getChildFragmentManager() );
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener( getViewPagerPageChangeListener() );
     }
@@ -160,10 +160,10 @@ public class FirstLaunch extends Fragment
 
     private void closeActivity()
     {
-        parentObject.firstLaunchCompleted();
+        parentObject.onInstructionViewerCompletedHandle();
     }
 
-    private OnFirstLaunchCompletedHandle parentObject;
+    private InstructionViewerInterface parentObject;
 
     private Button               nextButton, skipButton;
     private ViewPager            viewPager;

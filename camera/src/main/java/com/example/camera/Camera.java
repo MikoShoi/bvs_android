@@ -1,154 +1,152 @@
 package com.example.camera;
 
 import android.content.Context;
-import android.os.Handler;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.widget.Toast;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import com.example.networkcontroller.UploadFileMessage;
+import com.example.camera.databinding.CameraBinding;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-public class Camera
+public class Camera extends Fragment
 {
-    private SurfaceHolder                               holder                  = null;
-    private Context                                     context                 = null;
+    private CameraDevice        cameraDevice;
+    private CameraDevicePreview cameraDevicePreview;
+    private CameraBinding       cameraPage;
 
-    private android.hardware.Camera                     camera                  = null;
-    private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
-    private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
+    private CameraInterface parentObject;
 
-    private String photoDirPath;
-
-    public Camera(SurfaceView v)
+    public Camera()
     {
-        holder  = v.getHolder();
-        context = v.getContext();
+        // Required empty public constructor
+    }
+
+    public static Camera newInstance(String photoDirPath)
+    {
+        Camera fragment = new Camera();
+
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
+    @Override
+    public View onCreateView    ( LayoutInflater inflater
+                                ,ViewGroup container
+                                ,Bundle savedInstanceState)
+    {
+        cameraPage = DataBindingUtil.inflate(   inflater
+                                                ,R.layout.camera
+                                                ,container
+                                                ,false );
 
         init();
 
-        createPhotoDirIfNoExist();
+        setUiButtons();
+//        EventBus eventBus = EventBus.getDefault();
+
+        return cameraPage.getRoot();
+    }
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+
+        if( context instanceof CameraInterface)
+            parentObject = (CameraInterface) context;
+        else
+            throw new Error("\n\n---Error source:\tCamera:onAttach");
+    }
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+
+        parentObject = null;
     }
 
-    public void restart     ()
+    void init()
     {
-        if( camera != null )
-        {
-            try
-            {
-                camera.setPreviewDisplay(holder);
-                camera.stopPreview();
-                camera.startPreview();
-            }
-            catch (Exception e)
-            {
-                System.err.println(e);
-                return;
-            }
-        }
-    }
-    public void turnOff     ()
-    {
-        camera.stopPreview();
-        camera.release();
-        camera = null;
-    }
-    public void takePicture ()
-    {
-        //--at first camera must get focus, then lock, and after capture image
-        //--so that takePicture start from below line
-        camera.autoFocus(cameraAutoFocusCallback);
+        cameraDevicePreview = cameraPage.cameraPreviewWindow;
+        cameraDevice    = new CameraDevice(cameraDevicePreview);
+
+        cameraDevicePreview.setPreviewSource(cameraDevice);
     }
 
-    private void init                   ()
+    void setUiButtons                       ()
     {
-        camera = android.hardware.Camera.open();
-
-        setSettings();
-        setCaptureCallback();
-        setAutoFocusCallback();
-
-        restart();
+        setButtonCaptureOnClickListener();
+        setButtonDoneOnClickListener();
+        setButtonInfoOnClickListener();
     }
-    private void setSettings            ()
+    void setButtonCaptureOnClickListener    ()
     {
-        android.hardware.Camera.Parameters cc = camera.getParameters();
-
-        cc.setJpegQuality(100);
-        cc.setRotation(180);
-        cc.setAutoExposureLock(true);
-        cc.setPictureSize(2560,1920);
-        cc.setWhiteBalance(android.hardware.Camera.Parameters.WHITE_BALANCE_AUTO);
-
-        camera.setParameters(cc);
-        camera.setDisplayOrientation(180);
-    }
-    private void setCaptureCallback     ()
-    {
-        cameraCaptureCallback = new android.hardware.Camera.PictureCallback()
+        View.OnClickListener l = new View.OnClickListener()
         {
             @Override
-            public void onPictureTaken(byte[] data, android.hardware.Camera camera)
+            public void onClick(View v)
             {
-                try
-                {
-                    String currentTime = String.valueOf( System.currentTimeMillis() );
-                    String fileName = currentTime + ".jpg";
-                    String filePath = photoDirPath + "/" + fileName;
+                Log.i(  "\n\n------ Camera"
+                        ,"Button capture: onClickListener");
 
-                    FileOutputStream outStream = new FileOutputStream(filePath);
-                    outStream.write(data);
-                    outStream.close();
-
-                    Log.i("Camera","Wysyłam prośbę o wysłanie zdjęcia");
-                    EventBus.getDefault().postSticky( new UploadFileMessage( filePath ));
-                    //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-                Toast.makeText( context, "Picture Saved", Toast.LENGTH_SHORT).show();
-                restart();
+                cameraDevice.takePicture();
             }
         };
+
+        cameraPage.controls.capture.setOnClickListener(l);
     }
-    private void setAutoFocusCallback   ()
+    void setButtonDoneOnClickListener       ()
     {
-        cameraAutoFocusCallback = new android.hardware.Camera.AutoFocusCallback()
+        View.OnClickListener l = new View.OnClickListener()
         {
             @Override
-            public void onAutoFocus(boolean success, android.hardware.Camera camera)
+            public void onClick(View v)
             {
-                Handler h = new Handler();
-                h.postDelayed(DoAutoFocus, 1000);
-                camera.lock();
+                //--let parent object handle done event
+                parentObject.onDoneHandle();
+
+                Log.i(  "\n\n------ Camera"
+                        ,"Button done: onClickListener");
             }
-
-            Runnable DoAutoFocus = new Runnable()
-            {
-                public void run()
-                {
-                    camera.takePicture(null, null, null, cameraCaptureCallback);
-                }
-            };
         };
-    }
-    private void createPhotoDirIfNoExist()
-    {
-        photoDirPath = context.getFilesDir() + "/capturedImages";
-        File tempDir = new File(photoDirPath);
 
-        if( !tempDir.exists() && !tempDir.mkdir() )
+        cameraPage.controls.done.setOnClickListener(l);
+    }
+    void setButtonInfoOnClickListener       ()
+    {
+        View.OnClickListener l = new View.OnClickListener()
         {
-            String errorSource = "MainActivity:createPhotoDirIfNoExist";
-            throw new Error("\n\n------Error source:\t" + errorSource);
-        }
+            @Override
+            public void onClick(View v)
+            {
+                int timeDuration = 15000;   //milli seconds
+                String message = "Select object you would like to reconstruct and take " +
+                        "a several photos of it from different perspective." +
+                        "\nIn order to take photo, touch cameraDevice button." +
+                        "When you decided that's enough, click done button.";
+
+                Snackbar s  = Snackbar.make(v, message, timeDuration);
+                View     sv = s.getView();
+                TextView tv = (TextView) sv.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setMaxLines(3);
+
+                s.show();
+            }
+        };
+
+        cameraPage.info.setOnClickListener(l);
     }
 }
+
+

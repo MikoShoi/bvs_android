@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class FirstLaunchAdapter extends FragmentPagerAdapter
+public class InstructionViewerAdapter extends FragmentPagerAdapter
 {
-    public FirstLaunchAdapter(FragmentManager fm)
+    public InstructionViewerAdapter(FragmentManager fm)
     {
         super(fm);
     }
@@ -14,7 +14,7 @@ public class FirstLaunchAdapter extends FragmentPagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        return FirstLaunchPage.newInstance( position );
+        return Instruction.newInstance( position );
     }
 
     @Override
