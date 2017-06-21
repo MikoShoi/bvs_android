@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.viewer3d.databinding.Viewer3dBinding;
+
 public class Viewer3D
         extends Fragment
 {
@@ -34,15 +36,14 @@ public class Viewer3D
                                 , ViewGroup      container
                                 , Bundle         savedInstanceState)
     {
-//        viewer3d = DataBindingUtil.inflate  ( inflater
-//                                            , R.layout.viewer_3d
-//                                            , container
-//                                            , false );
-//
-//        previewSurface = viewer3d.previewSurface;
-//
-//        return viewer3d.getRoot();
-        return container;
+        viewer3d = DataBindingUtil.inflate  ( inflater
+                                            , R.layout.viewer_3d
+                                            , container
+                                            , false );
+
+        previewSurface = viewer3d.previewSurface;
+
+        return viewer3d.getRoot();
     }
     @Override
     public void onAttach        (Context context)
@@ -56,5 +57,5 @@ public class Viewer3D
     }
 
     private PreviewSurface  previewSurface;
-//    private Viewer3dBinding viewer3d;
+    private Viewer3dBinding viewer3d;
 }

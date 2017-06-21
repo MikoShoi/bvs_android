@@ -12,14 +12,8 @@ import android.view.ViewGroup;
 
 import com.example.menupages.databinding.MenuPagesBinding;
 
-
 public class MenuPages extends Fragment
 {
-    private MenuPagesInterface parentObject;
-
-    private ViewPager            viewPager;
-    private FloatingActionButton button;
-
     public MenuPages()
     {
         // Required empty public constructor
@@ -40,11 +34,10 @@ public class MenuPages extends Fragment
                 ,container
                 ,false);
 
-        viewPager   = layout.viewPager;
-        button      = layout.fab;
+        closeFab  = layout.fab;
+        viewPager = layout.viewPager;
 
         setViewPager();
-
         setFabOnClickListener();
 
         return layout.getRoot();
@@ -57,7 +50,6 @@ public class MenuPages extends Fragment
         if (context instanceof MenuPagesInterface)
             parentObject = (MenuPagesInterface) context;
         else
-            //--viewPager must implement FirstLaunchInterface
             throw new Error("\n\n-------\tError source:\tMenuPages:onAttach");
     }
     @Override
@@ -67,17 +59,14 @@ public class MenuPages extends Fragment
         parentObject = null;
     }
 
-    //--view pager
-    private void setViewPager()
+    private void setViewPager           ()
     {
         MenuPagesAdapter adapter = new MenuPagesAdapter( getChildFragmentManager() );
         viewPager.setAdapter(adapter);
     }
-
-    //--fab
-    private void setFabOnClickListener()
+    private void setFabOnClickListener  ()
     {
-        button.setOnClickListener(new View.OnClickListener()
+        closeFab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -86,11 +75,12 @@ public class MenuPages extends Fragment
             }
         });
     }
-
-    //--tell my when you are done | click Let's start begin
-    private void closeActivity()
+    private void closeActivity          ()
     {
         parentObject.menuPagesCompleted();
     }
 
+    private FloatingActionButton closeFab;
+    private ViewPager            viewPager;
+    private MenuPagesInterface   parentObject;
 }

@@ -7,11 +7,11 @@ import android.view.MotionEvent;
 
 public class TouchGestureProcessor
 {
-    public void         addTouchGestureListener (TouchGestureListener touchGestureListener)
+    public void     addTouchGestureListener (TouchGestureListener touchGestureListener)
     {
         this.touchGestureListener = touchGestureListener;
     }
-    public void  touchEventHandle        (MotionEvent e)
+    public void     touchEventHandle    (MotionEvent e)
     {
         switch ( MotionEventCompat.getActionMasked(e) )
         {

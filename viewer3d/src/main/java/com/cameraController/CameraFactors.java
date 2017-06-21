@@ -14,7 +14,7 @@ public class CameraFactors
     }
 
     public final static int     offset              = 0;
-    public       static float   twoFullRotateAngle  = 720
+    public       static float   twoFullRotateAngle  = 360
                                 , defaultRadius     = 1;
 
     public float    moveFactor

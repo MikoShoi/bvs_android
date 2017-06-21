@@ -1,9 +1,10 @@
 package com.cameraController;
 
 import android.opengl.Matrix;
+
 import com.example.viewer3d.SurfaceChangeListener;
-import com.HandyClasses.MikoMath;
-import com.HandyClasses.Vector3D;
+import com.handyClasses.MikoMath;
+import com.handyClasses.Vector3D;
 
 public class Camera implements SurfaceChangeListener
 {
@@ -36,7 +37,7 @@ public class Camera implements SurfaceChangeListener
         else if ( verticalRotateAngle < 0.0f )
                     verticalRotateAngle += 360;
 
-        isYAxisUpsideDown = verticalRotateAngle > 90 && verticalRotateAngle < 270;
+        isYAxisUpsideDown = verticalRotateAngle >= 90 && verticalRotateAngle < 270;
 
         recalculateViewMatrix();
     }

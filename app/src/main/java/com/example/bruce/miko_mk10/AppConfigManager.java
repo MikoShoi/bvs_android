@@ -6,31 +6,26 @@ import android.content.SharedPreferences;
 
 public class AppConfigManager
 {
-    private Context context;
-    private SharedPreferences config;
-    private SharedPreferences.Editor configEditor;
-
-    private static final String CONFIG_FILE_NAME        = "mikoFileConfig";
-    private static final String CONFIG_PROPERTY_NAME    = "IsFirstTimeLaunch";
-
     public AppConfigManager(Context context)
     {
-        this.context    = context;
-        config          = context.getSharedPreferences(CONFIG_FILE_NAME, Activity.MODE_PRIVATE);
-        configEditor    = config.edit();
+        config = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
     }
 
-    public void setFirstTimeLaunch(boolean b)
+    public void     setFirstTimeLaunch  (boolean b)
     {
-        configEditor.putBoolean(CONFIG_PROPERTY_NAME, b);
-        configEditor.commit();
+        config.edit().putBoolean(PROPERTY_NAME, b).apply();
     }
-
-    public boolean isAppFirstTimeLaunch()
+    public boolean  isAppFirstTimeLaunch()
     {
-        //--default value - used in case key has not assigned any value
-        boolean defaultValue = true;
+        boolean isThatFirstLaunch = config.getBoolean(PROPERTY_NAME, true);
 
-        return config.getBoolean(CONFIG_PROPERTY_NAME, defaultValue);
+        if ( isThatFirstLaunch )
+            setFirstTimeLaunch(false);
+
+        return isThatFirstLaunch;
     }
+
+    private SharedPreferences config;
+    private static final String FILE_NAME       = "mikoAppConfig"
+                                , PROPERTY_NAME = "firstAppLaunch";
 }

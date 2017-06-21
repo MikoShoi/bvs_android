@@ -2,7 +2,7 @@ package com.model;
 
 import android.opengl.GLES30;
 
-import com.HandyClasses.MikoError;
+import com.handyClasses.MikoError;
 
 public abstract class Model
 {

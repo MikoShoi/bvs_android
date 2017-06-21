@@ -59,17 +59,14 @@ public class MenuPage extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
-
         mainActivity = getActivity();
     }
     @Override
     public void onDetach()
     {
         super.onDetach();
-
         mainActivity = null;
     }
-
 
     private String      getDescription  (int pageNumber)
     {

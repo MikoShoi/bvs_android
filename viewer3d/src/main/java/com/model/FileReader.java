@@ -3,7 +3,7 @@ package com.model;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.HandyClasses.MikoError;
+import com.handyClasses.MikoError;
 
 import org.apache.commons.io.IOUtils;
 

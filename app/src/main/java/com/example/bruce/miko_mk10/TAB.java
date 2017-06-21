@@ -1,6 +1,6 @@
 package com.example.bruce.miko_mk10;
 
-enum Tab
+enum TAB
 {
     FIRST_LAUNCH
     ,DOCUMENTS

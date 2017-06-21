@@ -1,7 +1,9 @@
-package com.HandyClasses;
+package com.handyClasses;
 
 import android.opengl.Matrix;
+import android.util.Log;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 public class MikoMath

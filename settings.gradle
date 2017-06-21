@@ -1,1 +1,1 @@
-include ':app', ':firstlaunch', ':menupages', ':camera', ':networkcontroller', ':eventbusmessages', ':viewer3d'
+include ':app', ':firstlaunch', ':menupages', ':camera', ':networkcontroller', ':eventbusmessages', ':viewer3d', ':handytools'

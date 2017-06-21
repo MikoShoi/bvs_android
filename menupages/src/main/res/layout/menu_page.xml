@@ -1,44 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <RelativeLayout
-        xmlns:android           = "http://schemas.android.com/apk/res/android"
-        android:id              = "@+id/layout"
-        android:layout_width    = "match_parent"
-        android:layout_height   = "match_parent"
-        android:background      = "@color/default_background_color"
-        android:orientation     = "vertical">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/purple_600"
+        android:orientation="vertical">
 
         <TextView
-            android:id                      = "@+id/text_view_header"
-            android:layout_width            = "wrap_content"
-            android:layout_height           = "wrap_content"
-            android:text                    = "@string/default_title"
-            android:textColor               = "@color/default_text_color"
-            android:textSize                = "@dimen/title_text_size"
-            android:textStyle               = "bold"
-            android:layout_marginStart      = "21dp"
-            android:layout_marginTop        = "32dp"
-            android:layout_alignParentTop   = "true"
-            android:layout_alignParentStart = "true"/>
+            android:id="@+id/text_view_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/default_title"
+            android:textColor="@color/default_background_color"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"/>
 
         <ScrollView
-            android:layout_width            = "match_parent"
-            android:layout_height           = "wrap_content"
-            android:id                      = "@+id/scrollView2"
-            android:layout_alignParentBottom= "true"
-            android:layout_marginTop        = "40dp"
-            android:layout_below            = "@+id/text_view_header">
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/text_view_header"
+            android:layout_marginTop="40dp"
+            android:background="@color/default_background_color">
 
             <TextView
-                android:id                  = "@+id/text_view_description"
-                android:layout_width        = "match_parent"
-                android:layout_height       = "wrap_content"
-                android:paddingStart        = "@dimen/description_left_padding"
-                android:paddingEnd          = "@dimen/description_right_padding"
-                android:text                = "@string/default_description"
-                android:textAlignment       = "viewStart"
-                android:textColor           = "@color/default_text_color"
-                android:textSize            = "@dimen/description_text_size"/>
+                android:id="@+id/text_view_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-thin"
+                android:paddingBottom="40dp"
+                android:paddingEnd="@dimen/description_right_padding"
+                android:paddingStart="@dimen/description_left_padding"
+                android:paddingTop="20dp"
+                android:text="@string/default_description"
+                android:textAlignment="viewStart"
+                android:textColor="@color/default_text_color"
+                android:textSize="@dimen/description_text_size"/>
 
         </ScrollView>
     </RelativeLayout>

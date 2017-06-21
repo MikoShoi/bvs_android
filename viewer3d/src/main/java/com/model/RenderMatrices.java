@@ -1,7 +1,7 @@
 package com.model;
 
-import com.HandyClasses.MikoMath;
-import com.HandyClasses.Vector3D;
+import com.handyClasses.MikoMath;
+import com.handyClasses.Vector3D;
 
 public class RenderMatrices
 {

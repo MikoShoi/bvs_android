@@ -1,4 +1,4 @@
-package com.HandyClasses;
+package com.handyClasses;
 
 public class Vector3D
 {

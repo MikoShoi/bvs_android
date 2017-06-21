@@ -1,4 +1,4 @@
-package com.HandyClasses;
+package com.handyClasses;
 
 public class MikoError extends Error
 {

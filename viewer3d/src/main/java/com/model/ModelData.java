@@ -1,6 +1,6 @@
 package com.model;
 
-import com.HandyClasses.MikoError;
+import com.handyClasses.MikoError;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
