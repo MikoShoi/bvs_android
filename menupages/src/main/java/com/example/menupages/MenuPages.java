@@ -82,12 +82,12 @@ public class MenuPages extends Fragment
             @Override
             public void onClick(View v)
             {
-                    closeActivity();
+                closeActivity();
             }
         });
     }
 
-    //--tell my why you are done | click Let's start begin
+    //--tell my when you are done | click Let's start begin
     private void closeActivity()
     {
         parentObject.menuPagesCompleted();

@@ -1,122 +1,160 @@
 package com.example.camera;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Handler;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.widget.Toast;
 
+import com.example.eventbusmessages.SendFileMessage;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Camera.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Camera#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class Camera extends Fragment
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class Camera
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+//-- Variables
+    private SurfaceHolder                               holder                  = null;
+    private Context                                     context                 = null;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private android.hardware.Camera                     camera                  = null;
+    private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
+    private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
 
-    private OnFragmentInteractionListener mListener;
+    private String photoDirPath;
 
-    public Camera()
+//-- Interface
+    public Camera(SurfaceView v)
     {
-        // Required empty public constructor
+        holder  = v.getHolder();
+        context = v.getContext();
+
+        init();
+
+        createPhotoDirIfNoExist();
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Camera.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Camera newInstance(String param1, String param2)
+    public void restart     ()
     {
-        Camera fragment = new Camera();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null)
+        if( camera != null )
         {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            try
+            {
+                camera.setPreviewDisplay(holder);
+                camera.stopPreview();
+                camera.startPreview();
+            }
+            catch (Exception e)
+            {
+                System.err.println(e);
+                return;
+            }
         }
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
+    public void turnOff     ()
     {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.camera, container, false);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
+    }
+    public void takePicture ()
+    {
+        //--at first camera must get focus, then lock, and after capture image
+        //--so that takePicture start from below line
+        camera.autoFocus(cameraAutoFocusCallback);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri)
+//-- Implementation
+    private void init                   ()
     {
-        if (mListener != null)
+        camera = android.hardware.Camera.open();
+
+        setSettings();
+        setCaptureCallback();
+        setAutoFocusCallback();
+
+        restart();
+    }
+    private void setSettings            ()
+    {
+        android.hardware.Camera.Parameters cc = camera.getParameters();
+
+        cc.setJpegQuality(100);
+        cc.setRotation(180);
+        cc.setAutoExposureLock(true);
+        cc.setPictureSize(2560,1920);
+        cc.setWhiteBalance(android.hardware.Camera.Parameters.WHITE_BALANCE_AUTO);
+
+        camera.setParameters(cc);
+        camera.setDisplayOrientation(180);
+    }
+    private void setCaptureCallback     ()
+    {
+        cameraCaptureCallback = new android.hardware.Camera.PictureCallback()
         {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+            @Override
+            public void onPictureTaken(byte[] data, android.hardware.Camera camera)
+            {
+                try
+                {
+                    String currentTime = String.valueOf( System.currentTimeMillis() );
+                    String fileName = currentTime + ".jpg";
+                    String filePath = photoDirPath + "/" + fileName;
+//                    String filepath = String.format( "/sdcard/%d.jpg", System.currentTimeMillis() );
 
-    @Override
-    public void onAttach(Context context)
+                    FileOutputStream outStream = new FileOutputStream(filePath);
+                    outStream.write(data);
+                    outStream.close();
+
+                    Log.i("Camera","Wysyłam prośbę o wysłanie zdjęcia");
+                    EventBus.getDefault().postSticky( new SendFileMessage( filePath ));
+                    //--wysyłaj to natychmiast bez zapisywania do pliku!;
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText( context, "Picture Saved", 1000).show();
+                restart();
+            }
+        };
+    }
+    private void setAutoFocusCallback   ()
     {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener)
+        cameraAutoFocusCallback = new android.hardware.Camera.AutoFocusCallback()
         {
-            mListener = (OnFragmentInteractionListener) context;
-        }
-        else
+            @Override
+            public void onAutoFocus(boolean success, android.hardware.Camera camera)
+            {
+                Handler h = new Handler();
+                h.postDelayed(DoAutoFocus, 1000);
+                camera.lock();
+            }
+
+            Runnable DoAutoFocus = new Runnable()
+            {
+                public void run()
+                {
+                    camera.takePicture(null, null, null, cameraCaptureCallback);
+                }
+            };
+        };
+    }
+    private void createPhotoDirIfNoExist()
+    {
+        photoDirPath = context.getFilesDir() + "/capturedImages";
+        File tempDir = new File(photoDirPath);
+
+        if( !tempDir.exists() && !tempDir.mkdir() )
         {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            String errorSource = "MainActivity:createPhotoDirIfNoExist";
+            throw new Error("\n\n------Error source:\t" + errorSource);
         }
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener
-    {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

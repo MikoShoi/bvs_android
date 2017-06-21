@@ -33,4 +33,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':firstlaunch')
     compile project(':menupages')
+    compile project(':networkcontroller')
+    compile project(':camera')
+    compile project(':viewer3d')
 }

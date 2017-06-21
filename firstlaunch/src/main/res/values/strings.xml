@@ -11,7 +11,7 @@
     <string name="start">LET\'S BEGIN NOW</string>
 
     //--welcome fragment titles and descriptions
-    <string name="welcome_title">   Welcome to ZF_TRW_demo app!</string>
+    <string name="welcome_title">   Welcome to ZF demo app!</string>
     <string name="welcome_description">
         Create a 3D model from a few images captured your own smartphone.
     </string>

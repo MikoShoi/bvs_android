@@ -10,8 +10,11 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/camera" />
+            <option value="$PROJECT_DIR$/eventbusmessages" />
             <option value="$PROJECT_DIR$/firstlaunch" />
             <option value="$PROJECT_DIR$/menupages" />
+            <option value="$PROJECT_DIR$/networkcontroller" />
+            <option value="$PROJECT_DIR$/viewer3d" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
