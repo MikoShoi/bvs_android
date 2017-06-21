@@ -1,0 +1,19 @@
+#version 300 es
+
+layout(location = 3)    in  vec4    vertexXYZ;
+            uniform         mat4    mvp;
+            uniform         mat4    mv;
+
+                        out vec3    vertPos;
+
+void main()
+{
+    vec4 vertPos4 = mv * vertexXYZ;
+    vec3 vertPos3 = vec3(vertPos4) / vertPos4.w;
+    vertPos = normalize(vertPos3);
+
+    gl_PointSize = 2.0;
+    gl_Position = mvp * vertexXYZ;
+}
+
+
