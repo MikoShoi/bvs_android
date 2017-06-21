@@ -32,8 +32,9 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile project(':firstlaunch')
-    compile project(':menupages')
+    compile project(':documents')
     compile project(':networkcontroller')
     compile project(':camera')
     compile project(':viewer3d')
+    compile project(path: ':handytools')
 }

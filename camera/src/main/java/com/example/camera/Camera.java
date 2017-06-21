@@ -7,18 +7,15 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import com.example.eventbusmessages.SendFileMessage;
+import com.example.networkcontroller.UploadFileMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class Camera
 {
-//-- Variables
     private SurfaceHolder                               holder                  = null;
     private Context                                     context                 = null;
 
@@ -28,7 +25,6 @@ public class Camera
 
     private String photoDirPath;
 
-//-- Interface
     public Camera(SurfaceView v)
     {
         holder  = v.getHolder();
@@ -69,7 +65,6 @@ public class Camera
         camera.autoFocus(cameraAutoFocusCallback);
     }
 
-//-- Implementation
     private void init                   ()
     {
         camera = android.hardware.Camera.open();
@@ -105,22 +100,21 @@ public class Camera
                     String currentTime = String.valueOf( System.currentTimeMillis() );
                     String fileName = currentTime + ".jpg";
                     String filePath = photoDirPath + "/" + fileName;
-//                    String filepath = String.format( "/sdcard/%d.jpg", System.currentTimeMillis() );
 
                     FileOutputStream outStream = new FileOutputStream(filePath);
                     outStream.write(data);
                     outStream.close();
 
                     Log.i("Camera","Wysyłam prośbę o wysłanie zdjęcia");
-                    EventBus.getDefault().postSticky( new SendFileMessage( filePath ));
-                    //--wysyłaj to natychmiast bez zapisywania do pliku!;
+                    EventBus.getDefault().postSticky( new UploadFileMessage( filePath ));
+                    //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
                 }
 
-                Toast.makeText( context, "Picture Saved", 1000).show();
+                Toast.makeText( context, "Picture Saved", Toast.LENGTH_SHORT).show();
                 restart();
             }
         };

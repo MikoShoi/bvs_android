@@ -17,16 +17,6 @@ import com.example.firstlaunch.databinding.FirstLaunchBinding;
 
 public class FirstLaunch extends Fragment
 {
-    private FirstLaunchInterface parentObject;
-
-    private Button               nextButton, skipButton;
-    private ViewPager            viewPager;
-    private LinearLayout         dotsLayout;
-
-    private int NUMBER_OF_PAGES
-            ,LAST_PAGE_NUMBER
-            ,CURRENT_PAGE_NUMBER;
-
     public FirstLaunch()
     {
         // Required empty public constructor
@@ -65,10 +55,10 @@ public class FirstLaunch extends Fragment
     {
         super.onAttach(context);
 
-        if (context instanceof FirstLaunchInterface)
-            parentObject = (FirstLaunchInterface) context;
+        if (context instanceof OnFirstLaunchCompletedHandle)
+            parentObject = (OnFirstLaunchCompletedHandle) context;
         else
-            //--viewPager must implement FirstLaunchInterface
+            //--viewPager must implement OnFirstLaunchCompletedHandle
             throw new Error("\n\n-------\tError source:\tFirstLaunch:onAttach");
     }
     @Override
@@ -78,8 +68,6 @@ public class FirstLaunch extends Fragment
         parentObject = null;
     }
 
-
-//--view pager
     private void setViewPager()
     {
         //--counting from zero for 4 pages, first one has number 0 and last one is 3
@@ -113,7 +101,6 @@ public class FirstLaunch extends Fragment
         };
     }
 
-//--buttons
     private void setNextButtonOnClickListener()
     {
         nextButton.setOnClickListener(new View.OnClickListener()
@@ -149,14 +136,13 @@ public class FirstLaunch extends Fragment
         viewPager.setCurrentItem(CURRENT_PAGE_NUMBER + 1);
     }
 
-//--bottom dots
     private void setBottomDots()
     {
         TextView dots[] = new TextView[NUMBER_OF_PAGES];
         final int dotsNumber = dots.length;
 
-        int[] colorsActive      = getResources().getIntArray(R.array.array_dot_active);
-        int[] colorsInactive    = getResources().getIntArray(R.array.array_dot_inactive);
+        int[] colorsActive   = getResources().getIntArray(R.array.array_dot_active)
+            , colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
 
         dotsLayout.removeAllViews();
         for (int i = 0; i < dotsNumber; i++)
@@ -172,10 +158,18 @@ public class FirstLaunch extends Fragment
             dots[CURRENT_PAGE_NUMBER].setTextColor(colorsActive[CURRENT_PAGE_NUMBER]);
     }
 
-//--tell my why you are done | click Let's start begin
     private void closeActivity()
     {
         parentObject.firstLaunchCompleted();
     }
 
+    private OnFirstLaunchCompletedHandle parentObject;
+
+    private Button               nextButton, skipButton;
+    private ViewPager            viewPager;
+    private LinearLayout         dotsLayout;
+
+    private int NUMBER_OF_PAGES
+                , LAST_PAGE_NUMBER
+                , CURRENT_PAGE_NUMBER;
 }

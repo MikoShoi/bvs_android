@@ -22,9 +22,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class FirstLaunchPage extends Fragment
 {
-    private Activity mainActivity;
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
     public FirstLaunchPage()
     {}
     public static FirstLaunchPage newInstance(int sectionNumber)
@@ -48,17 +45,10 @@ public class FirstLaunchPage extends Fragment
         //--get number of page, which you will customize
         int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);
 
-        //--set for this page title
-        firstLaunchPage.textViewTitle.setText( getTitle(pageNumber) );
-
-        //--, description
-        firstLaunchPage.textViewDescription.setText( getDescription(pageNumber) );
-
-        //--, background color
-        firstLaunchPage.layout.setBackgroundColor( getColor(pageNumber) );
-
-        //--and icon
-        firstLaunchPage.imageViewIcon.setImageDrawable( getIcon(pageNumber) );
+        firstLaunchPage.textViewTitle.setText           ( getTitle      (pageNumber) );
+        firstLaunchPage.textViewDescription.setText     ( getDescription(pageNumber) );
+        firstLaunchPage.layout.setBackgroundColor       ( getColor      (pageNumber) );
+        firstLaunchPage.imageViewIcon.setImageDrawable  ( getIcon       (pageNumber) );
 
         return firstLaunchPage.getRoot();
     }
@@ -181,4 +171,7 @@ public class FirstLaunchPage extends Fragment
 
         return ContextCompat.getDrawable(mainActivity, iconId);
     }
+
+    private              Activity   mainActivity;
+    private static final String     ARG_SECTION_NUMBER = "section_number";
 }

@@ -3,7 +3,8 @@ package com.model;
 import android.content.Context;
 import android.util.Pair;
 
-import com.handyClasses.MikoError;
+import com.example.handytools.FileReader;
+import com.example.handytools.MikoError;
 
 import java.io.File;
 import java.nio.ByteBuffer;

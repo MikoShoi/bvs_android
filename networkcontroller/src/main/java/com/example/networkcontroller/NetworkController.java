@@ -2,7 +2,6 @@ package com.example.networkcontroller;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.os.Environment;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -14,10 +13,6 @@ import com.androidnetworking.interfaces.DownloadProgressListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.StringRequestListener;
 import com.androidnetworking.interfaces.UploadProgressListener;
-import com.example.eventbusmessages.RequestType;
-import com.example.eventbusmessages.SendFileMessage;
-import com.example.eventbusmessages.SendGetModelMessage;
-import com.example.eventbusmessages.SendRequestMessage;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,15 +26,14 @@ import okhttp3.Response;
 
 public class NetworkController extends IntentService
 {
-    public final static String intentParamServerAddress = "SERVER_ADDRESS";
-    public final static String intentParamGetEndpoint   = "GET_ENDPOINT";
-    public final static String intentParamPostEndpoint  = "POST_ENDPOINT";
+    public final static String  intentParamServerAddress    = "SERVER_ADDRESS"
+                                , intentParamGetEndpoint    = "GET_ENDPOINT"
+                                , intentParamPostEndpoint   = "POST_ENDPOINT";
 
-    private String serverAddress    = null;
-    private String postEndpoint     = null;
-    private String getEndpoint      = null;
-
-    private String tempDirPath      = null;
+    private String  serverAddress   = null
+                    , postEndpoint  = null
+                    , getEndpoint   = null
+                    , tempDirPath   = null;
 
     public NetworkController()
     {
@@ -57,7 +51,7 @@ public class NetworkController extends IntentService
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    public void onEvent(SendFileMessage event)
+    public void onEvent(UploadFileMessage event)
     {
         String filePath = event.getAbsoluteFilePath();
 
@@ -65,54 +59,12 @@ public class NetworkController extends IntentService
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onEvent(SendGetModelMessage event)
+    public void onEvent(DownloadFileMessage event)
     {
+        //TODO: repair, try not to use literals as "model.off"
         downloadFile(serverAddress + getEndpoint, tempDirPath, "model.off");
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    public void onEvent(SendRequestMessage event)
-    {
-        String problemAddress       = "Given address is empty";
-        String problemRequestType   = "Unknown RequestType";
-        String problemSource        = "\nSource:\tNetworkController : "
-                                        + "onEvent(SendRequestMessage)";
-
-        RequestType requestType = event.getRequestType();
-        String      address     = event.getAddress();
-
-        if ( address.isEmpty() )
-        {
-            Log.i("\n\n----- WARNING:\t", problemAddress + problemSource);
-            return;
-        }
-
-        switch (requestType)
-        {
-            case GET:
-                sendGetRequest(address+getEndpoint);
-                break;
-            case POST:
-                sendPostRequest(address+postEndpoint);
-                break;
-            default:
-                Log.i("\n\n----- WARNING:\t", problemRequestType + problemSource);
-                break;
-        }
-    }
-
-    private void sendGetRequest(String endpoint)
-    {
-        AndroidNetworking.get(serverAddress + endpoint)
-                .build()
-                .getAsString(getListenerFor("Send GET Request"));
-    }
-    private void sendPostRequest(String endpoint)
-    {
-        AndroidNetworking.post(serverAddress + postEndpoint)
-                .build()
-                .getAsString(getListenerFor("Send POST Request"));
-    }
     private void downloadFile   (    String address
                                     ,String dirPath
                                     ,String fileName )

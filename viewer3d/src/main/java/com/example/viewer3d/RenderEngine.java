@@ -6,7 +6,7 @@ import android.opengl.GLSurfaceView;
 
 import com.cameraController.CameraChangeListener;
 import com.cameraController.CameraFactors;
-import com.handyClasses.Vector3D;
+import com.example.handytools.Vector3D;
 import com.model.AddModelToRenderMessage;
 import com.model.Model3D;
 import com.model.ModelData;

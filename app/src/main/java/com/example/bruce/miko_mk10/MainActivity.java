@@ -17,12 +17,13 @@ import android.view.View;
 import com.example.bruce.miko_mk10.databinding.ActivityMainBinding;
 import com.example.camera.CameraInterface;
 import com.example.camera.CameraPage;
-import com.example.eventbusmessages.SendFileMessage;
-import com.example.eventbusmessages.SendGetModelMessage;
+import com.example.menupages.DocumentViewer;
+import com.example.networkcontroller.UploadFileMessage;
+import com.example.networkcontroller.DownloadFileMessage;
 import com.example.firstlaunch.FirstLaunch;
-import com.example.firstlaunch.FirstLaunchInterface;
-import com.example.menupages.MenuPages;
-import com.example.menupages.MenuPagesInterface;
+import com.example.firstlaunch.OnFirstLaunchCompletedHandle;
+import com.example.handytools.AppConfigManager;
+import com.example.menupages.DocumentVIewerInterface;
 import com.example.networkcontroller.NetworkController;
 import com.example.viewer3d.Viewer3D;
 
@@ -30,8 +31,8 @@ import org.greenrobot.eventbus.EventBus;
 
 public class MainActivity
         extends AppCompatActivity
-        implements  FirstLaunchInterface
-                    ,MenuPagesInterface
+        implements OnFirstLaunchCompletedHandle
+                    ,DocumentVIewerInterface
                     ,CameraInterface
 {
     private FragmentTabHost tabHost;
@@ -56,7 +57,7 @@ public class MainActivity
         if( new AppConfigManager(this).isAppFirstTimeLaunch() )
             setCurrentTab(TAB.FIRST_LAUNCH);
         else
-            setCurrentTab(TAB.VIEWER_3D);
+            setCurrentTab(TAB.FIRST_LAUNCH);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class MainActivity
     @Override
     public void cameraDoneEventHandle()
     {
-        eventBus.postSticky( new SendGetModelMessage() );
+        eventBus.postSticky( new DownloadFileMessage() );
         Log.i(  "\n\n------ MainActivity" ,"- wysyłam request GET");
     }
 
@@ -81,7 +82,7 @@ public class MainActivity
     public void cameraCaptureEventHandle(String absoluteFilePath)
     {
     //--tell networkController service to send captured image to server
-        eventBus.postSticky( new SendFileMessage(absoluteFilePath) );
+        eventBus.postSticky( new UploadFileMessage(absoluteFilePath) );
     }
 
     //--init
@@ -112,8 +113,8 @@ public class MainActivity
                 ,FirstLaunch.class, null);
         tabHost.addTab(tabHost.newTabSpec("CameraPage").setIndicator("cp")
                 ,CameraPage.class, null);
-        tabHost.addTab(tabHost.newTabSpec("MenuPages").setIndicator("mp")
-                ,MenuPages.class, null);
+        tabHost.addTab(tabHost.newTabSpec("DocumentViewer").setIndicator("mp")
+                ,DocumentViewer.class, null);
         tabHost.addTab(tabHost.newTabSpec("Viewer3D").setIndicator("v3D")
                 ,Viewer3D.class, null);
     }

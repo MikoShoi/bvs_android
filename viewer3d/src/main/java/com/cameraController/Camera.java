@@ -3,8 +3,8 @@ package com.cameraController;
 import android.opengl.Matrix;
 
 import com.example.viewer3d.SurfaceChangeListener;
-import com.handyClasses.MikoMath;
-import com.handyClasses.Vector3D;
+import com.example.handytools.MikoMath;
+import com.example.handytools.Vector3D;
 
 public class Camera implements SurfaceChangeListener
 {
