@@ -3,6 +3,7 @@ package com.example.viewer3d;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.cameraController.CameraChangeListener;
 import com.cameraController.CameraFactors;
@@ -28,6 +29,8 @@ public class RenderEngine
 {
     public RenderEngine(Context context)
     {
+        EventBus.getDefault().register(this);
+
         this.context = context;
 
         matrices                = new RenderMatrices();
@@ -35,7 +38,14 @@ public class RenderEngine
         cameraFactors           = new CameraFactors();
         surfaceChangeListener   = null;
 
-        EventBus.getDefault().register(this);
+        AddModelToRenderMessage msg;
+        msg = new AddModelToRenderMessage   ( R.raw.vertex_shader
+                , R.raw.fragment_shader
+                //                                            , event.getAbsFilePath()
+                , "/storage/emulated/0/Download/model.off"
+                , "uniqueName" );
+
+        EventBus.getDefault().postSticky(msg);
     }
 
     @Override
@@ -80,9 +90,10 @@ public class RenderEngine
                                         , cameraFactors.projectionMatrix );
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent                 (AddModelToRenderMessage event)
     {
+        Log.i("RenderEnging","Mam");
         //--load model file using model loader
         ModelLoader modelLoader = new ModelLoader(context);
         modelLoader.load(event);

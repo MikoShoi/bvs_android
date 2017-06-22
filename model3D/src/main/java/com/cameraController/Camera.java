@@ -29,29 +29,33 @@ public class Camera implements SurfaceChangeListener
     }
     public  void rotate(float dx, float dy)
     {
-        int   xAngle = 0
-            , yAngle = 0;
+        final float xFactor     = 0.28f
+                    , yFactor   = 0.50f;
 
-                if (dx >  1) Log.i( "x angle: ", Integer.toString(xAngle++) );
-        else    if (dx < -1) Log.i( "x angle: ", Integer.toString(xAngle--) );
+        xAngle += dx * xFactor;
+        yAngle += dy * yFactor;
 
-                if (dy >  1) Log.i( "y angle: ", Integer.toString(yAngle++) );
-        else    if (dy < -1) Log.i( "y angle: ", Integer.toString(yAngle--) );
+             if ( yAngle >= 360.0f ) yAngle -= 360;
+        else if ( yAngle <    0.0f ) yAngle += 360;
+
+        isYAxisUpsideDown = ( yAngle >= 90.0f && yAngle <= 270.0f );
+
+        recalculateViewMatrix();
     }
     public  void rotateVertically            (float ry)
     {
-        float vhr = ry * cameraFactors.moveFactor * cameraFactors.radius;
+//        float vhr = ry * cameraFactors.moveFactor * cameraFactors.radius;
+//
+//        verticalRotateAngle -= vhr;
+//
+//             if ( verticalRotateAngle > 360 )
+//                    verticalRotateAngle -= 360;
+//        else if ( verticalRotateAngle < 0.0f )
+//                    verticalRotateAngle += 360;
 
-        verticalRotateAngle -= vhr;
+//        isYAxisUpsideDown = verticalRotateAngle >= 90 && verticalRotateAngle < 270;
 
-             if ( verticalRotateAngle > 360 )
-                    verticalRotateAngle -= 360;
-        else if ( verticalRotateAngle < 0.0f )
-                    verticalRotateAngle += 360;
-
-        isYAxisUpsideDown = verticalRotateAngle >= 90 && verticalRotateAngle < 270;
-
-        recalculateViewMatrix();
+//        recalculateViewMatrix();
     }
     public  void addCameraChangeListener     (CameraChangeListener listener)
     {
@@ -76,10 +80,10 @@ public class Camera implements SurfaceChangeListener
 
     private void recalculateViewMatrix      ()
     {
-        float r     = cameraFactors.radius
-            , theta = 0
-            , phi   = (float)Math.toRadians(verticalRotateAngle)
-            , yAxis = isYAxisUpsideDown ? -1 : 1;
+        float   r       = cameraFactors.radius
+                , phi   = (float)Math.toRadians(xAngle)
+                , theta = (float)Math.toRadians(yAngle)
+                , yAxis = isYAxisUpsideDown ? -1 : 1;
 
         //-- sVec is a camera position in spherical, cVec in cartesian c.s.
         Vector3D  sVec = new Vector3D(r, phi, theta)
@@ -89,7 +93,7 @@ public class Camera implements SurfaceChangeListener
         Matrix.setLookAtM   ( cameraFactors.viewMatrix
                             ,CameraFactors.offset
                             //--camera position                 | x, y, z
-                            ,  cVec.x   , cVec.y    , cVec.z
+                            ,  cVec.x   , cVec.z    , cVec.y
                             //--point which observe             | x, y, z
                             ,  0        ,  0        ,  0
                             //--up vector                       | x, y, z
@@ -108,4 +112,7 @@ public class Camera implements SurfaceChangeListener
 
     private CameraFactors        cameraFactors;
     private CameraChangeListener cameraChangeListener;
+
+    float   xAngle = 0
+        , yAngle = 60;
 }

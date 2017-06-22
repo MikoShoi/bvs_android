@@ -57,7 +57,7 @@ public class MainActivity
         if( new AppConfigManager(this).isAppFirstTimeLaunch() )
             setCurrentTab(TAB.FIRST_LAUNCH);
         else
-            setCurrentTab(TAB.CAMERA);
+            setCurrentTab(TAB.VIEWER_3D);
     }
 
     @Override
@@ -88,10 +88,10 @@ public class MainActivity
     public void onEvent(FileDownloadedMessage event)
     {
         AddModelToRenderMessage msg;
-        msg = new AddModelToRenderMessage   ( com.example.viewer3d.R.raw.vertex_shader
-                                            , com.example.viewer3d.R.raw.fragment_shader
+        msg = new AddModelToRenderMessage   ( R.raw.vertex_shader
+                                            , R.raw.fragment_shader
 //                                            , event.getAbsFilePath()
-                                            , "/storage/emulated/0/Download/model.off"
+                                            , "/storage/emulated/0/Download/coordinates.off"
                                             , "uniqueName" );
         eventBus.postSticky(msg);
         setCurrentTab(TAB.VIEWER_3D);
@@ -109,7 +109,7 @@ public class MainActivity
     private void initNetworkConnection()
     {
         Intent i = new Intent(this, NetworkController.class);
-        i.putExtra(NetworkController.intentParamServerAddress,  "http://6d11b50d.ngrok.io");
+        i.putExtra(NetworkController.intentParamServerAddress,  "http://67877ba1.ngrok.io");
         i.putExtra(NetworkController.intentParamGetEndpoint,    "/getModel");
         i.putExtra(NetworkController.intentParamPostEndpoint,   "/addImage");
         startService(i);
