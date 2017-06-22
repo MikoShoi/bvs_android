@@ -37,7 +37,7 @@
             android:fitsSystemWindows   = "true"
 
             app:menu                    = "@menu/menu_structure"
-            app:headerLayout            = "@layout/menu_header_layout" />
+            app:headerLayout            = "@layout/menu_header" />
 
     </android.support.v4.widget.DrawerLayout>
 </layout>

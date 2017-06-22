@@ -14,10 +14,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.bruce.miko_mk10.databinding.ActivityMainBinding;
+import com.example.bruce.miko_mk10.databinding.MainBinding;
 import com.example.camera.Camera;
 import com.example.camera.CameraInterface;
 import com.example.firstlaunch.InstructionViewerInterface;
+import com.example.handytools.Preloader;
 import com.example.menupages.DocumentViewer;
 import com.example.networkcontroller.UploadFileMessage;
 import com.example.networkcontroller.DownloadFileMessage;
@@ -35,17 +36,11 @@ public class MainActivity
                     ,DocumentViewerInterface
                     ,CameraInterface
 {
-    private FragmentTabHost tabHost;
-    private NavigationView  menu;
-    private DrawerLayout    drawer;
-
-    private EventBus        eventBus;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
 
         eventBus = EventBus.getDefault();
         initNetworkConnection();
@@ -77,19 +72,16 @@ public class MainActivity
         eventBus.postSticky( new DownloadFileMessage() );
         Log.i(  "\n\n------ MainActivity" ,"- wysyłam request GET");
     }
-
     @Override
     public void onCapturedHandle(String absoluteFilePath)
     {
-    //--tell networkController service to send captured image to server
         eventBus.postSticky( new UploadFileMessage(absoluteFilePath) );
     }
 
-    //--init
     private void prepareUiElements()
     {
-        ActivityMainBinding mainActivity =
-                DataBindingUtil.setContentView(this, R.layout.activity_main);
+        MainBinding mainActivity =
+                DataBindingUtil.setContentView(this, R.layout.main);
 
         tabHost = mainActivity.tabhost;
         menu    = mainActivity.menu;
@@ -103,7 +95,6 @@ public class MainActivity
         i.putExtra(NetworkController.intentParamPostEndpoint,   "/addImage");
         startService(i);
     }
-
     private void prepareTabHost()
     {
         tabHost.setup(this, getSupportFragmentManager(), R.id.tabhost);
@@ -117,12 +108,14 @@ public class MainActivity
                 ,DocumentViewer.class, null);
         tabHost.addTab(tabHost.newTabSpec("Viewer3D").setIndicator("v3D")
                 ,Viewer3D.class, null);
+        tabHost.addTab(tabHost.newTabSpec("Preloader").setIndicator("pl")
+                ,Preloader.class, null);
     }
-    private void setCurrentTab(TAB TAB)
+    private void setCurrentTab(TAB tab)
     {
         int pageId;
 
-        switch (TAB)
+        switch (tab)
         {
             case FIRST_LAUNCH:
                 pageId = 0;
@@ -136,13 +129,15 @@ public class MainActivity
             case VIEWER_3D:
                 pageId = 3;
                 break;
+            case PRELOADER:
+                pageId = 4;
+                break;
             default:
                 pageId = 0;
                 break;
         }
         tabHost.setCurrentTab( pageId );
     }
-
     private void prepareSlidingMenu()
     {
         menu.setNavigationItemSelectedListener( getMenuItemSelectedListener() );
@@ -154,7 +149,7 @@ public class MainActivity
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
-                final int docsItemId = R.id.nav_item_documentation;
+                final int docsItemId = R.id.nav_item_documents;
                 final int quitItemId = R.id.nav_item_quit;
 
                 switch (item.getItemId())
@@ -177,4 +172,9 @@ public class MainActivity
         };
     }
 
+    private FragmentTabHost tabHost;
+    private NavigationView  menu;
+    private DrawerLayout    drawer;
+
+    private EventBus        eventBus;
 }

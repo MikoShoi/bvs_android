@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">Miko_mk10</string>
 
-    //--navigation menu
-    <string name="nav_header_main_text">    ZF_TRW_demo app</string>
+    <string name="nav_header_main_text">    ZF demo app</string>
     <string name="nav_header_info_text">    Created by Miko Shoi</string>
 
-    <string name="nav_item_privacy_policy"> Documentation</string>
+    <string name="nav_item_documents">      Documents</string>
     <string name="nav_item_quit">           Quit</string>
 
 </resources>

@@ -1,11 +1,11 @@
 package com.example.camera;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +15,6 @@ import com.example.camera.databinding.CameraBinding;
 
 public class Camera extends Fragment
 {
-    private CameraDevice        cameraDevice;
-    private CameraDevicePreview cameraDevicePreview;
-    private CameraBinding       cameraPage;
-
-    private CameraInterface parentObject;
-
     public Camera()
     {
         // Required empty public constructor
@@ -46,17 +40,14 @@ public class Camera extends Fragment
                                 ,ViewGroup container
                                 ,Bundle savedInstanceState)
     {
-        cameraPage = DataBindingUtil.inflate(   inflater
-                                                ,R.layout.camera
-                                                ,container
-                                                ,false );
+        camera = DataBindingUtil.inflate( inflater
+                                        , R.layout.camera
+                                        , container
+                                        , false );
+        prepareCameraDevice();
+        setButtonsListeners();
 
-        init();
-
-        setUiButtons();
-//        EventBus eventBus = EventBus.getDefault();
-
-        return cameraPage.getRoot();
+        return camera.getRoot();
     }
     @Override
     public void onAttach(Context context)
@@ -76,19 +67,17 @@ public class Camera extends Fragment
         parentObject = null;
     }
 
-    void init()
+    void prepareCameraDevice()
     {
-        cameraDevicePreview = cameraPage.cameraPreviewWindow;
-        cameraDevice    = new CameraDevice(cameraDevicePreview);
-
+        cameraDevicePreview = camera.cameraPreviewWindow;
+        cameraDevice        = new CameraDevice(cameraDevicePreview);
         cameraDevicePreview.setPreviewSource(cameraDevice);
     }
-
-    void setUiButtons                       ()
+    void setButtonsListeners()
     {
-        setButtonCaptureOnClickListener();
         setButtonDoneOnClickListener();
         setButtonInfoOnClickListener();
+        setButtonCaptureOnClickListener();
     }
     void setButtonCaptureOnClickListener    ()
     {
@@ -97,14 +86,11 @@ public class Camera extends Fragment
             @Override
             public void onClick(View v)
             {
-                Log.i(  "\n\n------ Camera"
-                        ,"Button capture: onClickListener");
-
                 cameraDevice.takePicture();
             }
         };
 
-        cameraPage.controls.capture.setOnClickListener(l);
+        camera.controls.capture.setOnClickListener(l);
     }
     void setButtonDoneOnClickListener       ()
     {
@@ -115,13 +101,10 @@ public class Camera extends Fragment
             {
                 //--let parent object handle done event
                 parentObject.onDoneHandle();
-
-                Log.i(  "\n\n------ Camera"
-                        ,"Button done: onClickListener");
             }
         };
 
-        cameraPage.controls.done.setOnClickListener(l);
+        camera.controls.done.setOnClickListener(l);
     }
     void setButtonInfoOnClickListener       ()
     {
@@ -130,11 +113,8 @@ public class Camera extends Fragment
             @Override
             public void onClick(View v)
             {
-                int timeDuration = 15000;   //milli seconds
-                String message = "Select object you would like to reconstruct and take " +
-                        "a several photos of it from different perspective." +
-                        "\nIn order to take photo, touch cameraDevice button." +
-                        "When you decided that's enough, click done button.";
+                int timeDuration = 10000;   //milli seconds
+                String message = getResources().getString(R.string.fabText);
 
                 Snackbar s  = Snackbar.make(v, message, timeDuration);
                 View     sv = s.getView();
@@ -145,8 +125,13 @@ public class Camera extends Fragment
             }
         };
 
-        cameraPage.info.setOnClickListener(l);
+        camera.info.setOnClickListener(l);
     }
+
+    private CameraBinding       camera;
+    private CameraDevice        cameraDevice;
+    private CameraDevicePreview cameraDevicePreview;
+    private CameraInterface     parentObject;
 }
 
 

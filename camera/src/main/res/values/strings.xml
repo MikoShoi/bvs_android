@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Camera</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fabText">"Select object you would like to reconstruct and take a several photos
+                            of it from different perspective. In order to take photo, touch
+                            cameraDevice button. When you decided that's enough, click done button."
+    </string>
 </resources>

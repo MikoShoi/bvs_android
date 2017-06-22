@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HandyTools</string>
+    <string name="loaderDescription"><b>please wait</b>\nreconstruction in progress</string>
 </resources>
