@@ -1,6 +1,7 @@
 package com.cameraController;
 
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.example.viewer3d.SurfaceChangeListener;
 import com.example.handytools.MikoMath;
@@ -25,6 +26,17 @@ public class Camera implements SurfaceChangeListener
         cameraFactors.radius = CameraFactors.defaultRadius * ( 1 - f * cameraFactors.scaleFactor);
 
         recalculateViewMatrix();
+    }
+    public  void rotate(float dx, float dy)
+    {
+        int   xAngle = 0
+            , yAngle = 0;
+
+                if (dx >  1) Log.i( "x angle: ", Integer.toString(xAngle++) );
+        else    if (dx < -1) Log.i( "x angle: ", Integer.toString(xAngle--) );
+
+                if (dy >  1) Log.i( "y angle: ", Integer.toString(yAngle++) );
+        else    if (dy < -1) Log.i( "y angle: ", Integer.toString(yAngle--) );
     }
     public  void rotateVertically            (float ry)
     {

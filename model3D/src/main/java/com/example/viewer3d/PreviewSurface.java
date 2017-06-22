@@ -50,6 +50,7 @@ public class PreviewSurface
     @Override
     public void onMoveTouch(float dx, float dy)
     {
+        camera.rotate(dx, dy);
         camera.rotateVertically(dy);
         renderEngine.rotateModel(dx, 0);
     }

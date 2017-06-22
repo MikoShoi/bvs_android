@@ -13,7 +13,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.firstlaunch.databinding.FirstLaunchBinding;
+import com.example.firstlaunch.databinding.InstructionViewerBinding;
+import com.example.handytools.MikoError;
 
 public class InstructionViewer extends Fragment
 {
@@ -32,8 +33,8 @@ public class InstructionViewer extends Fragment
             , ViewGroup container
             , Bundle savedInstanceState)
     {
-        FirstLaunchBinding layout = DataBindingUtil.inflate( inflater
-                                                            ,R.layout.first_launch
+        InstructionViewerBinding layout = DataBindingUtil.inflate( inflater
+                                                            ,R.layout.instruction_viewer
                                                             ,container
                                                             ,false);
 
@@ -58,8 +59,7 @@ public class InstructionViewer extends Fragment
         if (context instanceof InstructionViewerInterface)
             parentObject = (InstructionViewerInterface) context;
         else
-            //--viewPager must implement InstructionViewerInterface
-            throw new Error("\n\n-------\tError source:\tInstructionViewer:onAttach");
+        throw  new MikoError(this, "onAttach", "Parent object does not implement needed interface");
     }
     @Override
     public void onDetach()

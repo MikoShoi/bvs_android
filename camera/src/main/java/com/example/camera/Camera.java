@@ -6,9 +6,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.camera.databinding.CameraBinding;
@@ -113,13 +116,17 @@ public class Camera extends Fragment
             @Override
             public void onClick(View v)
             {
-                int timeDuration = 10000;   //milli seconds
-                String message = getResources().getString(R.string.fabText);
+                final int timeDuration = 10000;   //milli seconds
+
+                String message = Html.fromHtml( getResources().getString(R.string.fabText) ).toString();
+//                String message = getResources().getString(R.string.fabText);
 
                 Snackbar s  = Snackbar.make(v, message, timeDuration);
-                View     sv = s.getView();
-                TextView tv = (TextView) sv.findViewById(android.support.design.R.id.snackbar_text);
-                tv.setMaxLines(3);
+                TextView tv = (TextView) s.getView()
+                        .findViewById(android.support.design.R.id.snackbar_text);
+
+                tv.setMaxLines(5);
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
                 s.show();
             }

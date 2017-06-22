@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.firstlaunch.databinding.FirstLaunchPageBinding;
+import com.example.firstlaunch.databinding.InstructionBinding;
 
 public class Instruction extends Fragment
 {
@@ -32,8 +32,8 @@ public class Instruction extends Fragment
             ,Bundle savedInstanceState)
     {
         //--inflate
-        FirstLaunchPageBinding firstLaunchPage =
-                DataBindingUtil.inflate(inflater, R.layout.first_launch_page, container, false);
+        InstructionBinding firstLaunchPage =
+                DataBindingUtil.inflate(inflater, R.layout.instruction, container, false);
 
         //--get number of page, which you will customize
         int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);

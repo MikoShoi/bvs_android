@@ -35,21 +35,7 @@ public class RenderEngine
         cameraFactors           = new CameraFactors();
         surfaceChangeListener   = null;
 
-        AddModelToRenderMessage msg;
-        msg = new AddModelToRenderMessage   ( R.raw.vertex_shader
-                , R.raw.fragment_shader
-                , "/storage/emulated/0/Download/model.off"
-                , "uniqueName" );
-
-        ModelLoader modelLoader = new ModelLoader(context);
-        modelLoader.load(msg);
-        ModelData modelData = modelLoader.getModelData();
-
-        Model3D model3D = new Model3D(modelData);
-        addModel(model3D);
-
         EventBus.getDefault().register(this);
-        //TODO:improve
     }
 
     @Override
@@ -82,8 +68,7 @@ public class RenderEngine
                 object.draw(matrices);
             }
         }
-        //-- actually you don't add new models dynamically
-        //-- so synchronized is probably redundant
+        //TODO: repair
     }
 
     @Override
@@ -126,7 +111,7 @@ public class RenderEngine
 
         horizontalRotateAngle += dhr;
 
-        matrices.rotateModel( horizontalRotateAngle, Vector3D.xUnitVector() );
+//        matrices.rotateModel( horizontalRotateAngle, Vector3D.xUnitVector() );
     }
     public void addModel                (Model model)
     {

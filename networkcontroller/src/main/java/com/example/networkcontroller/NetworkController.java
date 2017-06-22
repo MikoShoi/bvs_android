@@ -26,15 +26,6 @@ import okhttp3.Response;
 
 public class NetworkController extends IntentService
 {
-    public final static String  intentParamServerAddress    = "SERVER_ADDRESS"
-                                , intentParamGetEndpoint    = "GET_ENDPOINT"
-                                , intentParamPostEndpoint   = "POST_ENDPOINT";
-
-    private String  serverAddress   = null
-                    , postEndpoint  = null
-                    , getEndpoint   = null
-                    , tempDirPath   = null;
-
     public NetworkController()
     {
         super(NetworkController.class.getName());
@@ -66,8 +57,8 @@ public class NetworkController extends IntentService
     }
 
     private void downloadFile   (    String address
-                                    ,String dirPath
-                                    ,String fileName )
+                                    , final String dirPath
+                                    , final String fileName )
     {
         AndroidNetworking.download(address, dirPath, fileName)
                 .setTag("downloadTest")
@@ -87,8 +78,8 @@ public class NetworkController extends IntentService
                     @Override
                     public void onDownloadComplete()
                     {
-                        Log.i("\n\nDownload: ", "complete");
-                        // do anything after completion
+                        String absFilePath = dirPath + "/" +fileName;
+                        EventBus.getDefault().postSticky( new FileDownloadedMessage(absFilePath) );
                     }
                     @Override
                     public void onError(ANError error)
@@ -222,4 +213,13 @@ public class NetworkController extends IntentService
                 throw new Error("Can not create temp dir");
         }
     }
+
+    public final static String  intentParamServerAddress    = "SERVER_ADDRESS"
+                                , intentParamGetEndpoint    = "GET_ENDPOINT"
+                                , intentParamPostEndpoint   = "POST_ENDPOINT";
+
+    private String  serverAddress   = null
+                    , postEndpoint  = null
+                    , getEndpoint   = null
+                    , tempDirPath   = null;
 }

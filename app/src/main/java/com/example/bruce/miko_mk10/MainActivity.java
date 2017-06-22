@@ -20,6 +20,7 @@ import com.example.camera.CameraInterface;
 import com.example.firstlaunch.InstructionViewerInterface;
 import com.example.handytools.Preloader;
 import com.example.menupages.DocumentViewer;
+import com.example.networkcontroller.FileDownloadedMessage;
 import com.example.networkcontroller.UploadFileMessage;
 import com.example.networkcontroller.DownloadFileMessage;
 import com.example.firstlaunch.InstructionViewer;
@@ -27,8 +28,11 @@ import com.example.handytools.AppConfigManager;
 import com.example.menupages.DocumentViewerInterface;
 import com.example.networkcontroller.NetworkController;
 import com.example.viewer3d.Viewer3D;
+import com.model.AddModelToRenderMessage;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class MainActivity
         extends AppCompatActivity
@@ -43,6 +47,7 @@ public class MainActivity
         setContentView(R.layout.main);
 
         eventBus = EventBus.getDefault();
+        eventBus.register(this);
         initNetworkConnection();
 
         prepareUiElements();
@@ -69,13 +74,27 @@ public class MainActivity
     @Override
     public void onDoneHandle()
     {
+        setCurrentTab(TAB.PRELOADER);
+
         eventBus.postSticky( new DownloadFileMessage() );
-        Log.i(  "\n\n------ MainActivity" ,"- wysyłam request GET");
     }
     @Override
     public void onCapturedHandle(String absoluteFilePath)
     {
         eventBus.postSticky( new UploadFileMessage(absoluteFilePath) );
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(FileDownloadedMessage event)
+    {
+        AddModelToRenderMessage msg;
+        msg = new AddModelToRenderMessage   ( com.example.viewer3d.R.raw.vertex_shader
+                                            , com.example.viewer3d.R.raw.fragment_shader
+//                                            , event.getAbsFilePath()
+                                            , "/storage/emulated/0/Download/model.off"
+                                            , "uniqueName" );
+        eventBus.postSticky(msg);
+        setCurrentTab(TAB.VIEWER_3D);
     }
 
     private void prepareUiElements()
@@ -90,7 +109,7 @@ public class MainActivity
     private void initNetworkConnection()
     {
         Intent i = new Intent(this, NetworkController.class);
-        i.putExtra(NetworkController.intentParamServerAddress,  "http://8c73fdbd.ngrok.io");
+        i.putExtra(NetworkController.intentParamServerAddress,  "http://6d11b50d.ngrok.io");
         i.putExtra(NetworkController.intentParamGetEndpoint,    "/getModel");
         i.putExtra(NetworkController.intentParamPostEndpoint,   "/addImage");
         startService(i);

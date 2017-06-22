@@ -11,13 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.menupages.databinding.MenuPageBinding;
+import com.example.menupages.databinding.DocumentBinding;
 
 public class Document extends Fragment
 {
-    private Activity mainActivity;
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
     public Document()
     {}
     public static Document newInstance(int sectionNumber)
@@ -35,20 +32,20 @@ public class Document extends Fragment
             ,Bundle savedInstanceState)
     {
         //--inflate
-        MenuPageBinding firstLaunchPage =
-                DataBindingUtil.inflate(inflater, R.layout.menu_page, container, false);
+        DocumentBinding document =
+                DataBindingUtil.inflate(inflater, R.layout.document, container, false);
 
         //--get number of page, which you will customize
         int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);
 
         //--set for this page title
-        firstLaunchPage.textViewHeader.setText( getTitle(pageNumber) );
+        document.textViewHeader.setText( getTitle(pageNumber) );
 
         //--, description
-        firstLaunchPage.textViewDescription.setMovementMethod( new ScrollingMovementMethod() );
-        firstLaunchPage.textViewDescription.setText( Html.fromHtml( getDescription(pageNumber) ) );
+        document.textViewDescription.setMovementMethod( new ScrollingMovementMethod() );
+        document.textViewDescription.setText( Html.fromHtml( getDescription(pageNumber) ) );
 
-        return firstLaunchPage.getRoot();
+        return document.getRoot();
     }
     @Override
     public void onAttach(Context context)
@@ -101,4 +98,7 @@ public class Document extends Fragment
 
         return getResources().getString(titleId);
     }
+
+    private Activity mainActivity;
+    private static final String ARG_SECTION_NUMBER = "section_number";
 }

@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.menupages.databinding.MenuPagesBinding;
+import com.example.menupages.databinding.DocumentViewerBinding;
 
 public class DocumentViewer extends Fragment
 {
@@ -29,10 +29,10 @@ public class DocumentViewer extends Fragment
             , ViewGroup container
             , Bundle savedInstanceState)
     {
-        MenuPagesBinding layout = DataBindingUtil.inflate( inflater
-                ,R.layout.menu_pages
-                ,container
-                ,false);
+        DocumentViewerBinding layout = DataBindingUtil.inflate( inflater
+                , R.layout.document_viewer
+                , container
+                , false );
 
         closeFab  = layout.fab;
         viewPager = layout.viewPager;
