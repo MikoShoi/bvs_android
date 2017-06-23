@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.handytools.MikoError;
 import com.example.menupages.databinding.DocumentViewerBinding;
 
 public class DocumentViewer extends Fragment
@@ -50,7 +51,7 @@ public class DocumentViewer extends Fragment
         if (context instanceof DocumentViewerInterface)
             parentObject = (DocumentViewerInterface) context;
         else
-            throw new Error("\n\n-------\tError source:\tDocumentViewer:onAttach");
+            throw new MikoError(this, "onAttach", "parent object does not implement needed interface");
     }
     @Override
     public void onDetach()

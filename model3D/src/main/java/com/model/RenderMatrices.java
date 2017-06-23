@@ -16,22 +16,6 @@ public class RenderMatrices
         mvp         = MikoMath.getIndentityMatrix4f();
     }
 
-    public void setViewAndProjection    (float[] v, float[] p)
-    {
-        view        = v;
-        projection  = p;
-    }
-    public void rotateModel             (float angle, Vector3D v)
-    {
-        model = MikoMath.getRotatedMatrix4f(angle, v);
-    }
-    public void recalculate()
-    {
-        mv      = MikoMath.multiplyMatrices     ( view      , model);
-        mvp     = MikoMath.multiplyMatrices     ( projection, mv);
-        normal  = MikoMath.calculateNormalMatrix( mv);
-    }
-
     public float[] getModel     ()
     {
         return model;
@@ -55,6 +39,18 @@ public class RenderMatrices
     public float[] getNormal    ()
     {
         return normal;
+    }
+
+    public void setViewAndProjection(float[] v, float[] p)
+    {
+        view        = v;
+        projection  = p;
+    }
+    public void recalculate         ()
+    {
+        mv      = MikoMath.multiplyMatrices     ( view      , model);
+        mvp     = MikoMath.multiplyMatrices     ( projection, mv);
+        normal  = MikoMath.calculateNormalMatrix( mv);
     }
 
     private float[] model

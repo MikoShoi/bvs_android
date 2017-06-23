@@ -28,7 +28,7 @@
     </activity>
 
     <service
-        android:name="com.example.networkcontroller.NetworkController"
+        android:name="com.example.networkcontroller.ServerConnection"
         android:exported="false" />
 </application>
 

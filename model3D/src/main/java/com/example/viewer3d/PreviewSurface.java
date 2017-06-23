@@ -36,7 +36,8 @@ public class PreviewSurface
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (touchGestureProcessor != null) touchGestureProcessor.touchEventHandle(event);
+        if (touchGestureProcessor != null)
+            touchGestureProcessor.touchEventHandle(event);
 
         return true;
     }
@@ -45,14 +46,18 @@ public class PreviewSurface
     public void onScaleTouch(float ds)
     {
         camera.updateRadius(ds);
+        requestRender();
+
+        //TODO: repair
     }
 
     @Override
     public void onMoveTouch(float dx, float dy)
     {
         camera.rotate(dx, dy);
-//        camera.rotateVertically(dy);
-//        renderEngine.rotateModel(dx, 0);
+        requestRender();
+
+        //TODO: repair
     }
 
     private void setupRenderEngine()
@@ -60,8 +65,7 @@ public class PreviewSurface
         setEGLContextClientVersion(3);
 
         setRenderer(renderEngine);
-        setRenderMode(RENDERMODE_CONTINUOUSLY);
-        //TODO: what about render mode - when dirty ? that's require some code modification
+        setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
     private Camera                camera;

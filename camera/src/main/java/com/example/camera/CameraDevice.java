@@ -2,37 +2,23 @@ package com.example.camera;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
-
-import com.example.networkcontroller.UploadFileMessage;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
 public class CameraDevice
 {
-    private SurfaceHolder                               holder                  = null;
-    private Context                                     context                 = null;
-
-    private android.hardware.Camera                     camera                  = null;
-    private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
-    private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
-
-    private String photoDirPath;
-
     public CameraDevice(SurfaceView v)
     {
-        holder  = v.getHolder();
-        context = v.getContext();
+        holder       = v.getHolder();
+        context      = v.getContext();
+        parentObject = null;
 
         init();
-
-        createPhotoDirIfNoExist();
+        createTempDirIfNoExist();
     }
 
     public void restart     ()
@@ -63,6 +49,10 @@ public class CameraDevice
         //--at first cameraDevice must get focus, then lock, and after capture image
         //--so that takePicture start from below line
         camera.autoFocus(cameraAutoFocusCallback);
+    }
+    public void addCameraListener(CameraInterface parentObject)
+    {
+        this.parentObject = parentObject;
     }
 
     private void init                   ()
@@ -97,16 +87,16 @@ public class CameraDevice
             {
                 try
                 {
-                    String currentTime = String.valueOf( System.currentTimeMillis() );
-                    String fileName = currentTime + ".jpg";
-                    String filePath = photoDirPath + "/" + fileName;
+                    String currentTime  = String.valueOf( System.currentTimeMillis() );
+                    String filePath     = tempDir + "/" + currentTime + ".jpg";
 
                     FileOutputStream outStream = new FileOutputStream(filePath);
                     outStream.write(data);
                     outStream.close();
 
-                    Log.i("CameraDevice","Wysyłam prośbę o wysłanie zdjęcia");
-                    EventBus.getDefault().postSticky( new UploadFileMessage( filePath ));
+                    if ( parentObject != null )
+                        parentObject.onCapturedHandle(filePath);
+
                     //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
                 }
                 catch (Exception e)
@@ -140,15 +130,25 @@ public class CameraDevice
             };
         };
     }
-    private void createPhotoDirIfNoExist()
+    private void createTempDirIfNoExist()
     {
-        photoDirPath = context.getFilesDir() + "/capturedImages";
-        File tempDir = new File(photoDirPath);
+        tempDir = context.getFilesDir() + "/capturedImages";
+        File tempDir = new File(this.tempDir);
 
         if( !tempDir.exists() && !tempDir.mkdir() )
         {
-            String errorSource = "MainActivity:createPhotoDirIfNoExist";
+            String errorSource = "MainActivity:createTempDirIfNoExist";
             throw new Error("\n\n------Error source:\t" + errorSource);
         }
     }
+
+    private SurfaceHolder                               holder                  = null;
+    private Context                                     context                 = null;
+
+    private android.hardware.Camera                     camera                  = null;
+    private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
+    private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
+
+    private String          tempDir;
+    private CameraInterface parentObject;
 }

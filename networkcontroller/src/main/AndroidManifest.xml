@@ -8,7 +8,7 @@
                  android:supportsRtl="true"
     >
         <service
-            android:name=".NetworkController"
+            android:name=".ServerConnection"
             android:exported="false" />
 
     </application>

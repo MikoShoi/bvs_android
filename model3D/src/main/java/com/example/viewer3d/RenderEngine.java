@@ -7,9 +7,7 @@ import android.util.Log;
 
 import com.cameraController.CameraChangeListener;
 import com.cameraController.CameraFactors;
-import com.example.handytools.Vector3D;
 import com.model.AddModelToRenderMessage;
-import com.model.Model3D;
 import com.model.ModelData;
 import com.model.ModelLoader;
 import com.model.Model;
@@ -35,17 +33,7 @@ public class RenderEngine
 
         matrices                = new RenderMatrices();
         modelList               = new Vector<>();
-        cameraFactors           = new CameraFactors();
         surfaceChangeListener   = null;
-
-        AddModelToRenderMessage msg;
-        msg = new AddModelToRenderMessage   ( R.raw.vertex_shader
-                , R.raw.fragment_shader
-                //                                            , event.getAbsFilePath()
-                , "/storage/emulated/0/Download/model.off"
-                , "uniqueName" );
-
-        EventBus.getDefault().postSticky(msg);
     }
 
     @Override
@@ -84,8 +72,6 @@ public class RenderEngine
     @Override
     public void onCameraChangedHandle   (CameraFactors cameraFactors)
     {
-        this.cameraFactors = cameraFactors;
-
         matrices.setViewAndProjection   ( cameraFactors.viewMatrix
                                         , cameraFactors.projectionMatrix );
     }
@@ -102,28 +88,9 @@ public class RenderEngine
         ModelData modelData     = modelLoader.getModelData();
 
         //--create model and add to list of objects to render
-        addModel( new Model3D(modelData) );
+        addModel( new Model(modelData) );
     }
 
-    public void rotateModel(float dx, float dy)
-    {
-        //--if screenWidth px will respond 360 degree
-        //--then dx px, will respond y degree of model rotation
-
-        //--screenWidth_px - 360_degree | dx_px - y_degree
-        //--y_degree = dx_px * 360_degree / screenWidth_px
-
-        float dhr = dx * cameraFactors.moveFactor;
-
-        //--but i would like rotate slower when camera will be closer so
-        //--angle of rotation should be dependent on some scale factor
-
-        dhr *= cameraFactors.radius;
-
-        horizontalRotateAngle += dhr;
-
-//        matrices.rotateModel( horizontalRotateAngle, Vector3D.xUnitVector() );
-    }
     public void addModel                (Model model)
     {
         synchronized (modelList)
@@ -141,9 +108,6 @@ public class RenderEngine
 
     private RenderMatrices          matrices;
     private Context                 context;
-    private CameraFactors           cameraFactors;
     private Vector<Model>           modelList;
     private SurfaceChangeListener   surfaceChangeListener;
-
-    private float horizontalRotateAngle;
 }

@@ -1,17 +1,14 @@
 package com.example.camera;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.camera.databinding.CameraBinding;
@@ -75,6 +72,8 @@ public class Camera extends Fragment
         cameraDevicePreview = camera.cameraPreviewWindow;
         cameraDevice        = new CameraDevice(cameraDevicePreview);
         cameraDevicePreview.setPreviewSource(cameraDevice);
+
+        cameraDevice.addCameraListener(parentObject);
     }
     void setButtonsListeners()
     {
@@ -103,7 +102,7 @@ public class Camera extends Fragment
             public void onClick(View v)
             {
                 //--let parent object handle done event
-                parentObject.onDoneHandle();
+                parentObject.onShootingFinishedHandle();
             }
         };
 

@@ -2,18 +2,19 @@
     xmlns:android   = "http://schemas.android.com/apk/res/android"
     xmlns:tools     = "http://schemas.android.com/tools" >
 
-    <!--<FrameLayout-->
-        <!--android:layout_width    = "match_parent"-->
-        <!--android:layout_height   = "match_parent"-->
-        <!--android:background      = "@color/colorPrimary"-->
-        <!--tools:context           = "com.example.bruce.miko_opengl_mk4.Viewer3D" >-->
+    <FrameLayout
+        android:layout_width        = "match_parent"
+        android:layout_height       = "match_parent"
+        android:background          = "@android:color/white"
+        tools:context               = "com.example.viewer3d.Viewer3D">
 
-    <com.example.viewer3d.PreviewSurface
-        android:id              = "@+id/previewSurface"
-        android:layout_width    = "match_parent"
-        android:layout_height   = "match_parent" />
+        <!--<com.example.viewer3d.PreviewSurface-->
+            <!--android:id              = "@+id/previewSurface"-->
+            <!--android:layout_width    = "match_parent"-->
+            <!--android:layout_height   = "match_parent"-->
+            <!--android:layout_margin   = "1dp"/>-->
 
-    <!--</FrameLayout>-->
+    </FrameLayout>
 </layout>
 
 

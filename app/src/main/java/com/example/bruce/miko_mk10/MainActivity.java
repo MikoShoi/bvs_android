@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,15 +17,16 @@ import com.example.bruce.miko_mk10.databinding.MainBinding;
 import com.example.camera.Camera;
 import com.example.camera.CameraInterface;
 import com.example.firstlaunch.InstructionViewerInterface;
+import com.example.handytools.MikoError;
 import com.example.handytools.Preloader;
 import com.example.menupages.DocumentViewer;
 import com.example.networkcontroller.FileDownloadedMessage;
+import com.example.networkcontroller.ServerConnection;
 import com.example.networkcontroller.UploadFileMessage;
 import com.example.networkcontroller.DownloadFileMessage;
 import com.example.firstlaunch.InstructionViewer;
 import com.example.handytools.AppConfigManager;
 import com.example.menupages.DocumentViewerInterface;
-import com.example.networkcontroller.NetworkController;
 import com.example.viewer3d.Viewer3D;
 import com.model.AddModelToRenderMessage;
 
@@ -57,22 +57,21 @@ public class MainActivity
         if( new AppConfigManager(this).isAppFirstTimeLaunch() )
             setCurrentTab(TAB.FIRST_LAUNCH);
         else
-            setCurrentTab(TAB.VIEWER_3D);
+            setCurrentTab(TAB.CAMERA);
     }
 
     @Override
     public void onInstructionViewerCompletedHandle()
     {
-        setCurrentTab(TAB.VIEWER_3D);
+        setCurrentTab(TAB.CAMERA);
     }
     @Override
     public void onDocumentViewerCompletedHandle()
     {
-        Log.i("MenuPagesCompleted","Mam");
-        tabHost.setCurrentTab( tabHost.getCurrentTab() - 1 );
+        tabHost.setCurrentTab(previousTabIndex);
     }
     @Override
-    public void onDoneHandle()
+    public void onShootingFinishedHandle()
     {
         setCurrentTab(TAB.PRELOADER);
 
@@ -108,10 +107,10 @@ public class MainActivity
     }
     private void initNetworkConnection()
     {
-        Intent i = new Intent(this, NetworkController.class);
-        i.putExtra(NetworkController.intentParamServerAddress,  "http://67877ba1.ngrok.io");
-        i.putExtra(NetworkController.intentParamGetEndpoint,    "/getModel");
-        i.putExtra(NetworkController.intentParamPostEndpoint,   "/addImage");
+        Intent i = new Intent(this, ServerConnection.class);
+
+        //check connection
+
         startService(i);
     }
     private void prepareTabHost()
@@ -132,30 +131,9 @@ public class MainActivity
     }
     private void setCurrentTab(TAB tab)
     {
-        int pageId;
+        previousTabIndex = previousTabIndex == -1 ? tab.index() : tabHost.getCurrentTab();
 
-        switch (tab)
-        {
-            case FIRST_LAUNCH:
-                pageId = 0;
-                break;
-            case CAMERA:
-                pageId = 1;
-                break;
-            case DOCUMENTS:
-                pageId = 2;
-                break;
-            case VIEWER_3D:
-                pageId = 3;
-                break;
-            case PRELOADER:
-                pageId = 4;
-                break;
-            default:
-                pageId = 0;
-                break;
-        }
-        tabHost.setCurrentTab( pageId );
+        tabHost.setCurrentTab( tab.index() );
     }
     private void prepareSlidingMenu()
     {
@@ -174,18 +152,22 @@ public class MainActivity
                 switch (item.getItemId())
                 {
                     case docsItemId:
-                        Log.i("-","documentation");
                         setCurrentTab(TAB.DOCUMENTS);
                         break;
                     case quitItemId:
-                        Log.i("-","quit");
                         finish();
                         System.exit(0);
                         break;
                     default:
-                        Log.i("-","nie wiem co to");
+                        throw new MikoError(this
+                                            , "onNavigationItemSelected"
+                                            , "Unknown menu item" );
                 }
                 drawer.closeDrawer(GravityCompat.START);
+                item.setChecked(false);
+
+                //TODO: repair. deselect sliding menu item
+
                 return true;
             }
         };
@@ -194,6 +176,7 @@ public class MainActivity
     private FragmentTabHost tabHost;
     private NavigationView  menu;
     private DrawerLayout    drawer;
-
     private EventBus        eventBus;
+
+    int previousTabIndex = -1;
 }

@@ -41,7 +41,7 @@ public class Viewer3D
                                             , container
                                             , false );
 
-        previewSurface = viewer3d.previewSurface;
+        //TODO: Repair. Without parent layout margin, sliding menu is hidden.
 
         return viewer3d.getRoot();
     }
@@ -56,6 +56,5 @@ public class Viewer3D
         super.onDetach();
     }
 
-    private PreviewSurface  previewSurface;
     private Viewer3dBinding viewer3d;
 }

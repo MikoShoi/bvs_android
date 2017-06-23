@@ -6,5 +6,5 @@ public interface CameraInterface
     public void onCapturedHandle(String absoluteFilePath);
 
 //--when user are done capture images and would like to see model
-    public void onDoneHandle();
+    public void onShootingFinishedHandle();
 }

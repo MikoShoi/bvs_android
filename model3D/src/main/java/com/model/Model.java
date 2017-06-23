@@ -4,20 +4,19 @@ import android.opengl.GLES30;
 
 import com.example.handytools.MikoError;
 
-public abstract class Model
+public class Model
 {
-    protected Model(ModelData modelData)
+    public Model(ModelData modelData)
     {
-        this.modelData      = modelData;
+        this.modelData = modelData;
 
-        program             = new OesProgram();
-        isItFirstDrawing    = true;
+        program = new OesProgram();
+        isItFirstDrawing = true;
     }
 
-    public      void    draw        (RenderMatrices matrices)
+    public void draw(RenderMatrices matrices)
     {
-        if( isItFirstDrawing )
-            prepareToFirstDraw();
+        if (isItFirstDrawing) prepareToFirstDraw();
 
         program.active();
 
@@ -28,42 +27,42 @@ public abstract class Model
         prepareUniforms(matrices);
 
         //--draw elements
-        GLES30.glDrawArrays( GLES30.GL_POINTS, 0, modelData.getVerticesNumber() );
+        GLES30.glDrawArrays(GLES30.GL_POINTS, 0, modelData.getVerticesNumber());
 
-//        GLES30.glDrawElements( GLES30.GL_POINTS
-//                , modelData.getIndicesNumber()
-//                , GLES30.GL_UNSIGNED_INT
-//                , 0 );
+        //        GLES30.glDrawElements( GLES30.GL_POINTS
+        //                , modelData.getIndicesNumber()
+        //                , GLES30.GL_UNSIGNED_INT
+        //                , 0 );
 
         //--Reset to the default VAO
         GLES30.glBindVertexArray(0);
     }
-    protected   void    setUniform  (UniformType type, String name, float[] data)
+
+    protected void setUniform(String name, float[] data)
     {
         int location = GLES30.glGetUniformLocation(program.getOesHandle(), name);
 
-        switch (type)
-        {
-            case VECTOR_4F:
-                GLES30.glUniformMatrix4fv( location, 1, false, data, 0 );
-                break;
-            default:
-                throw new MikoError(this, "setUniform", "Unknown uniform type");
-        }
+        GLES30.glUniformMatrix4fv(location, 1, false, data, 0);
     }
 
     @Override
-    public      boolean equals      (Object obj)
+    public boolean equals(Object obj)
     {
         return obj.hashCode() == this.modelData.getNameHashCode();
     }
+
     @Override
-    public      int     hashCode    ()
+    public int hashCode()
     {
         return modelData.getNameHashCode();
     }
 
-    protected   abstract void prepareUniforms   (RenderMatrices matrices);
+    protected void prepareUniforms(RenderMatrices matrices)
+    {
+        setUniform( "mv"       , matrices.getMv() );
+        setUniform( "mvp"      , matrices.getMvp() );
+        setUniform( "normal"   , matrices.getNormal() );
+    }
 
     private void    prepareToFirstDraw  ()
     {
