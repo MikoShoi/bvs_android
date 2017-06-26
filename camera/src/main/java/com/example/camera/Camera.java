@@ -1,6 +1,7 @@
 package com.example.camera;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.camera.databinding.CameraBinding;
+import com.example.handytools.MikoError;
 
 public class Camera extends Fragment
 {
@@ -57,7 +59,9 @@ public class Camera extends Fragment
         if( context instanceof CameraInterface)
             parentObject = (CameraInterface) context;
         else
-            throw new Error("\n\n---Error source:\tCamera:onAttach");
+            throw new MikoError(this
+                                , "onAttach"
+                                , "parent object does not implement needed interface");
     }
     @Override
     public void onDetach()
@@ -67,13 +71,21 @@ public class Camera extends Fragment
         parentObject = null;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
     void prepareCameraDevice()
     {
         cameraDevicePreview = camera.cameraPreviewWindow;
         cameraDevice        = new CameraDevice(cameraDevicePreview);
         cameraDevicePreview.setPreviewSource(cameraDevice);
 
-        cameraDevice.addCameraListener(parentObject);
+        cameraDevice.setParentObject(parentObject);
     }
     void setButtonsListeners()
     {

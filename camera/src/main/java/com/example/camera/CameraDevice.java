@@ -2,9 +2,13 @@ package com.example.camera;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
+
+import com.example.handytools.AppManager;
+import com.example.handytools.MikoError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,7 +22,6 @@ public class CameraDevice
         parentObject = null;
 
         init();
-        createTempDirIfNoExist();
     }
 
     public void restart     ()
@@ -50,7 +53,7 @@ public class CameraDevice
         //--so that takePicture start from below line
         camera.autoFocus(cameraAutoFocusCallback);
     }
-    public void addCameraListener(CameraInterface parentObject)
+    public void setParentObject(CameraInterface parentObject)
     {
         this.parentObject = parentObject;
     }
@@ -87,15 +90,14 @@ public class CameraDevice
             {
                 try
                 {
-                    String currentTime  = String.valueOf( System.currentTimeMillis() );
-                    String filePath     = tempDir + "/" + currentTime + ".jpg";
+                    String filePath = genUniqueAbsFilePath();
 
                     FileOutputStream outStream = new FileOutputStream(filePath);
                     outStream.write(data);
                     outStream.close();
 
                     if ( parentObject != null )
-                        parentObject.onCapturedHandle(filePath);
+                        parentObject.onPhotoCapturedHandle(filePath);
 
                     //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
                 }
@@ -130,16 +132,14 @@ public class CameraDevice
             };
         };
     }
-    private void createTempDirIfNoExist()
+    private String genUniqueAbsFilePath()
     {
-        tempDir = context.getFilesDir() + "/capturedImages";
-        File tempDir = new File(this.tempDir);
+        String dirPath          = new AppManager(context).getTempDirPath()
+                , uniqueName    = String.valueOf( System.currentTimeMillis() )
+                , fileEtension  = ".jpg"
+                , absFilePath   = dirPath + "/" + uniqueName + fileEtension;
 
-        if( !tempDir.exists() && !tempDir.mkdir() )
-        {
-            String errorSource = "MainActivity:createTempDirIfNoExist";
-            throw new Error("\n\n------Error source:\t" + errorSource);
-        }
+        return absFilePath;
     }
 
     private SurfaceHolder                               holder                  = null;
@@ -149,6 +149,5 @@ public class CameraDevice
     private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
     private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
 
-    private String          tempDir;
     private CameraInterface parentObject;
 }

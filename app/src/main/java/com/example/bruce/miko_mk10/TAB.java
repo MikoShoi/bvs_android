@@ -2,17 +2,19 @@ package com.example.bruce.miko_mk10;
 
 public enum TAB
 {
-    FIRST_LAUNCH
+    INSTRUCTIONS
     , DOCUMENTS
     , CAMERA
     , VIEWER_3D
-    , PRELOADER;
+    , PRELOADER
+    , WELCOME_SCREEN
+    , NO_CONNECTION_SCREEN;
 
     public int index()
     {
         switch (this)
         {
-            case FIRST_LAUNCH:
+            case INSTRUCTIONS:
                 return 0;
             case CAMERA:
                 return 1;
@@ -22,6 +24,10 @@ public enum TAB
                 return 3;
             case PRELOADER:
                 return 4;
+            case WELCOME_SCREEN:
+                return 5;
+            case NO_CONNECTION_SCREEN:
+                return 6;
             default:
                 return 0;
         }

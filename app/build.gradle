@@ -33,7 +33,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':instructions')
     compile project(':documents')
-    compile project(':networkcontroller')
+    compile project(':serverconnection')
     compile project(':camera')
     compile project(':model3D')
     compile project(path: ':handytools')

@@ -14,7 +14,7 @@
             <option value="$PROJECT_DIR$/handytools" />
             <option value="$PROJECT_DIR$/instructions" />
             <option value="$PROJECT_DIR$/model3D" />
-            <option value="$PROJECT_DIR$/networkcontroller" />
+            <option value="$PROJECT_DIR$/serverconnection" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -1,1 +1,1 @@
-include ':app', ':instructions', ':documents', ':camera', ':networkcontroller', ':model3D', ':handytools'
+include ':app', ':instructions', ':documents', ':camera', ':serverconnection', ':model3D', ':handytools'

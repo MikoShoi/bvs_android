@@ -13,11 +13,9 @@ import com.felipecsl.gifimageview.library.GifImageView;
 
 import java.io.InputStream;
 
-public class Preloader extends Fragment
+public class PreloaderScreen extends Fragment
 {
-    private GifImageView gif;
-
-    public Preloader()
+    public PreloaderScreen()
     {
         // Required empty public constructor
     }
@@ -50,9 +48,11 @@ public class Preloader extends Fragment
         }
         catch (Exception e)
         {
-            Log.i("Problem", "Coś poszło nie tak");
+            //todo: add exception handle
         }
 
         return preloader.getRoot();
     }
+
+    private GifImageView gif;
 }
