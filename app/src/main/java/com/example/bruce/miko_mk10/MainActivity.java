@@ -16,23 +16,19 @@ import android.view.View;
 import com.androidnetworking.error.ANError;
 import com.example.bruce.miko_mk10.databinding.MainBinding;
 import com.example.camera.Camera;
-import com.example.camera.CameraInterface;
+import com.example.camera.CameraListener;
 import com.example.firstlaunch.InstructionViewer;
 import com.example.firstlaunch.InstructionViewerInterface;
 import com.example.handytools.AppManager;
 import com.example.handytools.MikoError;
-import com.example.handytools.NoConnectionScreen;
-import com.example.handytools.PreloaderScreen;
-import com.example.handytools.WelcomeScreen;
+import com.infoScreens.NoConnectionScreen;
+import com.infoScreens.PreloaderScreen;
+import com.infoScreens.WelcomeScreen;
 import com.example.menupages.DocumentViewer;
 import com.example.menupages.DocumentViewerInterface;
 import com.example.networkcontroller.HttpConnection;
-import com.example.networkcontroller.HttpConnectionListener;
-import com.example.networkcontroller.RequestType;
+import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
-import com.model.AddModelToRenderMessage;
-
-import org.greenrobot.eventbus.EventBus;
 
 import okhttp3.Response;
 
@@ -40,8 +36,8 @@ public class MainActivity
         extends AppCompatActivity
         implements InstructionViewerInterface
                     , DocumentViewerInterface
-                    , CameraInterface
-                    , HttpConnectionListener
+                    , CameraListener
+                    , ResponseListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -68,21 +64,20 @@ public class MainActivity
         tabHost.setCurrentTab(previousTabIndex);
     }
 
-//-- camera interface
+    //-- camera interface
     @Override
-    public void onShootingFinishedHandle()
+    public void onShootingFinished()
     {
-        Log.i("MainActivity","onShootingFinishedHandle");
-
         setCurrentTab(TAB.PRELOADER);
-        httpConnection.downloadFile(serverAddress + "/getModel", "model.off");
+        httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
     }
     @Override
-    public void onPhotoCapturedHandle   (String absoluteFilePath)
+    public void onPhotoCaptured(String absoluteFilePath)
     {
         Log.i("MainActivity","onPhotoCaptureHandle");
 
-        httpConnection.uploadFile(serverAddress + "/addImage", absoluteFilePath);
+        httpConnection.uploadFile(  serverAddress + addImageEndpoint
+                                    , absoluteFilePath);
     }
 
 //-- http connection interface
@@ -94,34 +89,30 @@ public class MainActivity
     @Override
     public void onDownloadedFile        (String serverAddress, final String absFilePath)
     {
-        Log.i("MainActivity","onUploadedFile");
+        Bundle arg = new Bundle();
+        arg.putInt   ("rIdVertShader", R.raw.vertex_shader);
+        arg.putInt   ("rIdFragShader", R.raw.fragment_shader);
+        arg.putString("modelFilePath", absFilePath);
 
-        AddModelToRenderMessage msg = new AddModelToRenderMessage(R.raw.vertex_shader
-                                                                , R.raw.fragment_shader
-                                                                , absFilePath
-                                                                , absFilePath );
-        EventBus.getDefault().postSticky(msg);
+        tabHost.addTab( tabHost.newTabSpec("MyViewer").setIndicator("MyViewer")
+                        , Viewer3D.class
+                        , arg);
+
+        tabHost.setCurrentTabByTag("MyViewer");
     }
     @Override
     public void onGetResponseReceived   (String serverAddress, Response response)
     {
-        Log.i("MainActivity","onGetResponseReceived");
-
-        if ( serverAddress == this.serverAddress )
+        if ( serverAddress.equals(this.serverAddress) )
         {
-            if( new AppManager( getApplicationContext() ).isAppFirstTimeLaunch() )
-                setCurrentTab(TAB.INSTRUCTIONS);
-            else
-                setCurrentTab(TAB.CAMERA);
+            boolean firstLaunch = new AppManager().isAppFirstTimeLaunch( getApplicationContext() );
+
+            setCurrentTab( firstLaunch ? TAB.INSTRUCTIONS : TAB.CAMERA );
         }
     }
     @Override
-    public void onErrorOccurred         ( String        serverAddress
-                                        , RequestType   operationType
-                                        , ANError       error)
+    public void onErrorOccurred         ( ANError       error)
     {
-        Log.i("MainActivity","onErrorOccurred");
-
         setCurrentTab(TAB.NO_CONNECTION_SCREEN);
     }
 
@@ -187,8 +178,6 @@ public class MainActivity
                 ,Camera.class, null);
         tabHost.addTab(tabHost.newTabSpec("DocumentViewer").setIndicator("mp")
                 ,DocumentViewer.class, null);
-        tabHost.addTab(tabHost.newTabSpec("Viewer3D").setIndicator("v3D")
-                ,Viewer3D.class, null);
         tabHost.addTab(tabHost.newTabSpec("PreloaderScreen").setIndicator("pl")
                 ,PreloaderScreen.class, null);
         tabHost.addTab(tabHost.newTabSpec("WelcomeScreen").setIndicator("ws")
@@ -196,7 +185,7 @@ public class MainActivity
         tabHost.addTab(tabHost.newTabSpec("NoConnectionScreen").setIndicator("ncs")
                 , NoConnectionScreen.class, null);
 
-        tabHost.setCurrentTab( TAB.WELCOME_SCREEN.index() );
+        setCurrentTab(TAB.WELCOME_SCREEN);
     }
     private void setCurrentTab      (TAB tab)
     {
@@ -237,7 +226,7 @@ public class MainActivity
     }
     private void closeApp           ()
     {
-        new AppManager( getApplicationContext() ).cleanTempDirContent();
+        new AppManager().cleanTempDirContent();
 
         finish();
         System.exit(0);

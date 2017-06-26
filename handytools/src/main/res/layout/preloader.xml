@@ -20,7 +20,7 @@
             android:fontFamily                  = "sans-serif-thin"
             android:gravity                     = "center"
             android:text                        = "@string/loaderDescription"
-            android:textSize                    = "12sp"/>
+            android:textSize                    = "16sp"/>
 
         <com.felipecsl.gifimageview.library.GifImageView
             android:id                          = "@+id/gif"

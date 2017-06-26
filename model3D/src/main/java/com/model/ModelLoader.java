@@ -18,26 +18,23 @@ public class ModelLoader
     public ModelLoader(Context context)
     {
         this.context    = context;
-
-        modelData       = new ModelData();
         separatorInText = " ";
     }
 
-    public void load(AddModelToRenderMessage msg)
+    public ModelData load(int rIdVertShader, int rIdFragShader, String modelFilePath)
     {
-        loadMesh    ( msg.getModelFilePath() );
+        ModelData modelData = new ModelData();
 
-        loadShaders ( msg.getrIdVertShader()
-                    , msg.getrIdFragShader() );
+        loadMesh(modelFilePath, modelData);
+        loadShaders(rIdVertShader, rIdFragShader,modelData);
 
-        modelData.setNameAndHashCode( msg.getModelUniqueName() );
-    }
-    public ModelData getModelData           ()
-    {
+        //-- needed to compare two models
+        modelData.setHashCode(modelFilePath);
+
         return modelData;
     }
 
-    private void    loadMesh                (String modelFilePath)
+    private void    loadMesh                (String modelFilePath, ModelData modelData)
     {
         File modelFile = new File(modelFilePath);
 
@@ -55,20 +52,20 @@ public class ModelLoader
             Pair< List<String>, List<String> > dividedData = getSeparatedData(modelFileContent);
 
 //            loadIndexBufferFromText (dividedData.first);
-            loadVertexBufferFromText(dividedData.second);
+            loadVertexBufferFromText(dividedData.second, modelData);
         }
     }
-    private void    loadShaders             (int rIdVertShader, int rIdFragShader )
+    private void    loadShaders             (int rIdVertShader, int rIdFragShader, ModelData modelData)
     {
         String v = FileReader.getFileContent(rIdVertShader, context);
-        modelData.setVertShaderCode(v);
-
         String f = FileReader.getFileContent(rIdFragShader, context);
+
+        modelData.setVertShaderCode(v);
         modelData.setFragShaderCode(f);
     }
-    private void    loadVertexBufferFromText(List<String> data)
+    private void    loadVertexBufferFromText(List<String> vertexData, ModelData modelData)
     {
-        final int neededAllocationSize  = data.size()
+        final int neededAllocationSize  = vertexData.size()
                                             * modelData.ELEMENTS_PER_VERTEX
                                             * modelData.FLOAT_SIZE_IN_BYTES;
 
@@ -80,7 +77,7 @@ public class ModelLoader
 
         try
         {
-            for (String line : data)
+            for (String line : vertexData)
             {
                 String[] coordinates = line.split(separatorInText);
 
@@ -99,7 +96,7 @@ public class ModelLoader
                     , "probably out of range in for loop");
         }
     }
-    private void    loadIndexBufferFromText (List<String> data)
+    private void    loadIndexBufferFromText (List<String> data, ModelData modelData)
     {
         final int neededAllocationSize  = data.size()
                                             * modelData.INDICES_PER_TRIANGLE
@@ -117,7 +114,7 @@ public class ModelLoader
             {
                 String[] coordinates = line.split(separatorInText);
 
-                //TODO: repair!!!
+                //TODO: repair
 //                for(int i = 0; i < modelData.INDICES_PER_TRIANGLE; i++)
                 for(int i = 1; i < 4; i++)
                 {
@@ -173,7 +170,6 @@ public class ModelLoader
         return Pair.create(indexData, vertexData);
     }
 
-    private         ModelData   modelData;
     private final   Context     context;
     private final   String      separatorInText;
 }

@@ -3,19 +3,11 @@ package com.example.viewer3d;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 
 import com.cameraController.CameraChangeListener;
 import com.cameraController.CameraFactors;
-import com.model.AddModelToRenderMessage;
-import com.model.ModelData;
-import com.model.ModelLoader;
 import com.model.Model;
 import com.model.RenderMatrices;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Vector;
 
@@ -27,8 +19,6 @@ public class RenderEngine
 {
     public RenderEngine(Context context)
     {
-        EventBus.getDefault().register(this);
-
         this.context = context;
 
         matrices                = new RenderMatrices();
@@ -74,21 +64,6 @@ public class RenderEngine
     {
         matrices.setViewAndProjection   ( cameraFactors.viewMatrix
                                         , cameraFactors.projectionMatrix );
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvent                 (AddModelToRenderMessage event)
-    {
-        Log.i("RenderEnging","Mam");
-        //--load model file using model loader
-        ModelLoader modelLoader = new ModelLoader(context);
-        modelLoader.load(event);
-
-        //--get crucial model data
-        ModelData modelData     = modelLoader.getModelData();
-
-        //--create model and add to list of objects to render
-        addModel( new Model(modelData) );
     }
 
     public void addModel                (Model model)

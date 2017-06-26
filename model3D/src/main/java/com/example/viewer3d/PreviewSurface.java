@@ -41,23 +41,21 @@ public class PreviewSurface
 
         return true;
     }
-
     @Override
     public void onScaleTouch(float ds)
     {
         camera.updateRadius(ds);
         requestRender();
 
-        //TODO: repair
+        //TODO: i'm sure you can make it better
     }
-
     @Override
     public void onMoveTouch(float dx, float dy)
     {
         camera.rotate(dx, dy);
         requestRender();
 
-        //TODO: repair
+        //TODO: and this too
     }
 
     private void setupRenderEngine()
@@ -68,7 +66,7 @@ public class PreviewSurface
         setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
-    private Camera                camera;
-    private RenderEngine          renderEngine;
-    private TouchGestureProcessor touchGestureProcessor;
+    protected Camera                camera;
+    protected RenderEngine          renderEngine;
+    protected TouchGestureProcessor touchGestureProcessor;
 }

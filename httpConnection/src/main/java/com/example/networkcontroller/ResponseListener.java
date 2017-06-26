@@ -4,13 +4,11 @@ import com.androidnetworking.error.ANError;
 
 import okhttp3.Response;
 
-public interface HttpConnectionListener
+public interface ResponseListener
 {
     void onUploadedFile         (String serverAddress, Response response);
     void onDownloadedFile       (String serverAddress, String   absFilePath);
     void onGetResponseReceived  (String serverAddress, Response response);
-
-    void onErrorOccurred        ( String            serverAddress
-                                , RequestType operationType
-                                , ANError           error);
+    
+    void onErrorOccurred        (ANError error);
 }

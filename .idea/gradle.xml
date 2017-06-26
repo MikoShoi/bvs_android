@@ -12,9 +12,9 @@
             <option value="$PROJECT_DIR$/camera" />
             <option value="$PROJECT_DIR$/documents" />
             <option value="$PROJECT_DIR$/handytools" />
+            <option value="$PROJECT_DIR$/httpConnection" />
             <option value="$PROJECT_DIR$/instructions" />
             <option value="$PROJECT_DIR$/model3D" />
-            <option value="$PROJECT_DIR$/serverconnection" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

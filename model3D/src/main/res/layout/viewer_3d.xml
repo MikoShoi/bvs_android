@@ -8,11 +8,11 @@
         android:background          = "@android:color/white"
         tools:context               = "com.example.viewer3d.Viewer3D">
 
-        <!--<com.example.viewer3d.PreviewSurface-->
-            <!--android:id              = "@+id/previewSurface"-->
-            <!--android:layout_width    = "match_parent"-->
-            <!--android:layout_height   = "match_parent"-->
-            <!--android:layout_margin   = "1dp"/>-->
+        <com.example.viewer3d.PreviewSurface
+            android:id              = "@+id/previewSurface"
+            android:layout_width    = "match_parent"
+            android:layout_height   = "match_parent"
+            android:layout_margin   = "1dp"/>
 
     </FrameLayout>
 </layout>

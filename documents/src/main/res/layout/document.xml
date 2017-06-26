@@ -6,7 +6,7 @@
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/purple_600"
+        android:background="@color/mikoColor_5"
         android:orientation="vertical">
 
         <TextView

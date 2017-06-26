@@ -12,6 +12,7 @@
             android:layout_width        = "wrap_content"
             android:layout_height       = "wrap_content"
 
+            app:backgroundTint          = "@color/mikoColor_1"
             android:layout_above        = "@+id/capture"
             android:layout_alignEnd     = "@+id/capture"
             android:clickable           = "true"
@@ -19,21 +20,19 @@
             android:src                 = "@drawable/ic_done_white_48dp"
             app:fabSize                 = "normal"/>
 
-
-        <!--android:layout_marginTop            = "40dp"-->
-
         <android.support.design.widget.FloatingActionButton
-            android:id                          = "@+id/capture"
-            android:layout_width                = "wrap_content"
-            android:layout_height               = "wrap_content"
+            android:id="@+id/capture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-            android:layout_alignParentEnd       = "true"
-            android:layout_centerVertical       = "true"
-            android:padding                     = "40dp"
-            android:clickable                   = "true"
-            android:src                         = "@drawable/ic_camera_alt_white_48dp"
-            app:fabSize                         = "normal"
-            app:layout_constraintTop_toBottomOf = "@+id/done"/>
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:backgroundTint="@color/mikoColor_1"
+            android:clickable="true"
+            android:padding="40dp"
+            android:src="@drawable/ic_camera_alt_white_48dp"
+            app:fabSize="normal"
+            app:layout_constraintTop_toBottomOf="@+id/done"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

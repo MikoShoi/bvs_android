@@ -35,6 +35,7 @@
             android:layout_height       = "match_parent"
             android:layout_gravity      = "start"
             android:fitsSystemWindows   = "true"
+            android:background          = "#ECF0F1"
 
             app:menu                    = "@menu/menu_structure"
             app:headerLayout            = "@layout/menu_header" />

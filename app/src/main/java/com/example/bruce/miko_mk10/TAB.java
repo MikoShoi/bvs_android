@@ -20,14 +20,12 @@ public enum TAB
                 return 1;
             case DOCUMENTS:
                 return 2;
-            case VIEWER_3D:
-                return 3;
             case PRELOADER:
-                return 4;
+                return 3;
             case WELCOME_SCREEN:
-                return 5;
+                return 4;
             case NO_CONNECTION_SCREEN:
-                return 6;
+                return 5;
             default:
                 return 0;
         }

@@ -21,7 +21,6 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@android:color/transparent"
-            app:rippleColor="@color/deep_purple_600"
             app:srcCompat="@drawable/ic_close_black_48dp"/>
 
     </android.support.design.widget.CoordinatorLayout>

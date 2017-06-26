@@ -9,8 +9,7 @@ public class ModelData
 {
     public ModelData    ()
     {
-        vertexBuffer    = null;
-        indexBuffer     = null;
+
     }
 
     public ModelData    ( String        vertShaderCode
@@ -22,7 +21,7 @@ public class ModelData
         setVertShaderCode(vertShaderCode);
         setFragShaderCode(fragShaderCode);
 
-        setNameAndHashCode(name);
+        setHashCode(name);
 
         setIndexBuffer(indexBuffer);
         setVertexBuffer(vertexBuffer);
@@ -50,12 +49,12 @@ public class ModelData
 
         return indexBuffer;
     }
-    public int          getNameHashCode             ()
+    public int          getHashCode                 ()
     {
         if( nameHashCode == 0 )
         {
             throw new MikoError( this
-                    , "getNameHashCode"
+                    , "getHashCode"
                     , "you are getting not set nameHashCode");
         }
 
@@ -128,8 +127,7 @@ public class ModelData
         return verticesNumber;
     }
 
-
-    public void setNameAndHashCode  (String uniqueName)
+    public void setHashCode         (String uniqueName)
     {
         this.name = uniqueName;
         this.nameHashCode = this.name.hashCode();
@@ -160,18 +158,18 @@ public class ModelData
         this.fragShaderCode = fragShaderCode;
     }
 
-    private int indicesNumber
-                , verticesNumber
-                , indexBufferSizeInBytes
-                , vertexBufferSizeInBytes
-                , nameHashCode;
+    private int indicesNumber               = 0
+                , verticesNumber            = 0
+                , indexBufferSizeInBytes    = 0
+                , vertexBufferSizeInBytes   = 0
+                , nameHashCode              = 0;
 
     private String name
-            , vertShaderCode
-            , fragShaderCode;
+            , vertShaderCode = null
+            , fragShaderCode = null;
 
-    private IntBuffer    indexBuffer;
-    private FloatBuffer  vertexBuffer;
+    private IntBuffer    indexBuffer    = null;
+    private FloatBuffer  vertexBuffer   = null;
 
     final int   FLOAT_SIZE_IN_BYTES         = Float.SIZE    / 8
                 , INT_SIZE_IN_BYTES         = Integer.SIZE  / 8

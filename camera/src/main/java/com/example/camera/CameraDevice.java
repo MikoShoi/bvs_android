@@ -1,6 +1,8 @@
 package com.example.camera;
 
 import android.content.Context;
+import android.hardware.Camera;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -8,7 +10,6 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 
 import com.example.handytools.AppManager;
-import com.example.handytools.MikoError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,14 +18,14 @@ public class CameraDevice
 {
     public CameraDevice(SurfaceView v)
     {
-        holder       = v.getHolder();
-        context      = v.getContext();
-        parentObject = null;
+        holder          = v.getHolder();
+        context         = v.getContext();
+        cameraListener  = null;
 
         init();
     }
 
-    public void restart     ()
+    public void restart         ()
     {
         if( camera != null )
         {
@@ -41,24 +42,28 @@ public class CameraDevice
             }
         }
     }
-    public void turnOff     ()
+    public void turnOff         ()
     {
         camera.stopPreview();
         camera.release();
         camera = null;
     }
-    public void takePicture ()
+    public void takePicture     ()
     {
         //--at first cameraDevice must get focus, then lock, and after capture image
         //--so that takePicture start from below line
         camera.autoFocus(cameraAutoFocusCallback);
     }
-    public void setParentObject(CameraInterface parentObject)
+    public void setCameraListener(CameraListener cameraListener)
     {
-        this.parentObject = parentObject;
+        this.cameraListener = cameraListener;
+    }
+    public void rotatePreview   (int degrees)
+    {
+        camera.setDisplayOrientation(degrees);
     }
 
-    private void init                   ()
+    private void    init                ()
     {
         camera = android.hardware.Camera.open();
 
@@ -68,20 +73,19 @@ public class CameraDevice
 
         restart();
     }
-    private void setSettings            ()
+    private void    setSettings         ()
     {
-        android.hardware.Camera.Parameters cc = camera.getParameters();
+        Camera.Parameters cp             = camera.getParameters();
+        Camera.Size       maxPictureSize = cp.getSupportedPictureSizes().get(0);
 
-        cc.setJpegQuality(100);
-        cc.setRotation(180);
-        cc.setAutoExposureLock(true);
-        cc.setPictureSize(2560,1920);
-        cc.setWhiteBalance(android.hardware.Camera.Parameters.WHITE_BALANCE_AUTO);
+        cp.setPictureSize       (maxPictureSize.width, maxPictureSize.height);
+        cp.setJpegQuality       (100);
+        cp.setAutoExposureLock  (true);
+        cp.setWhiteBalance      (android.hardware.Camera.Parameters.WHITE_BALANCE_AUTO);
 
-        camera.setParameters(cc);
-        camera.setDisplayOrientation(180);
+        camera.setParameters(cp);
     }
-    private void setCaptureCallback     ()
+    private void    setCaptureCallback  ()
     {
         cameraCaptureCallback = new android.hardware.Camera.PictureCallback()
         {
@@ -96,8 +100,8 @@ public class CameraDevice
                     outStream.write(data);
                     outStream.close();
 
-                    if ( parentObject != null )
-                        parentObject.onPhotoCapturedHandle(filePath);
+                    if ( cameraListener != null )
+                        cameraListener.onPhotoCaptured(filePath);
 
                     //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
                 }
@@ -111,33 +115,33 @@ public class CameraDevice
             }
         };
     }
-    private void setAutoFocusCallback   ()
+    private void    setAutoFocusCallback()
     {
         cameraAutoFocusCallback = new android.hardware.Camera.AutoFocusCallback()
         {
             @Override
             public void onAutoFocus(boolean success, android.hardware.Camera camera)
             {
-                Handler h = new Handler();
-                h.postDelayed(DoAutoFocus, 1000);
+                Handler handler = new Handler();
+                handler.postDelayed(capture, 1000);
                 camera.lock();
             }
 
-            Runnable DoAutoFocus = new Runnable()
+            Runnable capture = new Runnable()
             {
                 public void run()
                 {
-                    camera.takePicture(null, null, null, cameraCaptureCallback);
+                    camera.takePicture(null, null, cameraCaptureCallback);
                 }
             };
         };
     }
-    private String genUniqueAbsFilePath()
+    private String  genUniqueAbsFilePath()
     {
-        String dirPath          = new AppManager(context).getTempDirPath()
+        String tempDirPath      = new AppManager().getTempDirPath()
                 , uniqueName    = String.valueOf( System.currentTimeMillis() )
                 , fileEtension  = ".jpg"
-                , absFilePath   = dirPath + "/" + uniqueName + fileEtension;
+                , absFilePath   = tempDirPath + "/" + uniqueName + fileEtension;
 
         return absFilePath;
     }
@@ -149,5 +153,5 @@ public class CameraDevice
     private android.hardware.Camera.PictureCallback     cameraCaptureCallback   = null;
     private android.hardware.Camera.AutoFocusCallback   cameraAutoFocusCallback = null;
 
-    private CameraInterface parentObject;
+    private CameraListener cameraListener;
 }

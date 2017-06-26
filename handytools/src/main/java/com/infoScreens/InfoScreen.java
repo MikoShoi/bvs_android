@@ -1,9 +1,7 @@
-package com.example.handytools;
+package com.infoScreens;
 
-import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -13,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.handytools.R;
 import com.example.handytools.databinding.InfoScreenBinding;
 
 public class InfoScreen extends Fragment
@@ -20,15 +19,6 @@ public class InfoScreen extends Fragment
     public InfoScreen()
     {
         // Required empty public constructor
-    }
-
-    public static InfoScreen newInstance(String param1, String param2)
-    {
-        InfoScreen fragment = new InfoScreen();
-        Bundle     args     = new Bundle();
-        fragment.setArguments(args);
-
-        return fragment;
     }
 
     @Override
@@ -40,10 +30,7 @@ public class InfoScreen extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        screen = DataBindingUtil.inflate(   inflater
-                                            , R.layout.info_screen
-                                            , container
-                                            , false);
+        screen = DataBindingUtil.inflate( inflater, R.layout.info_screen, container, false);
 
         return screen.getRoot();
     }
@@ -53,7 +40,7 @@ public class InfoScreen extends Fragment
     {
         super.onResume();
 
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     protected void scaleImage()

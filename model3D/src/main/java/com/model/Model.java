@@ -48,20 +48,20 @@ public class Model
     @Override
     public boolean equals(Object obj)
     {
-        return obj.hashCode() == this.modelData.getNameHashCode();
+        return obj.hashCode() == this.modelData.getHashCode();
     }
 
     @Override
     public int hashCode()
     {
-        return modelData.getNameHashCode();
+        return modelData.getHashCode();
     }
 
     protected void prepareUniforms(RenderMatrices matrices)
     {
-        setUniform( "mv"       , matrices.getMv() );
+//        setUniform( "mv"       , matrices.getMv() );
         setUniform( "mvp"      , matrices.getMvp() );
-        setUniform( "normal"   , matrices.getNormal() );
+//        setUniform( "normal"   , matrices.getNormal() );
     }
 
     private void    prepareToFirstDraw  ()

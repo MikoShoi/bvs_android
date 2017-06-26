@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="mikoColor_1">#2C3E50</color>
+    <color name="mikoColor_2">#2980B9</color>
+    <color name="mikoColor_3">#3498DB</color>
+    <color name="mikoColor_4">#ECF0F1</color>
+    <color name="mikoColor_5">#E74C3C</color>
 </resources>

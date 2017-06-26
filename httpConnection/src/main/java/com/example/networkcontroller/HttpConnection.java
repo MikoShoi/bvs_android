@@ -5,7 +5,6 @@ import android.content.Context;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interceptors.HttpLoggingInterceptor;
 import com.androidnetworking.interfaces.DownloadListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.example.handytools.AppManager;
@@ -18,12 +17,12 @@ import okhttp3.Response;
 
 public class HttpConnection
 {
-    public HttpConnection(Context context, HttpConnectionListener listener)
+    public HttpConnection(Context context, ResponseListener listener)
     {
         init(context);
         this.listener = listener;
 
-        tempDirPath = new AppManager(context).getTempDirPath();
+        tempDirPath = new AppManager().getTempDirPath();
     }
 
     public void uploadFile      (final String serverAddress, String absFilePath)
@@ -44,9 +43,7 @@ public class HttpConnection
                     @Override
                     public void onError(ANError anError)
                     {
-                        listener.onErrorOccurred( serverAddress
-                                                , RequestType.POST
-                                                , anError);
+                        listener.onErrorOccurred(anError);
                     }
                 });
     }
@@ -69,9 +66,7 @@ public class HttpConnection
                     @Override
                     public void onError(ANError anError)
                     {
-                        listener.onErrorOccurred( serverAddress
-                                                , RequestType.GET
-                                                , anError);
+                        listener.onErrorOccurred(anError);
                     }
                 });
     }
@@ -91,9 +86,7 @@ public class HttpConnection
                     @Override
                     public void onError(ANError anError)
                     {
-                        listener.onErrorOccurred(serverAddress
-                                                , RequestType.GET
-                                                , anError);
+                        listener.onErrorOccurred(anError);
                     }
                 });
     }
@@ -114,6 +107,6 @@ public class HttpConnection
 //        AndroidNetworking.enableLogging(HttpLoggingInterceptor.Level.HEADERS);
     }
 
-    private String                  tempDirPath;
-    private HttpConnectionListener  listener;
+    private String           tempDirPath;
+    private ResponseListener listener;
 }

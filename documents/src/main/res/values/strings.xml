@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">MenuPages</string>
 
     <string name="default_title">       Default title           </string>
     <string name="default_description"> Default Description     </string>
@@ -10,10 +9,10 @@
         <![CDATA[<html>
             <h4>About</h4>
 
-            <p>ZF demo project is a collection of several programs cooperates each other, created
-            for transferring real to 3D digital world. The main aid of project is to show how many
-            opportunities creates computer vision, image processing systems and techniques such as
-            structure from motion</p>
+            <p>BVS project is a vision system consist several programs cooperates each other.
+            Created for transferring real to 3D digital world. The main aid of project is to show
+            how many opportunities creates computer vision, image processing systems and techniques
+            such as structure from motion</p>
 
             <p>&nbsp;</p>
 
@@ -29,7 +28,7 @@
 
             <h4>Origin</h4>
 
-            <p>Zf demo project is continuation of work on the system for 3D reconstruction of exterior
+            <p>BVS project is continuation of work on the system for 3D reconstruction of exterior
             environment using optical measurement method. The first results has been published in my
             Engineer\'s Thesis "<em>Wykorzystanie geometrii do badania geometrii obiektów</em>".</p>
         </html>]]>
