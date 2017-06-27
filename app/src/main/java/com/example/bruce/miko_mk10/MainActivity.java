@@ -116,48 +116,6 @@ public class MainActivity
         setCurrentTab(TAB.NO_CONNECTION_SCREEN);
     }
 
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(FileDownloadedMessage event)
-//    {
-//        AddModelToRenderMessage msg;
-//        msg = new AddModelToRenderMessage   ( R.raw.vertex_shader
-//                                            , R.raw.fragment_shader
-////                                            , event.getAbsFilePath()
-//                                            , "/storage/emulated/0/Download/coordinates.off"
-//                                            , "uniqueName" );
-//        eventBus.postSticky(msg);
-//        setCurrentTab(TAB.VIEWER_3D);
-//    }
-//
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(ConnectionProblemMessage event)
-//    {
-//        Log.e (  event.getProblemType().text()
-//                ,event.getProblemDescription() );
-//    }
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEvent(ConnectionStatusMessage event)
-//    {
-//        if ( event.isConnectionOk() )
-//        {
-//            if( new AppManager(this).isAppFirstTimeLaunch() )
-//            {
-//                System.out.println("Connected");
-//                setCurrentTab(TAB.INSTRUCTIONS);
-//            }
-//            else
-//            {
-//                System.out.println("No connection");
-//                setCurrentTab(TAB.CAMERA);
-//            }
-//        }
-//        else
-//        {
-//            // inform that there is no connection to the server
-//            ;
-//        }
-//    }
-
     private void initUiElements     ()
     {
         MainBinding mainActivity =
@@ -238,7 +196,7 @@ public class MainActivity
     private HttpConnection  httpConnection;
 
     private int previousTabIndex = -1;
-    private final String serverAddress      = "http://cbbf34b1.ngrok.io"
+    private final String serverAddress      = "http://f8b77ce2.ngrok.io"
                          , getModelEndpoint = "/getModel"
                          , addImageEndpoint = "/addImage";
 }

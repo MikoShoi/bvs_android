@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Miko_mk10.iml" filepath="$PROJECT_DIR$/Miko_mk10.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bvs_android.iml" filepath="$PROJECT_DIR$/bvs_android.iml" />
       <module fileurl="file://$PROJECT_DIR$/camera/camera.iml" filepath="$PROJECT_DIR$/camera/camera.iml" />
       <module fileurl="file://$PROJECT_DIR$/documents/documents.iml" filepath="$PROJECT_DIR$/documents/documents.iml" />
       <module fileurl="file://$PROJECT_DIR$/handytools/handytools.iml" filepath="$PROJECT_DIR$/handytools/handytools.iml" />
