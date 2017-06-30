@@ -21,14 +21,16 @@ import com.example.firstlaunch.InstructionViewer;
 import com.example.firstlaunch.InstructionViewerInterface;
 import com.example.handytools.AppManager;
 import com.example.handytools.MikoError;
-import com.infoScreens.NoConnectionScreen;
-import com.infoScreens.PreloaderScreen;
-import com.infoScreens.WelcomeScreen;
 import com.example.menupages.DocumentViewer;
 import com.example.menupages.DocumentViewerInterface;
 import com.example.networkcontroller.HttpConnection;
 import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
+import com.infoScreens.NoConnectionScreen;
+import com.infoScreens.PreloaderScreen;
+import com.infoScreens.WelcomeScreen;
+
+import java.util.List;
 
 import okhttp3.Response;
 
@@ -61,7 +63,7 @@ public class MainActivity
     @Override
     public void onDocumentViewerCompletedHandle     ()
     {
-        tabHost.setCurrentTab(previousTabIndex);
+        onBackPressed();
     }
 
     //-- camera interface
@@ -74,8 +76,6 @@ public class MainActivity
     @Override
     public void onPhotoCaptured(String absoluteFilePath)
     {
-        Log.i("MainActivity","onPhotoCaptureHandle");
-
         httpConnection.uploadFile(  serverAddress + addImageEndpoint
                                     , absoluteFilePath);
     }
@@ -103,6 +103,8 @@ public class MainActivity
     @Override
     public void onGetResponseReceived   (String serverAddress, Response response)
     {
+        Log.i("\t\tMainActivity: ","connected");
+
         if ( serverAddress.equals(this.serverAddress) )
         {
             boolean firstLaunch = new AppManager().isAppFirstTimeLaunch( getApplicationContext() );
@@ -113,7 +115,17 @@ public class MainActivity
     @Override
     public void onErrorOccurred         ( ANError       error)
     {
+        Log.i("\t\tMainActivity: ","connection error");
+
         setCurrentTab(TAB.NO_CONNECTION_SCREEN);
+    }
+
+    @Override
+    public void onBackPressed       ()
+    {
+//        super.onBackPressed();
+
+        setCurrentTab(previousTab);
     }
 
     private void initUiElements     ()
@@ -147,8 +159,23 @@ public class MainActivity
     }
     private void setCurrentTab      (TAB tab)
     {
-        previousTabIndex = previousTabIndex == -1 ? tab.index() : tabHost.getCurrentTab();
+        switch (currentTab)
+        {
+            case CAMERA:
+            case VIEWER_3D:
+            case INSTRUCTIONS:
+                previousTab = currentTab;
+                break;
 
+            case DOCUMENTS:
+            case PRELOADER:
+            case WELCOME_SCREEN:
+            case NO_CONNECTION_SCREEN:
+                Log.i("setCurrentTab: ","previous tab unchanged");
+                break;
+        }
+
+        currentTab = tab;
         tabHost.setCurrentTab( tab.index() );
     }
     private void configSlidingMenu  ()
@@ -163,7 +190,7 @@ public class MainActivity
                         , itemId     = item.getItemId();
 
                      if ( itemId == docsItemId )
-                    setCurrentTab(TAB.DOCUMENTS);
+                         setCurrentTab(TAB.DOCUMENTS);
                 else if ( itemId == quitItemId )
                     closeApp();
                 else
@@ -194,9 +221,11 @@ public class MainActivity
     private NavigationView  menu;
     private DrawerLayout    drawer;
     private HttpConnection  httpConnection;
+    private List<TAB> tabStack;
 
-    private int previousTabIndex = -1;
-    private final String serverAddress      = "http://f8b77ce2.ngrok.io"
-                         , getModelEndpoint = "/getModel"
-                         , addImageEndpoint = "/addImage";
+    private         TAB     currentTab          = TAB.WELCOME_SCREEN
+                            , previousTab       = TAB.WELCOME_SCREEN;
+    private final   String  serverAddress       = "http://44022bcc.ngrok.io"
+                            , getModelEndpoint  = "/getModel"
+                            , addImageEndpoint  = "/addImage";
 }

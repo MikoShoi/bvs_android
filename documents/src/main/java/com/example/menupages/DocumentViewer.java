@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,16 @@ public class DocumentViewer extends Fragment
     public void onAttach(Context context)
     {
         super.onAttach(context);
+
+        if (context instanceof AppCompatActivity)
+        {
+            Log.i("DocumentViewer ","onAttach a");
+            AppCompatActivity activity = (AppCompatActivity)context;
+        }
+        else
+        {
+            Log.i("DocumentViewer ","onAttach b");
+        }
 
         if (context instanceof DocumentViewerInterface)
             parentObject = (DocumentViewerInterface) context;

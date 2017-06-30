@@ -93,7 +93,7 @@ public class HttpConnection
 
     private void init           (Context context)
     {
-        final int timeout = 240;
+        final int timeout = 60;
 
         OkHttpClient okHttpClient = new OkHttpClient()
                 .newBuilder     ()

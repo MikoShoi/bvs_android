@@ -49,6 +49,7 @@ public class Viewer3D
                                             , R.layout.viewer_3d
                                             , container
                                             , false );
+
         if ( model != null )
         {
             viewer3d.previewSurface.renderEngine.addModel(model);
@@ -59,6 +60,7 @@ public class Viewer3D
 
         return viewer3d.getRoot();
     }
+
     @Override
     public void onAttach        (Context context)
     {
