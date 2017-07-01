@@ -225,7 +225,7 @@ public class MainActivity
 
     private         TAB     currentTab          = TAB.WELCOME_SCREEN
                             , previousTab       = TAB.WELCOME_SCREEN;
-    private final   String  serverAddress       = "http://44022bcc.ngrok.io"
+    private final   String  serverAddress       = "http://7fc4fc31.ngrok.io"
                             , getModelEndpoint  = "/getModel"
                             , addImageEndpoint  = "/addImage";
 }

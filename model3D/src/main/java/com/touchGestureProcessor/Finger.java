@@ -7,13 +7,15 @@ public class Finger
 {
   public Finger()
   {
-    id = -1;
-    pos = new PointF(0, 0);
+    id      = -1;
+    pos     = new PointF(0,0);
+    prevPos = pos;
   }
   public Finger(MotionEvent e)
   {
-    id  = fingerId(e);
-    pos = fingerPosition(e, id);
+    id      = fingerId(e);
+    pos     = fingerPosition(e, id);
+    prevPos = pos;
   }
 
   @Override
@@ -23,11 +25,16 @@ public class Finger
   }
   public void     update  (MotionEvent e)
   {
-    pos = fingerPosition(e, id);
+    prevPos = pos;
+    pos     = fingerPosition(e, id);
   }
-  public int      id      ()
+  public int      id   ()
   {
       return id;
+  }
+  public PointF   shift()
+  {
+    return shift(pos, prevPos);
   }
 
   public static float   distance(Finger a, Finger b)
@@ -42,8 +49,15 @@ public class Finger
     float   x = b.pos.x - a.pos.x
           , y = b.pos.y - a.pos.y;
 
-  return new PointF(x, y);
-}
+    return new PointF(x, y);
+  }
+  private PointF  shift(PointF a, PointF b)
+  {
+    float x = a.x - b.x
+        , y = a.y - b.y;
+
+    return new PointF(x, y);
+  }
 
   private int     fingerId      (MotionEvent e)
   {
@@ -60,5 +74,6 @@ public class Finger
   }
 
   private int     id;
-  private PointF  pos;
+  private PointF  pos
+                , prevPos;
 }

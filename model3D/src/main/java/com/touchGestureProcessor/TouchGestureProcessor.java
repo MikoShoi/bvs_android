@@ -145,6 +145,8 @@ public class TouchGestureProcessor
               - initialPinchDistance
               + currentPinchDistance;
 
+//      System.out.println("1:\t" + currentPinchChange);
+
       if ( touchGestureListener != null )
         touchGestureListener.onScaleTouch(currentPinchChange);
     }
