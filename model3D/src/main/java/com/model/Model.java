@@ -60,7 +60,7 @@ public class Model
     protected void prepareUniforms(RenderMatrices matrices)
     {
 //        setUniform( "mv"       , matrices.getMv() );
-        setUniform( "mvp"      , matrices.getView() );
+        setUniform( "mvp"      , matrices.getMvp() );
 //        setUniform( "normal"   , matrices.getNormal() );
     }
 

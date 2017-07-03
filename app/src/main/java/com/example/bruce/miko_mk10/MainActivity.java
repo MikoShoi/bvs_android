@@ -18,7 +18,7 @@ import com.example.bruce.miko_mk10.databinding.MainBinding;
 import com.example.camera.Camera;
 import com.example.camera.CameraListener;
 import com.example.firstlaunch.InstructionViewer;
-import com.example.firstlaunch.InstructionViewerInterface;
+import com.example.firstlaunch.InstructionViewerListener;
 import com.example.handytools.AppManager;
 import com.example.handytools.MikoError;
 import com.example.menupages.DocumentViewer;
@@ -36,7 +36,7 @@ import okhttp3.Response;
 
 public class MainActivity
         extends AppCompatActivity
-        implements InstructionViewerInterface
+        implements InstructionViewerListener
                     , DocumentViewerInterface
                     , CameraListener
                     , ResponseListener
@@ -56,7 +56,7 @@ public class MainActivity
     }
 
     @Override
-    public void onInstructionViewerCompletedHandle  ()
+    public void onInstructionCompleted ()
     {
         setCurrentTab(TAB.CAMERA);
     }
@@ -66,21 +66,21 @@ public class MainActivity
         onBackPressed();
     }
 
-    //-- camera interface
+//-- camera
     @Override
-    public void onShootingFinished()
+    public void onShootingFinished      ()
     {
         setCurrentTab(TAB.PRELOADER);
         httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
     }
     @Override
-    public void onPhotoCaptured(String absoluteFilePath)
+    public void onPhotoCaptured         (String absoluteFilePath)
     {
         httpConnection.uploadFile(  serverAddress + addImageEndpoint
                                     , absoluteFilePath);
     }
 
-//-- http connection interface
+//-- http connection
     @Override
     public void onUploadedFile          (String serverAddress, Response response)
     {
@@ -103,17 +103,15 @@ public class MainActivity
     @Override
     public void onGetResponseReceived   (String serverAddress, Response response)
     {
-        Log.i("\t\tMainActivity: ","connected");
-
         if ( serverAddress.equals(this.serverAddress) )
         {
             boolean firstLaunch = new AppManager().isAppFirstTimeLaunch( getApplicationContext() );
 
-            setCurrentTab( firstLaunch ? TAB.INSTRUCTIONS : TAB.CAMERA );
+            setCurrentTab( firstLaunch ? TAB.INSTRUCTIONS : TAB.INSTRUCTIONS );
         }
     }
     @Override
-    public void onErrorOccurred         ( ANError       error)
+    public void onErrorOccurred         (ANError       error)
     {
         Log.i("\t\tMainActivity: ","connection error");
 
@@ -121,7 +119,7 @@ public class MainActivity
     }
 
     @Override
-    public void onBackPressed       ()
+    public void onBackPressed           ()
     {
 //        super.onBackPressed();
 
@@ -144,7 +142,7 @@ public class MainActivity
 
         tabHost.addTab(tabHost.newTabSpec("InstructionViewer").setIndicator("fl")
                 ,InstructionViewer.class, null);
-        tabHost.addTab(tabHost.newTabSpec("Camera").setIndicator("cp")
+        tabHost.addTab(tabHost.newTabSpec("MvpController").setIndicator("cp")
                 ,Camera.class, null);
         tabHost.addTab(tabHost.newTabSpec("DocumentViewer").setIndicator("mp")
                 ,DocumentViewer.class, null);
@@ -221,7 +219,7 @@ public class MainActivity
     private NavigationView  menu;
     private DrawerLayout    drawer;
     private HttpConnection  httpConnection;
-    private List<TAB> tabStack;
+    private List<TAB>       tabStack;
 
     private         TAB     currentTab          = TAB.WELCOME_SCREEN
                             , previousTab       = TAB.WELCOME_SCREEN;

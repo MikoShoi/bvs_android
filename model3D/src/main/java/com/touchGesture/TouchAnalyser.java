@@ -1,19 +1,14 @@
-package com.example.viewer3d;
+package com.touchGesture;
 
-import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
-
-import com.touchGestureProcessor.Finger;
 
 import java.util.ArrayList;
 
 public class TouchAnalyser
 {
-  public TouchAnalyser(Context context)
-  {
-
-  }
+  public TouchAnalyser()
+  {}
 
   public  void analyze                (MotionEvent e)
   {
@@ -81,11 +76,9 @@ public class TouchAnalyser
     switch ( fingers.size() )
     {
       case 1:
-//        System.out.println("Ruszam jednym palcem");
         listener.onOneFingerMove(ff);
         break;
       case 2:
-//        System.out.println("Ruszam dwoma palcami");
         listener.onTwoFingersMove(ff, sf, false);
         break;
       default:
@@ -108,12 +101,10 @@ public class TouchAnalyser
         break;
       //-- if there is only one finger update only this one
       case 1:
-        System.out.println("update main fingers:\t\t1");
         ff = fingers.get(0);
         break;
       //-- but if there are more, then update first two
       default:
-        System.out.println("update main fingers:\t\t default");
         ff = fingers.get(0);
         sf = fingers.get(1);
         listener.onTwoFingersMove(ff, sf, true);

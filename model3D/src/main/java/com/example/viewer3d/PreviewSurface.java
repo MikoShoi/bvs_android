@@ -1,101 +1,83 @@
 package com.example.viewer3d;
 
 import android.content.Context;
-import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import com.cameraController.Camera;
-import com.touchGestureProcessor.TouchGestureListener;
-import com.touchGestureProcessor.TouchGestureProcessor;
+import com.mvpController.MvpController;
+import com.touchGesture.GestureAnalyser;
+import com.touchGesture.GestureAnalyserListener;
+import com.touchGesture.TouchAnalyser;
 
 public class PreviewSurface
         extends GLSurfaceView
-            implements  TouchGestureListener
-                      , GestureAnalyserListener
+            implements GestureAnalyserListener
 {
-    public PreviewSurface(Context context, AttributeSet attributeSet)
-    {
-        super(context, attributeSet);
-
-        camera                  = new Camera();
-        renderEngine            = new RenderEngine(context);
-        touchGestureProcessor   = new TouchGestureProcessor();
-
-        camera.addCameraChangeListener(renderEngine);
-
-        //-- render engine will inform camera when aspect ration changes
-        renderEngine.addSurfaceChangeListener(camera);
-
-        //-- touch gesture processor will inform preview surface about any user interaction
-        touchGestureProcessor.addTouchGestureListener(this);
-
-        //-- set some openGL settings for render engine
-        setupRenderEngine();
-
-      gestureAnalyser = new GestureAnalyser();
-      gestureAnalyser.addListener(this);
-      touchAnalyser = new TouchAnalyser(context);
-      touchAnalyser.addListener(gestureAnalyser);
-    }
-
-  @Override
-  public void onDrag (PointF shiftVector)
+  public PreviewSurface(Context context, AttributeSet attributeSet)
   {
-    System.out.println("Drag");
-    camera.rotate(shiftVector.x, shiftVector.y);
-    requestRender();
+    super(context, attributeSet);
+
+    //-- responsible for change view of object based on user interaction
+    mvpController = new MvpController();
+
+    //-- responsible for model rendering
+    renderEngine  = new RenderEngine(context);
+
+    //-- mvp will inform render engine when view when it occur
+    mvpController.addCameraChangeListener(renderEngine);
+
+    //-- render engine will inform mvpController when display aspect ration changes
+    renderEngine.addSurfaceChangeListener(mvpController);
+
+    //-- responsible for gestures recognition
+    gestureAnalyser = new GestureAnalyser(this);
+    //-- responsible for touches recognition
+    touchAnalyser   = new TouchAnalyser();
+    touchAnalyser.addListener(gestureAnalyser);
+
+    //-- set some openGL settings for render engine
+    setupRenderEngine();
   }
 
   @Override
-  public void onScale (float d)
+  public void     onDrag            (float dx, float dy)
   {
-    System.out.println("onScale");
-    camera.updateRadius(d);
+    float x = (float) Math.toRadians(dx),
+          y = (float) Math.toRadians(dy);
+
+    mvpController.rotate(x, y, 0);
+  }
+  @Override
+  public void     onScale           (float d)
+  {
+    mvpController.updateRadius(d);
+  }
+  @Override
+  public void     onZRotate         (float da)
+  {
+    mvpController.rotate(0, 0, da);
+  }
+  @Override
+  public boolean  onTouchEvent      (MotionEvent event)
+  {
+    touchAnalyser.analyze(event);
     requestRender();
+
+    return true;
   }
 
-  @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-      touchAnalyser.analyze(event);
+  private void    setupRenderEngine ()
+  {
+      setEGLContextClientVersion(3);
 
-//        if (touchGestureProcessor != null)
-//            touchGestureProcessor.touchEventHandle(event);
+      setRenderer(renderEngine);
+      setRenderMode(RENDERMODE_WHEN_DIRTY);
+  }
 
-        return true;
-    }
-    @Override
-    public void onScaleTouch(float ds)
-    {
-        camera.updateRadius(ds);
-        requestRender();
+  protected MvpController mvpController;
+  protected RenderEngine  renderEngine;
 
-        //TODO: i'm sure you can make it better
-    }
-    @Override
-    public void onMoveTouch(float dx, float dy)
-    {
-        camera.rotate(dx, dy);
-        requestRender();
-
-        //TODO: and this too
-    }
-
-    private void setupRenderEngine()
-    {
-        setEGLContextClientVersion(3);
-
-        setRenderer(renderEngine);
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
-    }
-
-    protected Camera                camera;
-    protected RenderEngine          renderEngine;
-    protected TouchGestureProcessor touchGestureProcessor;
-    private int initTwoFingersDistance = 0;
-    private int lastFfId = -1, lastSfId = -1;
-  private TouchAnalyser touchAnalyser;
+  private TouchAnalyser   touchAnalyser;
   private GestureAnalyser gestureAnalyser;
 }

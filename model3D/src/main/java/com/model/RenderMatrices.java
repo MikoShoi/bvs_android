@@ -1,64 +1,87 @@
 package com.model;
 
 import com.example.handytools.MikoMath;
-import com.example.handytools.Vector3D;
+
+import org.joml.Matrix4f;
 
 public class RenderMatrices
 {
-    public RenderMatrices()
-    {
-        model       = MikoMath.getIndentityMatrix4f();
-        view        = MikoMath.getIndentityMatrix4f();
-        projection  = MikoMath.getIndentityMatrix4f();
+  public RenderMatrices()
+  {
+      model       = MikoMath.getIndentityMatrix4f();
+      view        = MikoMath.getIndentityMatrix4f();
+      projection  = MikoMath.getIndentityMatrix4f();
 
-        normal      = MikoMath.getIndentityMatrix4f();
-        mv          = MikoMath.getIndentityMatrix4f();
-        mvp         = MikoMath.getIndentityMatrix4f();
-    }
+      normal      = MikoMath.getIndentityMatrix4f();
+      mv          = MikoMath.getIndentityMatrix4f();
+      mvp         = MikoMath.getIndentityMatrix4f();
+  }
 
-    public float[] getModel     ()
-    {
-        return model;
-    }
-    public float[] getView      ()
-    {
-        return view;
-    }
-    public float[] getProjection()
-    {
-        return projection;
-    }
-    public float[] getMv        ()
-    {
-        return mv;
-    }
-    public float[] getMvp       ()
-    {
-        return mvp;
-    }
-    public float[] getNormal    ()
-    {
-        return normal;
-    }
+  public float[] getModel     ()
+  {
+      return model;
+  }
+  public float[] getView      ()
+  {
+      return view;
+  }
+  public float[] getProjection()
+  {
+      return projection;
+  }
+  public float[] getMv        ()
+  {
+      return mv;
+  }
+  public float[] getMvp       ()
+  {
+    float[] mvp = new float[16];
+    mvpMatrix.get(mvp);
 
-    public void setViewAndProjection(float[] v, float[] p)
-    {
-        view        = v;
-        projection  = p;
-    }
-    public void recalculate         ()
-    {
-        mv      = MikoMath.multiplyMatrices     ( view      , model);
-        mvp     = MikoMath.multiplyMatrices     ( projection, mv);
-        normal  = MikoMath.calculateNormalMatrix( mv);
-    }
+    return mvp;
+  }
+  public float[] getNormal    ()
+  {
+      return normal;
+  }
 
-    private float[] model
-                    , view
-                    , projection
-                    , normal
-                    , mv
-                    , mvp;
+  public void setModel            (Matrix4f modelMatrix)
+  {
+    this.modelMatrix = modelMatrix;
+  }
+  public void setViewMatrix       (Matrix4f viewMatrix)
+  {
+    this.viewMatrix = viewMatrix;
+  }
+  public void setProjectionMatrix (Matrix4f projectionMatrix)
+  {
+    this.projectionMatrix = projectionMatrix;
+  }
 
-    private final int offset = 0;
+  public void recalculate         ()
+  {
+    mv      = MikoMath.multiplyMatrices     ( view      , model);
+    mvp     = MikoMath.multiplyMatrices     ( projection, mv);
+    normal  = MikoMath.calculateNormalMatrix( mv);
+
+    mvpMatrix
+            .identity()
+            .mul(projectionMatrix)
+            .mul(viewMatrix)
+            .mul(modelMatrix);
+  }
+
+  private Matrix4f  modelMatrix       = new Matrix4f()
+                  , viewMatrix        = new Matrix4f()
+                  , projectionMatrix  = new Matrix4f()
+                  , mvpMatrix         = new Matrix4f();
+
+  private float[] model
+                  , view
+                  , projection
+                  , normal
+                  , mv
+                  , mvp;
+
+  private final int offset = 0;
 }

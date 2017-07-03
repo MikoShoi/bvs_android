@@ -4,8 +4,8 @@ import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
-import com.cameraController.CameraChangeListener;
-import com.cameraController.CameraFactors;
+import com.mvpController.MvpControllerListener;
+import com.mvpController.MvpParams;
 import com.model.Model;
 import com.model.RenderMatrices;
 
@@ -15,7 +15,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class RenderEngine
-    implements GLSurfaceView.Renderer, CameraChangeListener
+    implements GLSurfaceView.Renderer, MvpControllerListener
 {
     public RenderEngine(Context context)
     {
@@ -60,10 +60,13 @@ public class RenderEngine
     }
 
     @Override
-    public void onCameraChangedHandle   (CameraFactors cameraFactors)
+    public void onMvpChanged (MvpParams mvpParams)
     {
-        matrices.setViewAndProjection   ( cameraFactors.viewMatrix
-                                        , cameraFactors.projectionMatrix );
+      matrices.setModel(mvpParams.modelMatrix);
+      matrices.setViewMatrix(mvpParams.viewMatrix);
+      matrices.setProjectionMatrix(mvpParams.projectionMatrix);
+
+      matrices.recalculate();
     }
 
     public void addModel                (Model model)
