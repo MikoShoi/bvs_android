@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "26.0.0"
     dataBinding.enabled = true
 
     defaultConfig {
@@ -29,8 +29,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.amitshekhar.android:android-networking:1.0.0'
-    compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
     testCompile 'junit:junit:4.12'
-    compile project(path: ':handytools')
+    compile project(path: ':mikotools')
 }

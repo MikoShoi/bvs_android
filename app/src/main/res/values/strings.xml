@@ -6,4 +6,151 @@
     <string name="nav_item_documents">      Documents</string>
     <string name="nav_item_quit">           Quit</string>
 
+    <string name="default_title">         Default title           </string>
+    <string name="default_description">   Default Description     </string>
+
+<!-- instructions -->
+
+    //--welcome nav buttons
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">LET\'S BEGIN NOW</string>
+
+    //--welcome fragment titles and descriptions
+    <string name="welcome_title">   Welcome to ZF demo app!</string>
+    <string name="welcome_description">
+        Create a 3D model from a few images captured your own smartphone.
+    </string>
+
+    <string name="capture_images_title">   First step - capture images</string>
+    <string name="capture_images_description">
+        Capture a few images of object which would you like to reconstruct.
+        \n Click done button when you are done.
+    </string>
+
+    <string name="enjoy_title">   Second step - Enjoy!</string>
+    <string name="enjoy_description">
+        Wait a moment until the pictures are sent to server and the reconstruction will be completed
+        \n Then you will be able to view and interact with your 3D model.
+        \n\n Hava a fun!
+    </string>
+
+    <string name="help_title">Help</string>
+    <string name="help_description">
+        At each stage of reconstruction you find in the right bottom corner help icon.
+        \n Click on it to get more info, tips and help.
+    </string>
+
+<!-- documents -->
+
+    <string name="about_title">             About</string>
+    <string name="about_description">
+        <![CDATA[<html>
+            <h4>About</h4>
+
+            <p>BVS project is a vision system consist several programs cooperates each other.
+            Created for transferring real to 3D digital world. The main aid of project is to show
+            how many opportunities creates computer vision, image processing systems and techniques
+            such as structure from motion</p>
+
+            <p>&nbsp;</p>
+
+            <h4>How it works</h4>
+
+            <p>When you run mobile application, it init connection with remote server. Every time
+            you take photo, it is automatically sent in background to server.When you click done
+            button server call special program witch reconstruct photographed object.
+            After reconstruction server send back model to mobile app and you will be able to
+            interact and manipulate it.</p>
+
+            <p>&nbsp;</p>
+
+            <h4>Origin</h4>
+
+            <p>BVS project is continuation of work on the system for 3D reconstruction of exterior
+            environment using optical measurement method. The first results has been published in my
+            Engineer\'s Thesis "<em>Wykorzystanie geometrii do badania geometrii obiektów</em>".</p>
+        </html>]]>
+    </string>
+
+    <string name="privacy_policy_title">    Privacy policy</string>
+    <string name="privacy_policy_description"><![CDATA[<html>
+        <h2>Privacy Policy</h2>
+        <p>Miko Shoi operates the mikoshoi.dev website, which provides the SERVICE.</p>
+        <p>This page is used to inform website visitors regarding our policies with the collection,
+            use, and disclosure of Personal Information if anyone decided to use our Service.</p>
+        <p>If you choose to use our Service, then you agree to the collection and use of information
+            in relation with this policy. The Personal Information that we collect are used for
+            providing and improving the Service. We will not use or share your information with
+            anyone except as described in this Privacy Policy.</p>
+        <p>The terms used in this Privacy Policy have the same meanings as in our Terms and
+            Conditions, which is accessible at mikoshoi.dev , unless otherwise defined in this
+            Privacy Policy.</p>
+        <p><strong>Information Collection and Use</strong></p>
+        <p>
+            For a better experience while using our Service, we may require you to provide us with
+            certain personally identifiable information, including but not limited to your name,
+            phone number, and postal address. The information that we collect will be used to
+            contact or identify you.</p>
+        <p><strong>Log Data</strong></p>
+        <p>We want to inform you that whenever you visit our Service, we collect information that
+            your browser sends to us that is called Log Data. This Log Data may include information
+            such as your computer’s Internet Protocol (“IP”) address, browser version, pages of our
+            Service that you visit, the time and date of your visit, the time spent on those pages,
+            and other statistics.</p>
+        <p><strong>Cookies</strong></p>
+        <p>Cookies are files with small amount of data that is commonly used an anonymous unique
+            identifier. These are sent to your browser from the website that you visit and are
+            stored on your computer’s hard drive.</p>
+        <p>
+            <a href="https://promocode.com.ph/" target="_blank">Our website</a>
+            uses these “cookies” to collection information and to improve our Service.
+            You have the option to either accept or refuse these cookies, and know when a cookie is
+            being sent to your computer. If you choose to refuse our cookies, you may not be able to
+            use some portions of our Service.</p>
+        <p><strong>Service Providers</strong></p>
+        <p>We may employ third-party companies and individuals due to the following reasons:</p>
+        <ul>
+            <li class="first-child">To facilitate our Service;</li>
+            <li>To provide the Service on our behalf;</li>
+            <li>To perform Service-related services; or</li>
+            <li class="last-child">To assist us in analyzing how our Service is used.</li>
+        </ul>
+        <p>We want to inform our Service users that these third parties have access to your Personal
+            Information. The reason is to perform the tasks assigned to them on our behalf. However,
+            they are obligated not to disclose or use the information for any other purpose.</p>
+        <p><strong>Security</strong></p>
+        <p>We value your trust in providing us your Personal Information, thus we are striving to
+            use commercially acceptable means of protecting it. But remember that no method of
+            transmission over the internet, or method of electronic storage is 100% secure and
+            reliable, and we cannot guarantee its absolute security.</p>
+        <p><strong>Links to Other Sites</strong></p>
+        <p>Our Service may contain links to other sites. If you click on a third-party link, you
+            will be directed to that site. Note that these external sites are not operated by us.
+            Therefore, we strongly advise you to review the Privacy Policy of these websites.
+            We have no control over, and assume no responsibility for the content, privacy policies,
+            or practices of any third-party sites or services.</p>
+        <p><strong>Children’s Privacy</strong></p>
+        <p>Our Services do not address anyone under the age of 13. We do not knowingly collect
+            personal identifiable information from children under 13. In the case we discover that
+            a child under 13 has provided us with personal information, we immediately delete this
+            from our servers. If you are a parent or guardian and you are aware that your child has
+            provided us with personal information, please contact us so that we will be able to do
+            necessary actions.</p>
+        <p><strong>Changes to This Privacy Policy</strong></p>
+        <p>We may update our Privacy Policy from time to time. Thus, we advise you to review this
+            page periodically for any changes. We will notify you of any changes by posting the new
+            Privacy Policy on this page. These changes are effective immediately, after they are
+            posted on this page.</p>
+        <p><strong>Contact Us</strong></p>
+        <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to
+            contact us.</p>
+        <p>This Privacy Policy page was created at
+            <a href="https://privacypolicytemplate.net" target="_blank">privacypolicytemplate.net</a>.
+        </p>
+    </html>]]></string>
+
+<!-- loader -->
+    <string name="loaderDescription"><b>please wait</b>\nreconstruction in progress</string>
+
 </resources>

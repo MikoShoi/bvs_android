@@ -10,152 +10,152 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.view.Surface;
 
 import com.example.camera.databinding.CameraBinding;
-import com.example.handytools.MikoError;
+import com.example.mikotools.MikoError;
 
 public class Camera extends Fragment
 {
-    public Camera()
+  public Camera()
+  {
+    // Required empty public constructor
+  }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+  }
+  @Override
+  public View onCreateView(LayoutInflater inflater
+                          ,ViewGroup container
+                          ,Bundle savedInstanceState)
+  {
+    camera = DataBindingUtil.inflate( inflater
+                                    , R.layout.camera
+                                    , container
+                                    , false );
+    prepareCameraDevice();
+    setButtonsListeners();
+
+    return camera.getRoot();
+  }
+  @Override
+  public void onAttach(Context context)
+  {
+    super.onAttach(context);
+
+    if( context instanceof CameraListener)
+      cameraListener = (CameraListener) context;
+    else
+      throw new MikoError(this
+                          , "onAttach"
+                          , "parent object does not implement needed interface");
+  }
+  @Override
+  public void onDetach()
+  {
+    super.onDetach();
+
+    cameraListener = null;
+  }
+  @Override
+  public void onResume()
+  {
+    super.onResume();
+
+    int orientationMode = getActivity()
+            .getWindowManager   ()
+            .getDefaultDisplay  ()
+            .getRotation        ();
+
+    switch (orientationMode)
     {
-        // Required empty public constructor
+      case Surface.ROTATION_0:
+        cameraDevice.rotatePreview(90);
+        break;
+      case Surface.ROTATION_90:
+        cameraDevice.rotatePreview(0);
+        break;
+      case Surface.ROTATION_180:
+        cameraDevice.rotatePreview(270);
+        break;
+      case Surface.ROTATION_270:
+        cameraDevice.rotatePreview(180);
+        break;
     }
+  }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
+  private void prepareCameraDevice            ()
+  {
+    CameraDevicePreview cdp = camera.cameraPreviewWindow;
+    cameraDevice            = new CameraDevice(cdp);
+    cdp.setPreviewSource(cameraDevice);
+
+    cameraDevice.setCameraListener(cameraListener);
+  }
+  private void setButtonsListeners            ()
+  {
+    setButtonDoneOnClickListener();
+    setButtonInfoOnClickListener();
+    setButtonCaptureOnClickListener();
+  }
+  private void setButtonCaptureOnClickListener()
+  {
+    View.OnClickListener l = new View.OnClickListener()
     {
-        super.onCreate(savedInstanceState);
-    }
-    @Override
-    public View onCreateView    ( LayoutInflater inflater
-                                ,ViewGroup container
-                                ,Bundle savedInstanceState)
+      @Override
+      public void onClick(View v)
+      {
+        cameraDevice.takePicture();
+      }
+    };
+
+    camera.controls.capture.setOnClickListener(l);
+  }
+  private void setButtonDoneOnClickListener   ()
+  {
+    View.OnClickListener l = new View.OnClickListener()
     {
-        camera = DataBindingUtil.inflate( inflater
-                                        , R.layout.camera
-                                        , container
-                                        , false );
-        prepareCameraDevice();
-        setButtonsListeners();
+      @Override
+      public void onClick(View v)
+      {
+        cameraListener.onShootingFinished();
+      }
+    };
 
-        return camera.getRoot();
-    }
-    @Override
-    public void onAttach(Context context)
+    camera.controls.done.setOnClickListener(l);
+  }
+  private void setButtonInfoOnClickListener   ()
+  {
+    View.OnClickListener l = new View.OnClickListener()
     {
-        super.onAttach(context);
+      @Override
+      public void onClick(View v)
+      {
+        final int timeDuration = 10000;   //milliseconds
 
-        if( context instanceof CameraListener)
-            cameraListener = (CameraListener) context;
-        else
-            throw new MikoError(this
-                                , "onAttach"
-                                , "parent object does not implement needed interface");
-    }
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
+        String message = Html.fromHtml( getResources().getString(R.string.fabText) ).toString();
 
-        cameraListener = null;
-    }
-    @Override
-    public void onResume()
-    {
-        super.onResume();
+        Snackbar s  = Snackbar.make(v, message, timeDuration);
+        TextView tv = (TextView) s
+                .getView()
+                .findViewById(android.support.design.R.id.snackbar_text);
 
-        int orientationMode = getActivity()
-                .getWindowManager   ()
-                .getDefaultDisplay  ()
-                .getRotation        ();
+        tv.setMaxLines(5);
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        switch (orientationMode)
-        {
-            case 0:
-                cameraDevice.rotatePreview(90);
-                break;
-            case 1:
-                cameraDevice.rotatePreview(0);
-                break;
-            case 2:
-                cameraDevice.rotatePreview(270);
-                break;
-            case 3:
-                cameraDevice.rotatePreview(180);
-                break;
-        }
-    }
+        s.show();
+      }
+    };
 
-    private void prepareCameraDevice            ()
-    {
-        CameraDevicePreview cdp = camera.cameraPreviewWindow;
-        cameraDevice            = new CameraDevice(cdp);
-        cdp.setPreviewSource(cameraDevice);
+    camera.info.setOnClickListener(l);
+  }
 
-        cameraDevice.setCameraListener(cameraListener);
-    }
-    private void setButtonsListeners            ()
-    {
-        setButtonDoneOnClickListener();
-        setButtonInfoOnClickListener();
-        setButtonCaptureOnClickListener();
-    }
-    private void setButtonCaptureOnClickListener()
-    {
-        View.OnClickListener l = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                cameraDevice.takePicture();
-            }
-        };
-
-        camera.controls.capture.setOnClickListener(l);
-    }
-    private void setButtonDoneOnClickListener   ()
-    {
-        View.OnClickListener l = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                //--let parent object handle done event
-                cameraListener.onShootingFinished();
-            }
-        };
-
-        camera.controls.done.setOnClickListener(l);
-    }
-    private void setButtonInfoOnClickListener   ()
-    {
-        View.OnClickListener l = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                final int timeDuration = 10000;   //milliseconds
-
-                String message = Html.fromHtml( getResources().getString(R.string.fabText) ).toString();
-
-                Snackbar s  = Snackbar.make(v, message, timeDuration);
-                TextView tv = (TextView) s
-                        .getView()
-                        .findViewById(android.support.design.R.id.snackbar_text);
-
-                tv.setMaxLines(5);
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                s.show();
-            }
-        };
-
-        camera.info.setOnClickListener(l);
-    }
-
-    private CameraBinding       camera;
-    private CameraDevice        cameraDevice;
-    private CameraListener      cameraListener;
+  private CameraBinding   camera;
+  private CameraDevice    cameraDevice;
+  private CameraListener  cameraListener;
 }
 
 

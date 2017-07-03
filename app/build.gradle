@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    buildToolsVersion "26.0.0"
     dataBinding.enabled = true
 
     defaultConfig {
@@ -30,11 +30,8 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    compile project(':instructions')
-    compile project(':documents')
+    testCompile 'junit:junit:4.1'
     compile project(':httpConnection')
     compile project(':camera')
-    compile project(':model3D')
-    compile project(path: ':handytools')
+    compile project(':viewer3D')
 }

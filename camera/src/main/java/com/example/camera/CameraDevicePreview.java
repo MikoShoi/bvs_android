@@ -9,45 +9,44 @@ public class CameraDevicePreview
         extends SurfaceView
         implements SurfaceHolder.Callback
 {
-    CameraDevice cameraDevice = null;
+  CameraDevice cameraDevice = null;
 
-    public CameraDevicePreview(Context context)
-    {
-        super(context);
-        getHolder().addCallback(this);
-    }
-    public CameraDevicePreview(Context context, AttributeSet attrs, int defStyle)
-    {
-        super(context, attrs, defStyle);
-        getHolder().addCallback(this);
-    }
-    public CameraDevicePreview(Context context, AttributeSet attrs)
-    {
-        super(context, attrs);
-        getHolder().addCallback(this);
-    }
+  public CameraDevicePreview  (Context context)
+  {
+    super(context);
+    getHolder().addCallback(this);
+  }
+  public CameraDevicePreview  (Context context, AttributeSet attrs, int defStyle)
+  {
+    super(context, attrs, defStyle);
+    getHolder().addCallback(this);
+  }
+  public CameraDevicePreview  (Context context, AttributeSet attrs)
+  {
+    super(context, attrs);
+    getHolder().addCallback(this);
+  }
 
-    @Override
-    public void surfaceCreated      (SurfaceHolder holder)
-    {
-        if( cameraDevice != null )
-            cameraDevice.restart();
-    }
-    @Override
-    public void surfaceChanged      (SurfaceHolder holder, int format, int w, int h)
-    {
-        if( cameraDevice != null )
-            cameraDevice.restart();
-    }
-    @Override
-    public void surfaceDestroyed    (SurfaceHolder holder)
-    {
-        if (cameraDevice != null)
-            cameraDevice.turnOff();
-    }
-
-    public void setPreviewSource    (CameraDevice cam)
-    {
-        cameraDevice = cam;
-    }
+  @Override
+  public void surfaceCreated  (SurfaceHolder holder)
+  {
+    if( cameraDevice != null )
+        cameraDevice.restart();
+  }
+  @Override
+  public void surfaceChanged  (SurfaceHolder holder, int format, int w, int h)
+  {
+    if( cameraDevice != null )
+        cameraDevice.restart();
+  }
+  @Override
+  public void surfaceDestroyed(SurfaceHolder holder)
+  {
+    if (cameraDevice != null)
+        cameraDevice.turnOff();
+  }
+  public void setPreviewSource(CameraDevice cam)
+  {
+    cameraDevice = cam;
+  }
 }

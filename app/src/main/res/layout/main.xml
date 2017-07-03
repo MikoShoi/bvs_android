@@ -12,7 +12,7 @@
         android:background          = "@color/default_background_color"
         tools:openDrawer            = "start" >
 
-<!--TAB host-->
+<!--Tab host-->
         <android.support.v4.app.FragmentTabHost
             android:id              = "@+id/tabhost"
             android:layout_width    = "match_parent"
