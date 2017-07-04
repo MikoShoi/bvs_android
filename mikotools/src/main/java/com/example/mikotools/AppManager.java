@@ -22,7 +22,7 @@ public class AppManager
     }
   }
 
-  public  boolean  isAppFirstTimeLaunch   (Context context)
+  public  boolean isAppFirstTimeLaunch    (Context context)
   {
     final String  FILE_NAME     = "bvsAppConfig"
                 , PROPERTY_NAME = "firstLaunch";
@@ -35,17 +35,17 @@ public class AppManager
 
     return isThatFirstLaunch;
   }
-  public  void     cleanTempDirContent    ()
+  public  void    cleanTempDirContent     ()
   {
     for ( File file : tempDir.listFiles() )
       file.delete();
   }
-  public  String   getTempDirPath         ()
+  public  String  getTempDirPath          ()
   {
     return tempDir.getAbsolutePath();
   }
 
-  private String getPublicDownloadDirPath ()
+  private String  getPublicDownloadDirPath()
   {
     String path = Environment
                     .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)

@@ -1,32 +1,27 @@
 package com.model;
 
-import android.content.Context;
-import android.util.Pair;
-
 import com.example.mikotools.FileReader;
 import com.example.mikotools.MikoError;
 
-import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 
-public class ModelLoader
+class ModelLoader
 {
-  public ModelLoader(Context context)
+  ModelLoader ()
   {
-    this.context    = context;
+    modelData       = new ModelData();
+    fileReader      = FileReader.getInstance();
     separatorInText = " ";
   }
 
-  public ModelData load(int rIdVertShader, int rIdFragShader, String modelFilePath)
+  final ModelData load(String modelFilePath, int rIdVertShader, int rIdFragShader)
   {
-    ModelData modelData = new ModelData();
-
-    loadMesh(modelFilePath, modelData);
-    loadShaders(rIdVertShader, rIdFragShader,modelData);
+    loadMesh    (modelFilePath);
+    loadShaders (rIdVertShader, rIdFragShader);
 
     //-- needed for compare two models
     modelData.setHashCode(modelFilePath);
@@ -34,36 +29,29 @@ public class ModelLoader
     return modelData;
   }
 
-  private void    loadMesh                (String modelFilePath, ModelData modelData)
+  private void    loadMesh            (String modelFilePath)
   {
-    File modelFile = new File(modelFilePath);
+    List<String> modelFileContent = fileReader.getTextFileContent(modelFilePath);
 
-    if( !modelFile.exists() )
-    {
-      throw new MikoError( this
-                        , "loadMesh"
-                        , "file: " + modelFilePath + " - no exist." );
-    }
-
-    List<String> modelFileContent = FileReader.getFileContent(modelFile);
     if( isFileContentValid(modelFileContent) )
     {
       //--divide model data into 2 part |First part - index data | Second part - vertex data
-      Pair< List<String>, List<String> > dividedData = getSeparatedData(modelFileContent);
 
-//            loadIndexBufferFromText (dividedData.first);
-      loadVertexBufferFromText(dividedData.second, modelData);
+      List<String> vertexData = separateVerticesAndIndices(modelFileContent);
+
+//      fillIndexBuffer (indexData);
+      fillVertexBuffer(vertexData);
     }
   }
-  private void    loadShaders             (int rIdVertShader, int rIdFragShader, ModelData modelData)
+  private void    loadShaders         (int rIdVertShader, int rIdFragShader)
   {
-    String v = FileReader.getFileContent(rIdVertShader, context);
-    String f = FileReader.getFileContent(rIdFragShader, context);
+    String  vertShader = fileReader.getShaderSourceCode(rIdVertShader)
+            , fragShader = fileReader.getShaderSourceCode(rIdFragShader);
 
-    modelData.setVertShaderCode(v);
-    modelData.setFragShaderCode(f);
+    modelData.setVertShaderCode(vertShader);
+    modelData.setFragShaderCode(fragShader);
   }
-  private void    loadVertexBufferFromText(List<String> vertexData, ModelData modelData)
+  private void    fillVertexBuffer    (List<String> vertexData)
   {
     final int neededAllocationSize  = vertexData.size()
                                         * modelData.ELEMENTS_PER_VERTEX
@@ -92,11 +80,11 @@ public class ModelLoader
     catch (Exception e)
     {
       throw new MikoError(this
-                        , "loadVertexBufferFromText"
+                        , "fillVertexBuffer"
                         , "probably out of range in for loop");
     }
   }
-  private void    loadIndexBufferFromText (List<String> data, ModelData modelData)
+  private void    fillIndexBuffer     (List<String> data)
   {
     final int neededAllocationSize  = data.size()
                                         * modelData.INDICES_PER_TRIANGLE
@@ -127,49 +115,44 @@ public class ModelLoader
     catch (Exception e)
     {
       throw new MikoError(this
-                        , "loadIndexBufferFromText"
+                        , "fillIndexBuffer"
                         , "probably out of range in for loop" );
     }
   }
-  private int     getNumberOfVertices     (List<String> modelData)
+  private int     getNumberOfVertices (List<String> modelFileContent)
   {
-    String header           = modelData.get(0);
+    String header           = modelFileContent.get(0);
     String numberOfVertices = header.split(separatorInText)[1];
 
     return Integer.parseInt(numberOfVertices);
   }
-  private boolean isFileContentValid      (List<String> modelFileData)
+  private boolean isFileContentValid  (List<String> modelFileContent)
   {
-    final boolean FILE_CONTENT_IS_VALID   = true
-                , FILE_CONTENT_IS_INVALID = false;
-
-    if ( !modelFileData.isEmpty() )
+    if ( !modelFileContent.isEmpty() )
     {
-      //TODO: what about reg expr instead string "OFF" ?
-      final String headerPattern  = "OFF";
-      String header               = modelFileData.get(0);
+      final String  headerPattern = "OFF"
+                  , header        = modelFileContent.get(0);
 
       if( header.contains(headerPattern) )
       {
-        return FILE_CONTENT_IS_VALID;
+        return true;
       }
     }
 
-    return FILE_CONTENT_IS_INVALID;
+    return false;
   }
-  private Pair< List<String>, List<String> >  getSeparatedData    (List<String> modelData)
+  private List<String> separateVerticesAndIndices (final  List<String> modelData)
   {
     final int vertexFrom  = 1
-            , vertexTo    = vertexFrom + getNumberOfVertices(modelData)
-            , indexFrom   = vertexTo
-            , indexTo     = modelData.size();
-
-    List<String> indexData  = modelData.subList(indexFrom   , indexTo);
-    List<String> vertexData = modelData.subList(vertexFrom  , vertexTo);
-
-    return Pair.create(indexData, vertexData);
+            , vertexTo    = vertexFrom + getNumberOfVertices(modelData);
+//            , indexFrom   = vertexTo
+//            , indexTo     = modelData.size();
+//
+//    indexData  = modelData.subList(indexFrom   , indexTo);
+    return modelData.subList(vertexFrom, vertexTo);
   }
 
-  private final Context context;
+  private ModelData     modelData;
+  private FileReader    fileReader;
   private final String  separatorInText;
 }

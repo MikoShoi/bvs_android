@@ -7,11 +7,6 @@ import java.nio.IntBuffer;
 
 public class ModelData
 {
-  ModelData ()
-  {
-
-  }
-
   FloatBuffer getVertexBuffer            ()
   {
       if( vertexBuffer == null )

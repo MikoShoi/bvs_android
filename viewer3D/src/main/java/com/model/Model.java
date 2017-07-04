@@ -6,15 +6,17 @@ import com.example.mikotools.MikoError;
 
 public class Model
 {
-  public Model(ModelData modelData)
+  public Model(String modelFilePath, int rIdVertShader, int rIdFragShader)
   {
-    this.modelData = modelData;
-
     program           = new OesProgram();
     isItFirstDrawing  = true;
+
+    this.modelData    = new ModelLoader().load( modelFilePath
+                                              , rIdVertShader
+                                              , rIdFragShader);
   }
 
-  public void draw(RenderMatrices matrices)
+  public void     draw            (RenderMatrices matrices)
   {
     if (isItFirstDrawing)
     {
@@ -156,11 +158,11 @@ public class Model
     return buffers[0];
   }
 
-  private ModelData   modelData;
-  private OesProgram  program;
+  private ModelData   modelData = null;
+  private OesProgram  program   = null;
 
-  private boolean     isItFirstDrawing;
-  private int         vao
-//                    , indexVbo
-                    , vertexVbo;
+  private boolean     isItFirstDrawing  = true;
+  private int         vao               = -1
+//                    , indexVbo          = -1
+                    , vertexVbo         = -1;
 }

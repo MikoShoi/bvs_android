@@ -43,27 +43,13 @@ public class GestureAnalyser
     switch (gesture)
     {
       case SCALE:
-        if ( previousTwoFingersGesture != TwoFingersGestureType.SCALE )
-        {
-          previousPinchDistance     = currentPinchDistance;
-          initFingerToFingerVector  = fingerToFingerVector;
-        }
-
-        currentPinchDistance = previousPinchDistance
-                + initFingerToFingerVector.length()
-                - fingerToFingerVector.length();
-
-        final float maxPinchDistance = 600f;
-        if (currentPinchDistance > maxPinchDistance)
-        {
-          currentPinchDistance = maxPinchDistance;
-        }
-
-        listener.onScale(currentPinchDistance);
+        scaleHandle();
         break;
       case Z_ROTATE:
-
-        listener.onZRotate( fingerToFingerVector.angle(prevFingerToFingerVector) );
+        zRotateHandle();
+        break;
+      case ORTHOGONAL_MOVE:
+        orthogonalMoveHandle(firstFinger, secondFinger);
         break;
       default:
         Log.i("Gesture analyser: ","onTwoFingersMove: Unknown move type");
@@ -75,6 +61,7 @@ public class GestureAnalyser
   private TwoFingersGestureType recognizeGesture (Finger a, Finger b)
   {
     boolean bothFingersAreMoving    = a.isMoving() && b.isMoving()
+          , onlyOneFingeIsMoving    = a.isMoving() ^ b.isMoving()
           , fingersMovesCollinearly = a.movesCollinearlyWith(b);
 
     if ( bothFingersAreMoving && fingersMovesCollinearly )
@@ -85,9 +72,60 @@ public class GestureAnalyser
     {
       return TwoFingersGestureType.Z_ROTATE;
     }
+    else if ( onlyOneFingeIsMoving )
+    {
+      return TwoFingersGestureType.ORTHOGONAL_MOVE;
+    }
     else
     {
       return TwoFingersGestureType.UNKNOWN;
+    }
+  }
+  private void scaleHandle()
+  {
+    if ( previousTwoFingersGesture != TwoFingersGestureType.SCALE )
+    {
+      previousPinchDistance     = currentPinchDistance;
+      initFingerToFingerVector  = fingerToFingerVector;
+    }
+
+    currentPinchDistance = previousPinchDistance
+            + initFingerToFingerVector.length()
+            - fingerToFingerVector.length();
+
+    final float maxPinchDistance = 600f;
+    if (currentPinchDistance > maxPinchDistance)
+    {
+      currentPinchDistance = maxPinchDistance;
+    }
+
+    listener.onScale(currentPinchDistance);
+  }
+  private void zRotateHandle()
+  {
+    listener.onZRotate( fingerToFingerVector.angle(prevFingerToFingerVector) );
+  }
+  private void orthogonalMoveHandle (Finger ff, Finger sf)
+  {
+    Finger movingFinger = ff.isMoving() ? ff : sf;
+
+    Vector2f movingFingerShift = movingFinger.shift();
+    float xShift    = movingFingerShift.x
+        , yShift    = movingFingerShift.y
+        , xDistance = Math.abs(xShift)
+        , yDistance = Math.abs(yShift)
+        , thresholdFactor = 5.0f;
+
+    boolean isMovingInXDirection = xDistance > yDistance * thresholdFactor
+          , isMovingInYDirection = yDistance > xDistance * thresholdFactor;
+
+    if (isMovingInXDirection)
+    {
+      listener.onDrag(movingFinger.shift().x, 0);
+    }
+    else if (isMovingInYDirection)
+    {
+      listener.onDrag(0, movingFinger.shift().y);
     }
   }
 
@@ -101,4 +139,3 @@ public class GestureAnalyser
                   , fingerToFingerVector      = new Vector2f(0,0)
                   , prevFingerToFingerVector  = new Vector2f(0,0);
 }
-//-- TODO: improve

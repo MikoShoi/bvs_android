@@ -1,6 +1,5 @@
 package com.example.mikotools;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 import org.apache.commons.io.IOUtils;
@@ -13,39 +12,73 @@ import java.util.List;
 
 public class FileReader
 {
-  public static String       getFileContent(int rIdShader, Context context)
+  public FileReader()
   {
+
+  }
+
+  public static FileReader getInstance()
+  {
+    if (fileReader == null)
+    {
+      fileReader = new FileReader();
+    }
+    return fileReader;
+  }
+
+  public void         setResources        (Resources resources)
+  {
+    this.resources = resources;
+  }
+
+  public String       getShaderSourceCode (int rIdShader)
+  {
+    if ( resources == null )
+    {
+      throw new MikoError(this
+                        , "getShaderSourceCode"
+                        , "no handle to resources");
+    }
+
     try
     {
-      Resources resources = context.getResources();
       InputStream stream  = resources.openRawResource(rIdShader);
-      String shaderCode   = IOUtils.toString(stream, encoding);
 
-      return shaderCode;
+      return IOUtils.toString(stream, encoding);
     }
     catch (IOException e)
     {
       throw new MikoError( "FileReader"
-                          , "getFileContent"
+                          , "getTextFileContent"
                           , "error while reading shader file" );
     }
   }
-  public static List<String> getFileContent(File modelFile)
+  public List<String> getTextFileContent  (String modelFilePath)
   {
     try
     {
-      FileInputStream stream    = new FileInputStream(modelFile);
-      List<String> fileContent  = IOUtils.readLines(stream, encoding);
+      File modelFile = new File(modelFilePath);
 
-      return fileContent;
+      if( !modelFile.exists() )
+      {
+        throw new MikoError( this
+                , "loadMesh"
+                , "file: " + modelFilePath + " - no exist." );
+      }
+
+      FileInputStream stream = new FileInputStream(modelFile);
+
+      return IOUtils.readLines(stream, encoding);
     }
     catch (IOException e)
     {
       throw new MikoError ( "FileReader"
-              , "getFileContent"
-              , "error while reading model file" );
+                          , "getTextFileContent"
+                          , "error while reading model file" );
     }
   }
 
-  private static final String encoding = "UTF-8";
+  private static FileReader fileReader = null;
+  private final String encoding = "UTF-8";
+  private Resources resources = null;
 }

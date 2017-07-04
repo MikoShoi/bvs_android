@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 
 import com.example.viewer3d.databinding.Viewer3dBinding;
 import com.model.Model;
-import com.model.ModelData;
-import com.model.ModelLoader;
 
 public class Viewer3D
         extends Fragment
@@ -58,17 +56,13 @@ public class Viewer3D
       int     rIdVertShader = b.getInt(BUNDLE_PARAM_R_ID_VERTEX_SHADER)
             , rIdFragShader = b.getInt(BUNDLE_PARAM_R_ID_FRAGMENT_SHADER);
 
-      ModelLoader ml = new ModelLoader( getActivity() );
-      ModelData   md = ml.load(rIdVertShader, rIdFragShader, modelFilePath);
+      Model model = new Model(modelFilePath, rIdVertShader, rIdFragShader);
 
-      viewer3d.previewSurface.show( new Model(md) );
+      viewer3d.previewSurface.show(model);
     }
     else
       Log.i("Viewer3D:\t"
             ,"bundle params are invalid. Did you use newInstance()?");
-
-      //-- TODO: Without parent layout margin, sliding menu is hidden.
-      //-- TODO: Model loading is no suitable. It must be changed
 
     return viewer3d.getRoot();
   }
@@ -88,3 +82,6 @@ public class Viewer3D
                             , BUNDLE_PARAM_R_ID_VERTEX_SHADER   = "R_ID_VERTEX_SHADER"
                             , BUNDLE_PARAM_R_ID_FRAGMENT_SHADER = "R_ID_FRAGMENT_SHADER";
 }
+
+
+//-- TODO: Without parent layout margin, sliding menu is hidden.

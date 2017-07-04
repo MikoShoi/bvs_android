@@ -90,4 +90,4 @@ class Finger
   private long      updateDate      = System.nanoTime()
                   , lastUpdateDate  = updateDate;
 }
-//-- TODO: check and fix access modifiers
+//-- TODO: improve thresholds, calibrate factors

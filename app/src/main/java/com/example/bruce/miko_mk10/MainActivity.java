@@ -21,6 +21,7 @@ import com.example.bruce.miko_mk10.databinding.MainBinding;
 import com.example.camera.Camera;
 import com.example.camera.CameraListener;
 import com.example.mikotools.AppManager;
+import com.example.mikotools.FileReader;
 import com.example.mikotools.MikoError;
 import com.example.networkcontroller.HttpConnection;
 import com.example.networkcontroller.ResponseListener;
@@ -44,6 +45,8 @@ public class MainActivity
   {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
+
+    FileReader.getInstance().setResources( getResources() );
 
     MainBinding mainActivity = DataBindingUtil.setContentView(this, R.layout.main);
 
@@ -74,7 +77,7 @@ public class MainActivity
   @Override
   public void onShootingFinished    ()
   {
-    moveTo( InfoAnimation.newInstance( R.raw.loading
+    moveTo( InfoAnimation.newInstance(R.raw.loading
                                     , R.string.loaderDescription)
           , "loader"
           , false );
