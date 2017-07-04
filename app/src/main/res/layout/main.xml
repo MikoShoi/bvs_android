@@ -12,23 +12,11 @@
         android:background          = "@color/default_background_color"
         tools:openDrawer            = "start" >
 
-<!--Tab host-->
-        <android.support.v4.app.FragmentTabHost
-            android:id              = "@+id/tabhost"
+        <FrameLayout
+            android:id              = "@+id/mainFrame"
             android:layout_width    = "match_parent"
-            android:layout_height   = "match_parent">
+            android:layout_height   = "match_parent"/>
 
-            <TabWidget
-                android:id              = "@android:id/tabs"
-                android:layout_height   = "wrap_content"
-                android:layout_width    = "match_parent" />
-            <FrameLayout
-                android:id              = "@android:id/tabcontent"
-                android:layout_width    = "match_parent"
-                android:layout_height   = "match_parent" />
-        </android.support.v4.app.FragmentTabHost>
-
-<!--sliding menu-->
         <android.support.design.widget.NavigationView
             android:id                  = "@+id/menu"
             android:layout_width        = "wrap_content"

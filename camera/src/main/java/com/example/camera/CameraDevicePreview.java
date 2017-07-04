@@ -49,4 +49,6 @@ public class CameraDevicePreview
   {
     cameraDevice = cam;
   }
+
+  //-- TODO: improve
 }

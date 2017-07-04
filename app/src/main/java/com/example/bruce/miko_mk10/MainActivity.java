@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.androidnetworking.error.ANError;
 import com.documents.DocumentViewer;
@@ -24,13 +25,10 @@ import com.example.mikotools.MikoError;
 import com.example.networkcontroller.HttpConnection;
 import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
-import com.infoScreens.Loader;
-import com.infoScreens.NoConnection;
-import com.infoScreens.Welcome;
+import com.infoScreens.InfoAnimation;
+import com.infoScreens.InfoImage;
 import com.instructions.InstructionViewer;
 import com.instructions.InstructionViewerListener;
-
-import java.util.List;
 
 import okhttp3.Response;
 
@@ -47,18 +45,24 @@ public class MainActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
-    initUiElements();
-    configSlidingMenu();
-    configTabHost();
+    MainBinding mainActivity = DataBindingUtil.setContentView(this, R.layout.main);
 
-    httpConnection = new HttpConnection(getApplicationContext(), this);
+    menu            = mainActivity.menu;
+    drawer          = mainActivity.drawer;
+    fragmentManager = getSupportFragmentManager();
+
+    configSlidingMenu();
+
+    httpConnection = new HttpConnection(this, this);
     httpConnection.sendGetRequest(serverAddress);
+
+    moveTo(InfoImage.newInstance(R.drawable.welcome), "welcome", false);
   }
 
   @Override
   public void onInstructionsViewed  ()
   {
-    setCurrentTab(Tab.CAMERA);
+    moveTo(new Camera(), "camera", true);
   }
   @Override
   public void onDocumentsViewed     ()
@@ -70,7 +74,11 @@ public class MainActivity
   @Override
   public void onShootingFinished    ()
   {
-    setCurrentTab(Tab.PRELOADER);
+    moveTo( InfoAnimation.newInstance( R.raw.loading
+                                    , R.string.loaderDescription)
+          , "loader"
+          , false );
+
     httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
   }
   @Override
@@ -88,16 +96,11 @@ public class MainActivity
   @Override
   public void onDownloadedFile      (String serverAddress, final String absFilePath)
   {
-    Bundle arg = new Bundle();
-    arg.putInt   ("rIdVertShader", R.raw.vertex_shader);
-    arg.putInt   ("rIdFragShader", R.raw.fragment_shader);
-    arg.putString("modelFilePath", absFilePath);
-
-    tabHost.addTab( tabHost.newTabSpec("MyViewer").setIndicator("MyViewer")
-                    , Viewer3D.class
-                    , arg);
-
-    tabHost.setCurrentTabByTag("MyViewer");
+    moveTo( Viewer3D.newInstance( absFilePath
+                                , R.raw.vertex_shader
+                                , R.raw.fragment_shader )
+          , "viewer3D"
+          , true );
   }
   @Override
   public void onGetResponseReceived (String serverAddress, Response response)
@@ -106,123 +109,100 @@ public class MainActivity
     {
       boolean firstLaunch = new AppManager().isAppFirstTimeLaunch( getApplicationContext() );
 
-      setCurrentTab( firstLaunch ? Tab.INSTRUCTIONS : Tab.CAMERA );
+      if (firstLaunch)
+      {
+        moveTo(new InstructionViewer(), "instructions", true);
+      }
+      else
+      {
+        moveTo(new Camera(), "camera", true);
+      }
     }
   }
   @Override
   public void onErrorOccurred         (ANError       error)
   {
-    Log.i("\t\tMainActivity: ","connection error");
-
-    setCurrentTab(Tab.NO_CONNECTION_SCREEN);
+    moveTo(InfoImage.newInstance(R.drawable.no_connection), "noConnection", false);
   }
 
   @Override
   public void onBackPressed           ()
   {
-//        super.onBackPressed();
+    for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++)
+    {
+      Log.i("Back stack", "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
+    }
 
-      setCurrentTab(previousTab);
+    if ( fragmentManager.getBackStackEntryCount() > 0 )
+    {
+      fragmentManager.popBackStack();
+    }
+    else
+    {
+      super.onBackPressed();
+    }
   }
 
-  private void initUiElements     ()
+  private void moveTo(Fragment fragment, String tag, boolean saveOnStack)
   {
-      MainBinding mainActivity =
-              DataBindingUtil.setContentView(this, R.layout.main);
+    FragmentTransaction transaction = fragmentManager
+            .beginTransaction()
+            .replace( R.id.mainFrame
+                    , fragment
+                    , tag );
 
-      tabHost = mainActivity.tabhost;
-      menu    = mainActivity.menu;
-      drawer  = mainActivity.drawer;
-  }
-  private void configTabHost      ()
-  {
-      tabHost.setup(this, getSupportFragmentManager(), R.id.tabhost);
-      tabHost.getTabWidget().setVisibility(View.GONE);
+    if (saveOnStack)
+    {
+      transaction.addToBackStack(tag);
+    }
 
-      tabHost.addTab(tabHost.newTabSpec("InstructionViewer").setIndicator("fl")
-              ,InstructionViewer.class, null);
-      tabHost.addTab(tabHost.newTabSpec("MvpController").setIndicator("cp")
-              ,Camera.class, null);
-      tabHost.addTab(tabHost.newTabSpec("DocumentViewer").setIndicator("mp")
-              ,DocumentViewer.class, null);
-      tabHost.addTab(tabHost.newTabSpec("Loader").setIndicator("pl")
-              ,Loader.class, null);
-      tabHost.addTab(tabHost.newTabSpec("Welcome").setIndicator("ws")
-              ,Welcome.class, null);
-      tabHost.addTab(tabHost.newTabSpec("NoConnection").setIndicator("ncs")
-              , NoConnection.class, null);
-
-      setCurrentTab(Tab.WELCOME_SCREEN);
-  }
-  private void setCurrentTab      (Tab tab)
-  {
-      switch (currentTab)
-      {
-          case CAMERA:
-          case VIEWER_3D:
-          case INSTRUCTIONS:
-              previousTab = currentTab;
-              break;
-
-          case DOCUMENTS:
-          case PRELOADER:
-          case WELCOME_SCREEN:
-          case NO_CONNECTION_SCREEN:
-              Log.i("setCurrentTab: ","previous tab unchanged");
-              break;
-      }
-
-      currentTab = tab;
-      tabHost.setCurrentTab( tab.index() );
+    transaction.commit();
   }
   private void configSlidingMenu  ()
   {
-      OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
+    OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
+    {
+      @Override
+      public boolean onNavigationItemSelected(@NonNull MenuItem item)
       {
-          @Override
-          public boolean onNavigationItemSelected(@NonNull MenuItem item)
-          {
-              final int docsItemId = R.id.nav_item_documents
-                      , quitItemId = R.id.nav_item_quit
-                      , itemId     = item.getItemId();
+        final int docsItemId = R.id.nav_item_documents
+                , quitItemId = R.id.nav_item_quit
+                , itemId     = item.getItemId();
 
-                   if ( itemId == docsItemId )
-                       setCurrentTab(Tab.DOCUMENTS);
-              else if ( itemId == quitItemId )
-                  closeApp();
-              else
-                  throw new MikoError( this
-                          , "onNavigationItemSelected"
-                          , "Unknown menu item" );
+         if ( itemId == docsItemId )
+           moveTo( new DocumentViewer(), "documents", true);
+        else if ( itemId == quitItemId )
+          closeApp();
+        else
+          throw new MikoError(this
+                            , "onNavigationItemSelected"
+                            , "Unknown menu item");
 
-              drawer.closeDrawer(GravityCompat.START);
-              item.setChecked(false);
+        drawer.closeDrawer(GravityCompat.START);
+        item.setChecked(false);
 
-              //TODO: repair. deselect sliding menu item
+        //TODO: repair. deselect sliding menu item
 
-              return true;
-          }
-      };
+        return true;
+      }
+    };
 
-      menu.setNavigationItemSelectedListener(l);
+    menu.setNavigationItemSelectedListener(l);
   }
   private void closeApp           ()
   {
-      new AppManager().cleanTempDirContent();
+    new AppManager().cleanTempDirContent();
 
-      finish();
-      System.exit(0);
+    finish();
+    System.exit(0);
   }
 
-  private FragmentTabHost tabHost;
-  private NavigationView  menu;
-  private DrawerLayout    drawer;
-  private HttpConnection  httpConnection;
-  private List<Tab>       tabStack;
+  private NavigationView  menu            = null;
+  private DrawerLayout    drawer          = null;
+  private HttpConnection  httpConnection  = null;
+  private FragmentManager fragmentManager = null;
 
-  private Tab currentTab          = Tab.WELCOME_SCREEN
-                          , previousTab       = Tab.WELCOME_SCREEN;
-  private final   String  serverAddress       = "http://42c6a437.ngrok.io"
-                          , getModelEndpoint  = "/getModel"
-                          , addImageEndpoint  = "/addImage";
+  private final String    serverAddress     = "http://3c077028.ngrok.io"
+                        , getModelEndpoint  = "/getModel"
+                        , addImageEndpoint  = "/addImage";
 }
