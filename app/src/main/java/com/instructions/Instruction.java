@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bruce.miko_mk10.R;
-import com.example.bruce.miko_mk10.databinding.InstructionBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.InstructionBinding;
 
 public class Instruction extends Fragment
 {
@@ -24,30 +24,28 @@ public class Instruction extends Fragment
   {
       Instruction fragment = new Instruction();
       Bundle      args     = new Bundle();
-      args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+      args.putInt(BUNDLE_PARAM_INSTRUCTION_PAGE, sectionNumber);
       fragment.setArguments(args);
       return fragment;
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater
-          ,ViewGroup container
-          ,Bundle savedInstanceState)
+                          ,ViewGroup      container
+                          ,Bundle         savedInstanceState)
   {
-      //--inflate
       InstructionBinding instruction
               = DataBindingUtil.inflate ( inflater
                                         , R.layout.instruction
                                         , container
                                         , false);
 
-      //--get number of page, which you will customize
-      int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);
+      int pageNumber = this.getArguments().getInt(BUNDLE_PARAM_INSTRUCTION_PAGE);
 
-      instruction.textViewTitle.setText           ( getTitle      (pageNumber) );
-      instruction.textViewDescription.setText     ( getDescription(pageNumber) );
-      instruction.layout.setBackgroundColor       ( getColor      (pageNumber) );
-      instruction.imageViewIcon.setImageDrawable  ( getIcon       (pageNumber) );
+      instruction.header      .setText( getTitle      (pageNumber) );
+      instruction.description .setText( getDescription(pageNumber) );
+      instruction.icon        .setImageDrawable  ( getIcon  (pageNumber) );
+      instruction.layout      .setBackgroundColor( getColor (pageNumber) );
 
       return instruction.getRoot();
   }
@@ -55,8 +53,6 @@ public class Instruction extends Fragment
   public void onAttach(Context context)
   {
     super.onAttach(context);
-
-    this.context = context;
   }
   @Override
   public void onDetach()
@@ -64,7 +60,7 @@ public class Instruction extends Fragment
       super.onDetach();
   }
 
-  private String      getDescription  (int pageNumber)
+  private String   getDescription (int pageNumber)
   {
       int descriptionId;
 
@@ -89,7 +85,7 @@ public class Instruction extends Fragment
 
       return getResources().getString(descriptionId);
   }
-  private String      getTitle        (int pageNumber)
+  private String   getTitle       (int pageNumber)
   {
       int titleId;
 
@@ -114,7 +110,7 @@ public class Instruction extends Fragment
 
       return getResources().getString(titleId);
   }
-  private int         getColor        (int pageNumber)
+  private int      getColor       (int pageNumber)
   {
       //--color variable
       int colorId;
@@ -140,9 +136,9 @@ public class Instruction extends Fragment
       }
 
       //--return this color
-      return ContextCompat.getColor(context, colorId);
+      return ContextCompat.getColor(getActivity(), colorId);
   }
-  private Drawable    getIcon         (int pageNumber)
+  private Drawable getIcon        (int pageNumber)
   {
       int iconId;
 
@@ -165,9 +161,8 @@ public class Instruction extends Fragment
               break;
       }
 
-      return ContextCompat.getDrawable(context, iconId);
+      return ContextCompat.getDrawable(getActivity(), iconId);
   }
 
-  private Context context = null;
-  private static final String ARG_SECTION_NUMBER = "section_number";
+  private static final String BUNDLE_PARAM_INSTRUCTION_PAGE = "INSTRUCTION_PAGE";
 }

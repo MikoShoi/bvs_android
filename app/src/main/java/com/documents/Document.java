@@ -4,14 +4,14 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 
-import com.example.bruce.miko_mk10.R;
-import com.example.bruce.miko_mk10.databinding.DocumentBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.DocumentBinding;
 
 public class Document extends Fragment
 {
@@ -24,84 +24,68 @@ public class Document extends Fragment
   {
       Document fragment = new Document();
       Bundle   args     = new Bundle();
-      args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+      args.putInt(BUNDLE_PARAM_DOCUMENT_NUMBER, sectionNumber);
       fragment.setArguments(args);
       return fragment;
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater
-          ,ViewGroup container
-          ,Bundle savedInstanceState)
+                          ,ViewGroup      container
+                          ,Bundle         savedInstanceState)
   {
-      //--inflate
-      DocumentBinding document
-              = DataBindingUtil.inflate(inflater
-                                      , R.layout.document
-                                      , container
-                                      , false);
+      DocumentBinding document = DataBindingUtil.inflate( inflater
+                                                        , R.layout.document
+                                                        , container
+                                                        , false);
+    if (getArguments() != null)
+    {
 
-      //--get number of page, which you will customize
-      int pageNumber = this.getArguments().getInt(ARG_SECTION_NUMBER);
+      WebView webView = document.webView;
+      webView.setHorizontalScrollBarEnabled(false);
+      webView.setVerticalScrollBarEnabled(false);
 
-      //--set for this page title
-      document.textViewHeader.setText( getTitle(pageNumber) );
+      int pageNumber      = this.getArguments().getInt(BUNDLE_PARAM_DOCUMENT_NUMBER);
+      String documentUrl  = getDocumentUrl(pageNumber);
 
-      //--, description
-      document.textViewDescription.setMovementMethod( new ScrollingMovementMethod() );
-      document.textViewDescription.setText( Html.fromHtml( getDescription(pageNumber) ) );
+      webView.loadUrl(documentUrl);
+    }
 
-      return document.getRoot();
+    return document.getRoot();
   }
   @Override
-  public void onAttach  (Context context)
+  public void onAttach    (Context context)
   {
       super.onAttach(context);
   }
   @Override
-  public void onDetach  ()
+  public void onDetach    ()
   {
       super.onDetach();
   }
 
-  private String getDescription (int pageNumber)
+  private String getDocumentUrl(int pageNumber)
   {
-      int descriptionId;
+    System.out.println("getDocumentUrl: " + pageNumber);
+    String documentUrl;
 
-      switch (pageNumber)
+    switch (pageNumber)
+    {
+      case 0:
+        documentUrl = "file:///android_asset/about.html";
+        break;
+      case 1:
+        documentUrl = "file:///android_asset/privacy_policy.html";
+        break;
+      default:
       {
-          case 0:
-              descriptionId = R.string.about_description;
-              break;
-          case 1:
-              descriptionId = R.string.privacy_policy_description;
-              break;
-          default:
-              descriptionId = R.string.default_description;
-              break;
+        Log.e("Dooument:getDocumentUrl"," : can not load document");
+        documentUrl = "file:///android_asset/default.html";
       }
+    }
 
-      return getResources().getString(descriptionId);
-  }
-  private String getTitle       (int pageNumber)
-  {
-      int titleId;
-
-      switch (pageNumber)
-      {
-          case 0:
-              titleId = R.string.about_title;
-              break;
-          case 1:
-              titleId = R.string.privacy_policy_title;
-              break;
-          default:
-              titleId = R.string.default_title;
-              break;
-      }
-
-      return getResources().getString(titleId);
+    return documentUrl;
   }
 
-  private static final String ARG_SECTION_NUMBER = "section_number";
+  private static final String BUNDLE_PARAM_DOCUMENT_NUMBER = "DOCUMENT_NUMBER";
 }

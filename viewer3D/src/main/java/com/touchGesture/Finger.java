@@ -23,7 +23,7 @@ class Finger
     return ( obj instanceof Finger && ((Finger) obj).getId() == id );
   }
 
-  Finger    update              (MotionEvent e)
+  void      update              (MotionEvent e)
   {
     if ( fingerPosition(e) != pos )
     {
@@ -33,8 +33,6 @@ class Finger
       lastUpdateDate  = updateDate;
       updateDate      = System.nanoTime();
     }
-
-    return this;
   }
   Vector2f  shift               ()
   {

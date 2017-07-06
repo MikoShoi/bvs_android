@@ -1,4 +1,4 @@
-package com.example.bruce.miko_mk10;
+package com.example.bruce.bvs;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -23,6 +23,6 @@ public class ExampleInstrumentedTest
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.bruce.miko_mk10", appContext.getPackageName());
+        assertEquals("com.example.bruce.bvs", appContext.getPackageName());
     }
 }

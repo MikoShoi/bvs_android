@@ -51,6 +51,11 @@ public class Model
   @Override
   public boolean  equals          (Object obj)
   {
+    if ( !(obj instanceof ModelData) )
+    {
+      return false;
+    }
+
     return obj.hashCode() == this.modelData.getHashCode();
   }
 

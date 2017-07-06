@@ -1,4 +1,4 @@
-package com.example.bruce.miko_mk10;
+package com.example.bruce.bvs;
 
 import org.junit.Test;
 

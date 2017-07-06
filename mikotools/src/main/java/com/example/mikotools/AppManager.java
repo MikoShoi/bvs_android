@@ -47,10 +47,9 @@ public class AppManager
 
   private String  getPublicDownloadDirPath()
   {
-    String path = Environment
-                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString();
-    return path;
+    return Environment
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            .toString();
   }
 
   private final File tempDir;

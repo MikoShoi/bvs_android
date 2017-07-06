@@ -1,6 +1,8 @@
-package com.example.bruce.miko_mk10;
+package com.example.bruce.bvs;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,7 +19,7 @@ import android.view.MenuItem;
 import com.androidnetworking.error.ANError;
 import com.documents.DocumentViewer;
 import com.documents.DocumentViewerListener;
-import com.example.bruce.miko_mk10.databinding.MainBinding;
+import com.example.bruce.bvs.databinding.MainBinding;
 import com.example.camera.Camera;
 import com.example.camera.CameraListener;
 import com.example.mikotools.AppManager;
@@ -56,16 +58,28 @@ public class MainActivity
 
     configSlidingMenu();
 
-    httpConnection = new HttpConnection(this, this);
-    httpConnection.sendGetRequest(serverAddress);
+    moveTo(Tab.WELCOME);
+    if( isNetworkConnectionAvailable() )
+    {
+      httpConnection = new HttpConnection(this, this);
+      httpConnection.sendGetRequest(serverAddress);
+    }
+    else
+      moveTo(Tab.NO_CONNECTION);
+  }
+  private boolean isNetworkConnectionAvailable()
+  {
+    ConnectivityManager cm  = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    boolean isWifiTurnOn    = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()
+          , isMobileTurnOn  = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
 
-    moveTo(InfoImage.newInstance(R.drawable.welcome), "welcome", false);
+    return (isWifiTurnOn || isMobileTurnOn);
   }
 
   @Override
   public void onInstructionsViewed  ()
   {
-    moveTo(new Camera(), "camera", true);
+    moveTo(Tab.CAMERA);
   }
   @Override
   public void onDocumentsViewed     ()
@@ -73,14 +87,10 @@ public class MainActivity
     onBackPressed();
   }
 
-//-- camera
   @Override
   public void onShootingFinished    ()
   {
-    moveTo( InfoAnimation.newInstance(R.raw.loading
-                                    , R.string.loaderDescription)
-          , "loader"
-          , false );
+    moveTo(Tab.LOADER);
 
     httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
   }
@@ -90,7 +100,6 @@ public class MainActivity
     httpConnection.uploadFile(serverAddress + addImageEndpoint, absoluteFilePath);
   }
 
-//-- http connection
   @Override
   public void onUploadedFile        (String serverAddress, Response response)
   {
@@ -110,32 +119,20 @@ public class MainActivity
   {
     if ( serverAddress.equals(this.serverAddress) )
     {
-      boolean firstLaunch = new AppManager().isAppFirstTimeLaunch( getApplicationContext() );
+      boolean firstLaunch = new AppManager().isAppFirstTimeLaunch(this);
 
-      if (firstLaunch)
-      {
-        moveTo(new InstructionViewer(), "instructions", true);
-      }
-      else
-      {
-        moveTo(new Camera(), "camera", true);
-      }
+      moveTo(firstLaunch ? Tab.INSTRUCTIONS : Tab.CAMERA);
     }
   }
   @Override
   public void onErrorOccurred         (ANError       error)
   {
-    moveTo(InfoImage.newInstance(R.drawable.no_connection), "noConnection", false);
+    moveTo(Tab.NO_CONNECTION);
   }
 
   @Override
   public void onBackPressed           ()
   {
-    for(int entry = 0; entry < fragmentManager.getBackStackEntryCount(); entry++)
-    {
-      Log.i("Back stack", "Found fragment: " + fragmentManager.getBackStackEntryAt(entry).getName());
-    }
-
     if ( fragmentManager.getBackStackEntryCount() > 0 )
     {
       fragmentManager.popBackStack();
@@ -145,7 +142,35 @@ public class MainActivity
       super.onBackPressed();
     }
   }
-
+  private void moveTo(Tab tab)
+  {
+    switch (tab)
+    {
+      case WELCOME:
+        moveTo(InfoImage.newInstance(     R.drawable.welcome),        tab.name(), false);
+        break;
+      case NO_CONNECTION:
+        moveTo(InfoImage.newInstance(     R.drawable.no_connection),  tab.name(), false);
+        break;
+      case LOADER:
+        moveTo(InfoAnimation.newInstance( R.raw.loading
+                                        , R.string.loaderDescription)
+              , tab.name()
+              , false);
+        break;
+      case INSTRUCTIONS:
+        moveTo(new InstructionViewer(), tab.name(), true);
+        break;
+      case DOCUMENTS:
+        moveTo(new DocumentViewer(),    tab.name(), true);
+        break;
+      case CAMERA:
+        moveTo(new Camera(),            tab.name(), true);
+        break;
+        default:
+          Log.i("MainActivity moveTo: ","Unsupported tab");
+    }
+  }
   private void moveTo(Fragment fragment, String tag, boolean saveOnStack)
   {
     FragmentTransaction transaction = fragmentManager
@@ -168,29 +193,30 @@ public class MainActivity
       @Override
       public boolean onNavigationItemSelected(@NonNull MenuItem item)
       {
-        final int docsItemId = R.id.nav_item_documents
-                , quitItemId = R.id.nav_item_quit
-                , itemId     = item.getItemId();
-
-         if ( itemId == docsItemId )
-           moveTo( new DocumentViewer(), "documents", true);
-        else if ( itemId == quitItemId )
-          closeApp();
-        else
-          throw new MikoError(this
-                            , "onNavigationItemSelected"
-                            , "Unknown menu item");
+        switch (item.getItemId())
+        {
+          case R.id.nav_item_documents:
+            moveTo(Tab.DOCUMENTS);
+            break;
+          case R.id.nav_item_quit:
+            closeApp();
+            break;
+          default:
+            throw new MikoError(this
+                              , "onNavigationItemSelected"
+                              , "Unknown menu item");
+        }
 
         drawer.closeDrawer(GravityCompat.START);
         item.setChecked(false);
-
-        //TODO: repair. deselect sliding menu item
 
         return true;
       }
     };
 
     menu.setNavigationItemSelectedListener(l);
+
+    //TODO: repair. deselect sliding menu item
   }
   private void closeApp           ()
   {

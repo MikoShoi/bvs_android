@@ -9,10 +9,6 @@
     <dimen name="dots_margin_bottom">           20dp    </dimen>
 
     <dimen name="img_width_height">            120dp    </dimen>
-    <dimen name="img_padding_welcome">          20dp    </dimen>
-    <dimen name="img_padding_capture_images">    0dp    </dimen>
-    <dimen name="img_padding_enjoy">            10dp    </dimen>
-    <dimen name="img_padding_help">             10dp    </dimen>
 
     <dimen name="slide_title">                  30sp    </dimen>
     <dimen name="slide_desc">                   16sp    </dimen>
@@ -20,13 +16,5 @@
 
 <!-- documents -->
     <dimen name="fab_margin">                   20dp    </dimen>
-
-    <dimen name="title_text_size">              32sp    </dimen>
-    <dimen name="title_top_margin">             50dp    </dimen>
-    <dimen name="title_left_margin">           100dp    </dimen>
-
-    <dimen name="description_text_size">        14sp    </dimen>
-    <dimen name="description_left_padding">     40dp    </dimen>
-    <dimen name="description_right_padding">    40dp    </dimen>
 
 </resources>

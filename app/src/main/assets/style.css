@@ -1,0 +1,40 @@
+@charset "utf-8";
+
+body 						{
+	margin: 0;
+	height: 100%;
+	overflow-x: hidden;
+	font-family: sans-serif-thin;
+}
+header					{
+	width: 100%;
+	padding-top:3%;
+	padding-bottom: 3%;
+	color: #F5F5F5;
+	background-color: #E74C3C;
+	font-size: 160%;
+	text-indent: 2%;
+	display:inline-block;
+	position: fixed;
+	z-index: 1;
+}
+div		{
+	width: 96%;
+	margin: auto;
+	padding-top: 10%;
+	font-size: 80%;
+	text-align: justify;
+	position: relative;
+		
+}
+ul 							{
+	justify-content: center;
+}
+li 							{
+	display: list-item;
+	list-style: disc;
+}
+a 							{
+	color: black;
+}
+

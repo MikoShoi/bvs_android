@@ -9,8 +9,6 @@ public class CameraDevicePreview
         extends SurfaceView
         implements SurfaceHolder.Callback
 {
-  CameraDevice cameraDevice = null;
-
   public CameraDevicePreview  (Context context)
   {
     super(context);
@@ -50,5 +48,5 @@ public class CameraDevicePreview
     cameraDevice = cam;
   }
 
-  //-- TODO: improve
+  private CameraDevice cameraDevice = null;
 }

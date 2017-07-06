@@ -140,10 +140,9 @@ class CameraDevice
   {
     String tempDirPath      = new AppManager().getTempDirPath()
             , uniqueName    = String.valueOf( System.currentTimeMillis() )
-            , fileEtension  = ".jpg"
-            , absFilePath   = tempDirPath + "/" + uniqueName + fileEtension;
+            , fileEtension  = ".jpg";
 
-    return absFilePath;
+    return tempDirPath + "/" + uniqueName + fileEtension;
   }
 
   private CameraListener  cameraListener  = null;

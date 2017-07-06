@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class DocumentViewerAdapter extends FragmentPagerAdapter
+class DocumentViewerAdapter extends FragmentPagerAdapter
 {
-  public DocumentViewerAdapter(FragmentManager fm)
+  DocumentViewerAdapter(FragmentManager fm)
   {
     super(fm);
   }

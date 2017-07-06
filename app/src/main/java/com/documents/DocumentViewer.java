@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bruce.miko_mk10.R;
-import com.example.bruce.miko_mk10.databinding.DocumentViewerBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.DocumentViewerBinding;
 import com.example.mikotools.MikoError;
 
 public class DocumentViewer extends Fragment

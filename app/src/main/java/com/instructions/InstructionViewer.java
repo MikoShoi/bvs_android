@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.bruce.miko_mk10.R;
-import com.example.bruce.miko_mk10.databinding.InstructionViewerBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.InstructionViewerBinding;
 import com.example.mikotools.MikoError;
 
 public class InstructionViewer extends Fragment

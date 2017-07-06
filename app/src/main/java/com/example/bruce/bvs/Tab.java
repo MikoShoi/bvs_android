@@ -1,4 +1,4 @@
-package com.example.bruce.miko_mk10;
+package com.example.bruce.bvs;
 
 public enum Tab
 {
@@ -6,9 +6,9 @@ public enum Tab
     , DOCUMENTS
     , CAMERA
     , VIEWER_3D
-    , PRELOADER
-    , WELCOME_SCREEN
-    , NO_CONNECTION_SCREEN;
+    , LOADER
+    , WELCOME
+    , NO_CONNECTION;
 
     public int index()
     {
@@ -20,11 +20,11 @@ public enum Tab
                 return 1;
             case DOCUMENTS:
                 return 2;
-            case PRELOADER:
+            case LOADER:
                 return 3;
-            case WELCOME_SCREEN:
+            case WELCOME:
                 return 4;
-            case NO_CONNECTION_SCREEN:
+            case NO_CONNECTION:
                 return 5;
             default:
                 return 0;

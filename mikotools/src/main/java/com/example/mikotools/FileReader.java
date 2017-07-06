@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileReader
 {
-  public FileReader()
+  FileReader()
   {
 
   }

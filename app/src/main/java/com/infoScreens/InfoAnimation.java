@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.bruce.miko_mk10.R;
-import com.example.bruce.miko_mk10.databinding.InfoAnimationBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.InfoAnimationBinding;
 import com.felipecsl.gifimageview.library.GifImageView;
 
 import java.io.InputStream;

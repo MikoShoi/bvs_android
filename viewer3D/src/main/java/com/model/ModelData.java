@@ -5,7 +5,7 @@ import com.example.mikotools.MikoError;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public class ModelData
+class ModelData
 {
   FloatBuffer getVertexBuffer            ()
   {

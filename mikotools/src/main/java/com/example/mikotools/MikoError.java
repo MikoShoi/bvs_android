@@ -12,7 +12,7 @@ public class MikoError extends Error
 
     throwError(className, functionName, description);
   }
-  private String throwError (String className, String functionName, String description )
+  private void throwError (String className, String functionName, String description )
   {
     final String errorHeader  = "\n\n ------- ERROR -------"
                 , srcPrefix   = "\n --- source:\t\t"
