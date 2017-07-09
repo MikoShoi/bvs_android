@@ -11,15 +11,10 @@ public class AppManager
 {
   public AppManager()
   {
-    final String tempDirPath = getPublicDownloadDirPath() + "/bvsTempDir";
+    tempDir = new File(getPublicDownloadDirPath() + "/bvsTempDir");
 
-    tempDir = new File(tempDirPath);
     if( !tempDir.exists() && !tempDir.mkdir() )
-    {
-        throw new MikoError ( this
-                , "constructor"
-                , "can not create temp dir: ");
-    }
+      throw new RuntimeException("can not create temp dir");
   }
 
   public  boolean isAppFirstTimeLaunch    (Context context)
@@ -27,7 +22,9 @@ public class AppManager
     final String  FILE_NAME     = "bvsAppConfig"
                 , PROPERTY_NAME = "firstLaunch";
 
-    SharedPreferences config  = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+    SharedPreferences config
+            = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+
     boolean isThatFirstLaunch = config.getBoolean(PROPERTY_NAME, true);
 
     if ( isThatFirstLaunch )

@@ -31,11 +31,9 @@ public class PreviewSurface
     //-- render engine will inform mvpController when display aspect ration changes
     renderEngine.addSurfaceChangeListener(mvpController);
 
-    //-- responsible for gestures recognition
-    gestureAnalyser = new GestureAnalyser(this);
     //-- responsible for touches recognition
-    touchAnalyser   = new TouchAnalyser();
-    touchAnalyser.addListener(gestureAnalyser);
+    touchAnalyser = new TouchAnalyser();
+    touchAnalyser.addListener( new GestureAnalyser(this) );
 
     //-- set some openGL settings for render engine
     setupRenderEngine();
@@ -69,7 +67,7 @@ public class PreviewSurface
   }
   public void     show              (Model model)
   {
-    renderEngine.addModel(model);
+    renderEngine.setRenderModel(model);
   }
 
   private void    setupRenderEngine ()
@@ -81,8 +79,6 @@ public class PreviewSurface
   }
 
   private MvpController   mvpController;
-  private RenderEngine    renderEngine;
-
   private TouchAnalyser   touchAnalyser;
-  private GestureAnalyser gestureAnalyser;
+  private RenderEngine    renderEngine;
 }

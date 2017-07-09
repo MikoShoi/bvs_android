@@ -13,20 +13,9 @@ import android.widget.TextView;
 import android.view.Surface;
 
 import com.example.camera.databinding.CameraBinding;
-import com.example.mikotools.MikoError;
 
 public class Camera extends Fragment
 {
-  public Camera()
-  {
-    // Required empty public constructor
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState)
-  {
-    super.onCreate(savedInstanceState);
-  }
   @Override
   public View onCreateView(LayoutInflater inflater
                           ,ViewGroup container
@@ -49,9 +38,8 @@ public class Camera extends Fragment
     if( context instanceof CameraListener)
       cameraListener = (CameraListener) context;
     else
-      throw new MikoError(this
-                          , "onAttach"
-                          , "parent object does not implement needed interface");
+      throw new RuntimeException( "parent object must implement " +
+                                  "CameraListener interface" );
   }
   @Override
   public void onDetach()

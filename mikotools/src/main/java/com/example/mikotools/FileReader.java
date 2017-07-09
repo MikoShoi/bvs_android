@@ -4,15 +4,12 @@ import android.content.res.Resources;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class FileReader
 {
-  FileReader()
+  private FileReader()
   {
 
   }
@@ -25,60 +22,31 @@ public class FileReader
     }
     return fileReader;
   }
-
-  public void         setResources        (Resources resources)
+  public void   setResources        (Resources resources)
   {
     this.resources = resources;
   }
-
-  public String       getShaderSourceCode (int rIdShader)
+  public String getShaderSourceCode (int rIdShader)
   {
-    if ( resources == null )
+    if (resources == null)
     {
-      throw new MikoError(this
-                        , "getShaderSourceCode"
-                        , "no handle to resources");
+      MikoLogger.log("no handle to resources. Did you use setResourcer() ?");
+      return "";
     }
 
     try
     {
       InputStream stream  = resources.openRawResource(rIdShader);
 
-      return IOUtils.toString(stream, encoding);
+      return IOUtils.toString(stream, "UTF-8");
     }
     catch (IOException e)
     {
-      throw new MikoError( "FileReader"
-                          , "getTextFileContent"
-                          , "error while reading shader file" );
-    }
-  }
-  public List<String> getTextFileContent  (String modelFilePath)
-  {
-    try
-    {
-      File modelFile = new File(modelFilePath);
-
-      if( !modelFile.exists() )
-      {
-        throw new MikoError( this
-                , "loadMesh"
-                , "file: " + modelFilePath + " - no exist." );
-      }
-
-      FileInputStream stream = new FileInputStream(modelFile);
-
-      return IOUtils.readLines(stream, encoding);
-    }
-    catch (IOException e)
-    {
-      throw new MikoError ( "FileReader"
-                          , "getTextFileContent"
-                          , "error while reading model file" );
+      MikoLogger.log("error while reading shader file");
+      return "";
     }
   }
 
-  private static FileReader fileReader = null;
-  private final String encoding = "UTF-8";
   private Resources resources = null;
+  private static FileReader fileReader = null;
 }

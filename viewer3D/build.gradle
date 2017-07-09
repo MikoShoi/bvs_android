@@ -12,12 +12,33 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags    "-std=c++11 -fexceptions"
+                arguments   '-DANDROID_PLATFORM=android-19'
+                            '-DANDROID_TOOLCHAIN=clang'
+                            '-DANDROID_STL=gnustl_static'
+            }
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/cpp/external_libs/assimp/lib']
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path '../viewer3D/src/main/cpp/CMakeLists.txt'
         }
     }
 }

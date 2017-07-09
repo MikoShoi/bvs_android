@@ -5,35 +5,25 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bruce.bvs.R;
 import com.example.bruce.bvs.databinding.InfoImageBinding;
+import com.example.mikotools.MikoLogger;
 
 public class InfoImage extends Fragment
 {
-  public InfoImage ()
-  {
-    // Required empty public constructor
-  }
-
   public static InfoImage newInstance (int rIdImage)
   {
     InfoImage fragment = new InfoImage();
-    Bundle args = new Bundle();
-    args.putInt(BUNDLE_PARAM_R_ID_IMAGE, rIdImage);
-    fragment.setArguments(args);
+
+    Bundle bundle = new Bundle();
+    bundle.putInt(BUNDLE_PARAM_R_ID_IMAGE, rIdImage);
+    fragment.setArguments(bundle);
 
     return fragment;
-  }
-
-  @Override
-  public void onCreate    ( Bundle savedInstanceState )
-  {
-    super.onCreate(savedInstanceState);
   }
 
   @Override
@@ -46,16 +36,18 @@ public class InfoImage extends Fragment
                                                         , container
                                                         , false);
 
-    if (getArguments() != null)
+    Bundle bundle = getArguments();
+    if (bundle != null)
     {
-      int rIdImage = getArguments().getInt(BUNDLE_PARAM_R_ID_IMAGE);
+      int rIdImage = bundle.getInt(BUNDLE_PARAM_R_ID_IMAGE);
 
       Drawable image = ContextCompat.getDrawable(getContext(), rIdImage);
       infoImage.image.setImageDrawable(image);
     }
     else
-      Log.i( "InfoImage: "
-            ," r id image is invalid, did you use newInstance()?");
+    {
+      MikoLogger.log("r id is invalid, did you use newInstance() ?");
+    }
 
     return infoImage.getRoot();
   }

@@ -15,20 +15,9 @@ import android.widget.TextView;
 
 import com.example.bruce.bvs.R;
 import com.example.bruce.bvs.databinding.InstructionViewerBinding;
-import com.example.mikotools.MikoError;
 
 public class InstructionViewer extends Fragment
 {
-  public InstructionViewer()
-  {
-      // Required empty public constructor
-  }
-
-  @Override
-  public void onCreate      ( Bundle savedInstanceState )
-  {
-      super.onCreate(savedInstanceState);
-  }
   @Override
   public View onCreateView  ( LayoutInflater inflater
                             , ViewGroup container
@@ -61,7 +50,8 @@ public class InstructionViewer extends Fragment
     if (context instanceof InstructionViewerListener)
       listener = (InstructionViewerListener) context;
     else
-      throw  new MikoError(this, "onAttach", "Parent object does not implement needed interface");
+      throw new RuntimeException( "parent object must implement " +
+                                  "InstructionViewerListener interface" );
   }
   @Override
   public void onDetach      ()
@@ -106,28 +96,32 @@ public class InstructionViewer extends Fragment
   }
   private void setNextButtonOnClickListener ()
   {
-    nextButton.setOnClickListener(new View.OnClickListener()
+    View.OnClickListener l = new View.OnClickListener()
     {
-        @Override
-        public void onClick(View v)
-        {
-            if (CURRENT_PAGE_NUMBER < LAST_PAGE_NUMBER)
-                goToNextPage();
-            else
-                close();
-        }
-    });
+      @Override
+      public void onClick(View v)
+      {
+        if (CURRENT_PAGE_NUMBER < LAST_PAGE_NUMBER)
+            goToNextPage();
+        else
+          listener.onInstructionsViewed();
+      }
+    };
+
+    nextButton.setOnClickListener(l);
   }
   private void setSkipButtonOnClickListener ()
   {
-    skipButton.setOnClickListener( new View.OnClickListener()
+    View.OnClickListener l = new View.OnClickListener()
+    {
+      @Override
+      public void onClick(View v)
       {
-          @Override
-          public void onClick(View v)
-          {
-              close();
-          }
-      });
+        listener.onInstructionsViewed();
+      }
+    };
+
+    skipButton.setOnClickListener(l);
   }
   private void setButtonsAppearanceForPage  (boolean lastPage)
   {
@@ -141,7 +135,7 @@ public class InstructionViewer extends Fragment
   private void setBottomDots                ()
   {
     TextView dots[] = new TextView[NUMBER_OF_PAGES];
-    final int dotsNumber = dots.length;
+    int dotsNumber = dots.length;
 
     int[] colorsActive   = getResources().getIntArray(R.array.array_dot_active)
         , colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
@@ -159,10 +153,6 @@ public class InstructionViewer extends Fragment
     if ( dotsNumber > 0 )
         dots[CURRENT_PAGE_NUMBER].setTextColor(colorsActive[CURRENT_PAGE_NUMBER]);
   }
-  private void close                        ()
-  {
-    listener.onInstructionsViewed();
-  }
 
   private InstructionViewerListener listener;
 
@@ -174,3 +164,4 @@ public class InstructionViewer extends Fragment
             , LAST_PAGE_NUMBER
             , CURRENT_PAGE_NUMBER;
 }
+//-- TODO: improve

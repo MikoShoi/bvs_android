@@ -8,8 +8,8 @@ public class MvpController implements SurfaceChangeListener
 {
   public MvpController ()
   {
-    listener  = null;
-    params    = new MvpParams();
+    listener = null;
+    params   = new MvpParams();
 
     recalculateModelMatrix(0,0,0);
     recalculateViewMatrix();
@@ -17,7 +17,7 @@ public class MvpController implements SurfaceChangeListener
   }
 
   @Override
-  public  void onDisplaySurfaceChanged (int screenWidth, int screenHeight)
+  public  void onDisplaySurfaceChanged    (int screenWidth, int screenHeight)
   {
     params.update(screenWidth, screenHeight);
 
@@ -56,6 +56,8 @@ public class MvpController implements SurfaceChangeListener
                         , params.aspectRatio
                         , params.nearPlane
                         , params.farPlane );
+
+    informThatCameraHasChanged();
   }
 
   private void recalculateModelMatrix     (float dxa, float dya, float dza)

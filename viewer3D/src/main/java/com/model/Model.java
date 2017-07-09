@@ -2,18 +2,19 @@ package com.model;
 
 import android.opengl.GLES30;
 
-import com.example.mikotools.MikoError;
+import com.example.mikotools.FileReader;
+import com.example.viewer3d.R;
 
 public class Model
 {
-  public Model(String modelFilePath, int rIdVertShader, int rIdFragShader)
+  static
   {
-    program           = new OesProgram();
-    isItFirstDrawing  = true;
+    System.loadLibrary("native-lib");
+  }
 
-    this.modelData    = new ModelLoader().load( modelFilePath
-                                              , rIdVertShader
-                                              , rIdFragShader);
+  public Model(String modelFilePath)
+  {
+    loadModelData(modelFilePath);
   }
 
   public void     draw            (RenderMatrices matrices)
@@ -23,7 +24,8 @@ public class Model
       prepareToFirstDraw();
     }
 
-    program.active();
+//    program.active();
+    GLES30.glUseProgram(oesProgram);
 
     //--active vao
     GLES30.glBindVertexArray(vao);
@@ -43,22 +45,6 @@ public class Model
     GLES30.glBindVertexArray(0);
   }
 
-  @Override
-  public int      hashCode        ()
-  {
-    return modelData.getHashCode();
-  }
-  @Override
-  public boolean  equals          (Object obj)
-  {
-    if ( !(obj instanceof ModelData) )
-    {
-      return false;
-    }
-
-    return obj.hashCode() == this.modelData.getHashCode();
-  }
-
   private void prepareUniforms    (RenderMatrices matrices)
   {
 //    setUniform( "mv"       , matrices.getMv() );
@@ -67,13 +53,13 @@ public class Model
   }
   private void setUniform         (String name, float[] data)
   {
-    int location = GLES30.glGetUniformLocation(program.getOesHandle(), name);
+    int location = GLES30.glGetUniformLocation(oesProgram, name);
 
     GLES30.glUniformMatrix4fv(location, 1, false, data, 0);
   }
   private void prepareToFirstDraw ()
   {
-    initProgram();
+    prepareOesProgram();
 //    initIndexVbo();
     initVertexVbo();
     initVao();
@@ -100,6 +86,10 @@ public class Model
 //                      , modelData.getIndexBuffer()
 //                      , GLES30.GL_STATIC_DRAW);
 //  }
+  private void loadModelData      (String modelFilePath)
+  {
+    modelData.setVertexBuffer( getVertexData(modelFilePath) );
+  }
   private void initVao            ()
   {
     //--get handle to new vao object and tell opengl that now you operate on him
@@ -133,13 +123,37 @@ public class Model
     //--finally release vao
     GLES30.glBindVertexArray(0);
   }
-  private void initProgram        ()
+  private void prepareOesProgram ()
   {
-    program = new OesProgram();
-    program.addShaders( modelData.getVertShaderCode()
-                      , modelData.getFragShaderCode() );
+    oesProgram = GLES30.glCreateProgram();
+
+    int vertShader = createShader(GLES30.GL_VERTEX_SHADER,   R.raw.vertex_shader)
+      , fragShader = createShader(GLES30.GL_FRAGMENT_SHADER, R.raw.fragment_shader);
+
+    //--add them to opengl programHandle
+    GLES30.glAttachShader(oesProgram, vertShader);
+    GLES30.glAttachShader(oesProgram, fragShader);
+
+    //--and link both to one programHandle
+    GLES30.glLinkProgram(oesProgram);
+
+    //--after all delete both shaders, now they are redundant
+    GLES30.glDeleteShader(vertShader);
+    GLES30.glDeleteShader(fragShader);
   }
-  private int  generateId         (OesObjectType objectType)
+  private int  createShader      (int shaderType, int rIdShader)
+  {
+    int shader = GLES30.glCreateShader(shaderType);
+
+    FileReader fileReader = FileReader.getInstance();
+    String shaderCode     = fileReader.getShaderSourceCode(rIdShader);
+
+    GLES30.glShaderSource   (shader, shaderCode);
+    GLES30.glCompileShader  (shader);
+
+    return shader;
+  }
+  private int  generateId        (OesObjectType objectType)
   {
     //--make place
     int[] buffers = new int[1];
@@ -154,20 +168,19 @@ public class Model
             GLES30.glGenBuffers     (1, buffers, 0);
             break;
         default:
-            throw new MikoError(this
-                              , "generateId"
-                              , "unknown OesObjectType");
+          throw new RuntimeException("unknown OesObjectType");
     }
 
     //-- and return handle/id to it
     return buffers[0];
   }
 
-  private ModelData   modelData = null;
-  private OesProgram  program   = null;
+  private native float[] getVertexData(String modelFilePath);
 
-  private boolean     isItFirstDrawing  = true;
-  private int         vao               = -1
-//                    , indexVbo          = -1
-                    , vertexVbo         = -1;
+  private ModelData modelData         = new ModelData();
+  private boolean   isItFirstDrawing  = true;
+  private int       vao               = -1
+//                  , indexVbo          = -1
+                  , vertexVbo         = -1
+                  , oesProgram        = -1;
 }

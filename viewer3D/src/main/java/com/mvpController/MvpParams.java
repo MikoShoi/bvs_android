@@ -5,9 +5,6 @@ import org.joml.Vector3f;
 
 public class MvpParams
 {
-  MvpParams ()
-  {}
-
   void update(int screenWidth, int screenHeight)
   {
     aspectRatio = (float) screenWidth / screenHeight;

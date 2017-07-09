@@ -1,7 +1,8 @@
 package com.touchGesture;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+
+import com.example.mikotools.MikoLogger;
 
 import org.joml.Vector2f;
 
@@ -16,8 +17,8 @@ public class GestureAnalyser
   @Override
   public void onOneFingerMove   ( Finger finger )
   {
-      Vector2f dragVector = finger.shift();
-      listener.onDrag(dragVector.x, dragVector.y);
+    Vector2f dragVector = finger.shift();
+    listener.onDrag(dragVector.x, dragVector.y);
   }
   @Override
   public void onTwoFingersMove  ( Finger  firstFinger
@@ -52,7 +53,7 @@ public class GestureAnalyser
         orthogonalMoveHandle(firstFinger, secondFinger);
         break;
       default:
-        Log.i("Gesture analyser: ","onTwoFingersMove: Unknown move type");
+        MikoLogger.log("Unknown move type");
     }
 
     previousTwoFingersGesture = gesture;

@@ -52,8 +52,8 @@ class Finger
   }
   boolean   movesCollinearlyWith(Finger f)
   {
-    Vector2f  sv = new Vector2f( f.getPos()  ).sub(prevPos)
-            , n  = new Vector2f( shift()     ).perpendicular().normalize();
+    Vector2f  sv = new Vector2f( f.getPos() ).sub(prevPos)
+            , n  = new Vector2f( shift()    ).perpendicular().normalize();
 
     float distance  = new Vector2f(sv).dot(n)
         , threshold = 300;
@@ -63,23 +63,23 @@ class Finger
   boolean   isMoving            ()
   {
     float shiftTime     = updateDate - lastUpdateDate
-            , velocity      = shift().length() / shiftTime
-            , velocityOrder = Math.getExponent(velocity)
-            , moveThreshold = -27;
+        , velocity      = shift().length() / shiftTime
+        , velocityOrder = Math.getExponent(velocity)
+        , moveThreshold = -27;
 
     return velocityOrder > moveThreshold;
   }
 
   private int       fingerId      (MotionEvent e)
   {
-      return e.getPointerId( e.getActionIndex() );
+    return e.getPointerId( e.getActionIndex() );
   }
   private Vector2f  fingerPosition(MotionEvent e)
   {
-      float x = e.getX( e.findPointerIndex(id) );
-      float y = e.getY( e.findPointerIndex(id) );
+    float x = e.getX( e.findPointerIndex(id) );
+    float y = e.getY( e.findPointerIndex(id) );
 
-      return new Vector2f(x, y);
+    return new Vector2f(x, y);
   }
 
   private int       id              = 0;

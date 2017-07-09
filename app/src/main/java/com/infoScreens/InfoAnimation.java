@@ -3,7 +3,6 @@ package com.infoScreens;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,33 +10,23 @@ import android.widget.TextView;
 
 import com.example.bruce.bvs.R;
 import com.example.bruce.bvs.databinding.InfoAnimationBinding;
+import com.example.mikotools.MikoLogger;
 import com.felipecsl.gifimageview.library.GifImageView;
 
 import java.io.InputStream;
 
 public class InfoAnimation extends Fragment
 {
-  public InfoAnimation ()
-  {
-    // Required empty public constructor
-  }
-
   public static InfoAnimation newInstance (int rIdGif, int rIdText)
   {
     InfoAnimation fragment = new InfoAnimation();
 
-    Bundle args = new Bundle();
-    args.putInt(BUNDLE_PARAM_R_ID_GIF,  rIdGif);
-    args.putInt(BUNDLE_PARAM_R_ID_TEXT, rIdText);
-    fragment.setArguments(args);
+    Bundle bundle = new Bundle();
+    bundle.putInt(BUNDLE_PARAM_R_ID_GIF,  rIdGif);
+    bundle.putInt(BUNDLE_PARAM_R_ID_TEXT, rIdText);
+    fragment.setArguments(bundle);
 
     return fragment;
-  }
-
-  @Override
-  public void onCreate    ( Bundle savedInstanceState )
-  {
-    super.onCreate(savedInstanceState);
   }
 
   @Override
@@ -51,21 +40,22 @@ public class InfoAnimation extends Fragment
                                     , container
                                     , false);
 
-    if (getArguments() != null)
+    Bundle bundle = getArguments();
+    if (bundle != null)
     {
-      int rIdGif  = getArguments().getInt(BUNDLE_PARAM_R_ID_GIF)
-        , rIdText = getArguments().getInt(BUNDLE_PARAM_R_ID_TEXT);
+      int rIdGif  = bundle.getInt(BUNDLE_PARAM_R_ID_GIF)
+        , rIdText = bundle.getInt(BUNDLE_PARAM_R_ID_TEXT);
 
       setGif(infoAnimation.gif,   rIdGif);
       setTest(infoAnimation.text, rIdText);
     }
     else
-      Log.i( "InfoAnimation: "
-            ," r id's are invalid, did you use newInstance()?");
+    {
+      MikoLogger.log("r id's are invalid, did you use newInstance() ?");
+    }
 
     return infoAnimation.getRoot();
   }
-
   @Override
   public void onStart ()
   {
@@ -100,8 +90,7 @@ public class InfoAnimation extends Fragment
     }
     catch (Exception e)
     {
-      Log.i("onCreateView"
-              , "error while loading gif file");
+      MikoLogger.log("can not use loader gif");
     }
   }
 

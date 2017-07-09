@@ -1,7 +1,9 @@
 package com.model;
 
-import com.example.mikotools.MikoError;
+import com.example.mikotools.MikoLogger;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -9,117 +11,73 @@ class ModelData
 {
   FloatBuffer getVertexBuffer            ()
   {
-      if( vertexBuffer == null )
-      {
-          throw new MikoError( this
-                  , "getVertexBuffer"
-                  , "you are getting empty vertex buffer");
-      }
+    if( vertexBuffer == null )
+    {
+      MikoLogger.log("you are getting empty vertex buffer");
+    }
 
-      return vertexBuffer;
+    return vertexBuffer;
   }
   IntBuffer   getIndexBuffer             ()
   {
       if( indexBuffer == null )
       {
-          throw new MikoError( this
-                  , "getIndexBuffer"
-                  , "you are getting empty index buffer");
+        MikoLogger.log("you are getting empty index buffer");
       }
 
       return indexBuffer;
   }
-  int         getHashCode                ()
+  int         getVerticesNumber          ()
   {
-      if( nameHashCode == 0 )
-      {
-          throw new MikoError( this
-                  , "getHashCode"
-                  , "you are getting not set nameHashCode");
-      }
+    if( verticesNumber == 0 )
+    {
+      MikoLogger.log("vertex buffer is empty, so vertices number is equal 0");
+    }
 
-      return nameHashCode;
+    return verticesNumber;
   }
-  String      getFragShaderCode          ()
+  int         getIndicesNumber           ()
   {
-      if( fragShaderCode.isEmpty() )
-      {
-          throw new MikoError( this
-                  , "getFragShaderCode"
-                  , "fragment shader source code is empty");
-      }
+    if( indicesNumber == 0 )
+    {
+      MikoLogger.log("index buffer is empty, so indices number is equal 0");
+    }
 
-      return fragShaderCode;
-  }
-  String      getVertShaderCode          ()
-  {
-      if( vertShaderCode.isEmpty() )
-      {
-          throw new MikoError( this
-                  , "getVertShaderCode"
-                  , "vertex shader source code is empty");
-      }
-
-      return vertShaderCode;
+    return indicesNumber;
   }
   int         getVertexBufferSizeInBytes ()
   {
-      if( vertexBufferSizeInBytes == 0 )
-      {
-          throw new MikoError( this
-                  , "getVertexBufferSizeInBytes"
-                  , "vertex buffer is empty, so it size is equal 0");
-      }
+    if( vertexBufferSizeInBytes == 0 )
+    {
+      MikoLogger.log("vertex buffer is empty, so it size is equal 0");
+    }
 
-      return vertexBufferSizeInBytes;
+    return vertexBufferSizeInBytes;
   }
   int         getIndexBufferSizeInBytes  ()
   {
       if( indexBufferSizeInBytes == 0 )
       {
-          throw new MikoError( this
-                  , "getIndexBufferSizeInBytes"
-                  , "index buffer is empty, so it size is equal 0");
+        MikoLogger.log("index buffer is empty, so it size is equal 0");
       }
 
       return indexBufferSizeInBytes;
   }
-  int         getIndicesNumber           ()
+
+  void setVertexBuffer   (float[] vertices)
   {
-      if( indicesNumber == 0 )
-      {
-          throw new MikoError( this
-                  , "getIndicesNumber"
-                  , "index buffer is empty, so indices number is equal 0");
-      }
+    final int dataByteSize = vertices.length * FLOAT_SIZE_IN_BYTES;
 
-      return indicesNumber;
-  }
-  int         getVerticesNumber          ()
-  {
-      if( verticesNumber == 0 )
-      {
-          throw new MikoError( this
-                  , "getVerticesNumber"
-                  , "vertex buffer is empty, so vertices number is equal 0");
-      }
+    FloatBuffer buffer = ByteBuffer
+            .allocateDirect(dataByteSize)
+            .order( ByteOrder.nativeOrder() )
+            .asFloatBuffer()
+            .put(vertices);
+    buffer.position(0);
 
-      return verticesNumber;
-  }
-
-  void setHashCode       (String uniqueName)
-  {
-      this.name = uniqueName;
-      this.nameHashCode = this.name.hashCode();
-  }
-  void setVertexBuffer   (FloatBuffer vertexBuffer)
-  {
-      this.vertexBufferSizeInBytes    = vertexBuffer.capacity() * FLOAT_SIZE_IN_BYTES;
-      this.verticesNumber             = vertexBuffer.capacity() / 3;
-
-      this.vertexBuffer               = vertexBuffer;
-      this.vertexBuffer.position(0);
-
+    this.vertexBuffer               = buffer;
+    this.verticesNumber             = vertexBuffer.capacity() / 3;
+    this.vertexBufferSizeInBytes    = vertexBuffer.capacity() * FLOAT_SIZE_IN_BYTES;
   }
   void setIndexBuffer    (IntBuffer indexBuffer)
   {
@@ -128,14 +86,6 @@ class ModelData
 
       this.indexBuffer            = indexBuffer;
       this.indexBuffer.position(0);
-  }
-  void setVertShaderCode (String vertShaderCode)
-  {
-      this.vertShaderCode = vertShaderCode;
-  }
-  void setFragShaderCode (String fragShaderCode)
-  {
-      this.fragShaderCode = fragShaderCode;
   }
 
   final   int FLOAT_SIZE_IN_BYTES     = Float.SIZE    / 8
@@ -151,12 +101,7 @@ class ModelData
   private int indicesNumber           = 0
             , verticesNumber          = 0
             , indexBufferSizeInBytes  = 0
-            , vertexBufferSizeInBytes = 0
-            , nameHashCode            = 0;
-
-  private String  name
-                , vertShaderCode    = null
-                , fragShaderCode    = null;
+            , vertexBufferSizeInBytes = 0;
 
   private IntBuffer   indexBuffer   = null;
   private FloatBuffer vertexBuffer  = null;

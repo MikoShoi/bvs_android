@@ -24,7 +24,7 @@ import com.example.camera.Camera;
 import com.example.camera.CameraListener;
 import com.example.mikotools.AppManager;
 import com.example.mikotools.FileReader;
-import com.example.mikotools.MikoError;
+import com.example.mikotools.MikoLogger;
 import com.example.networkcontroller.HttpConnection;
 import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
@@ -108,30 +108,26 @@ public class MainActivity
   @Override
   public void onDownloadedFile      (String serverAddress, final String absFilePath)
   {
-    moveTo( Viewer3D.newInstance( absFilePath
-                                , R.raw.vertex_shader
-                                , R.raw.fragment_shader )
-          , "viewer3D"
-          , true );
+    moveTo( Viewer3D.newInstance(absFilePath), "viewer3D", true );
   }
   @Override
   public void onGetResponseReceived (String serverAddress, Response response)
   {
     if ( serverAddress.equals(this.serverAddress) )
     {
-      boolean firstLaunch = new AppManager().isAppFirstTimeLaunch(this);
-
-      moveTo(firstLaunch ? Tab.INSTRUCTIONS : Tab.CAMERA);
+      moveTo( new AppManager().isAppFirstTimeLaunch(this)
+              ? Tab.INSTRUCTIONS
+              : Tab.CAMERA );
     }
   }
   @Override
-  public void onErrorOccurred         (ANError       error)
+  public void onErrorOccurred       (ANError       error)
   {
     moveTo(Tab.NO_CONNECTION);
   }
 
   @Override
-  public void onBackPressed           ()
+  public void onBackPressed         ()
   {
     if ( fragmentManager.getBackStackEntryCount() > 0 )
     {
@@ -142,7 +138,7 @@ public class MainActivity
       super.onBackPressed();
     }
   }
-  private void moveTo(Tab tab)
+  private void moveTo               (Tab tab)
   {
     switch (tab)
     {
@@ -171,7 +167,7 @@ public class MainActivity
           Log.i("MainActivity moveTo: ","Unsupported tab");
     }
   }
-  private void moveTo(Fragment fragment, String tag, boolean saveOnStack)
+  private void moveTo               (Fragment fragment, String tag, boolean saveOnStack)
   {
     FragmentTransaction transaction = fragmentManager
             .beginTransaction()
@@ -186,7 +182,7 @@ public class MainActivity
 
     transaction.commit();
   }
-  private void configSlidingMenu  ()
+  private void configSlidingMenu    ()
   {
     OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
     {
@@ -202,9 +198,7 @@ public class MainActivity
             closeApp();
             break;
           default:
-            throw new MikoError(this
-                              , "onNavigationItemSelected"
-                              , "Unknown menu item");
+            MikoLogger.log("Unknown menu item");
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -218,7 +212,7 @@ public class MainActivity
 
     //TODO: repair. deselect sliding menu item
   }
-  private void closeApp           ()
+  private void closeApp             ()
   {
     new AppManager().cleanTempDirContent();
 
@@ -231,7 +225,7 @@ public class MainActivity
   private HttpConnection  httpConnection  = null;
   private FragmentManager fragmentManager = null;
 
-  private final String    serverAddress     = "http://3c077028.ngrok.io"
+  private final String    serverAddress     = "http://06535999.ngrok.io"
                         , getModelEndpoint  = "/getModel"
                         , addImageEndpoint  = "/addImage";
 }

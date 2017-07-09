@@ -4,12 +4,20 @@ import org.joml.Matrix4f;
 
 public class RenderMatrices
 {
-  public RenderMatrices()
+  public  void    update      (Matrix4f model, Matrix4f view, Matrix4f projection)
   {
+    if (model != null)
+      modelMatrix       = model;
 
+    if (view != null)
+      viewMatrix        = view;
+
+    if (projection != null)
+      projectionMatrix  = projection;
+
+    recalculate();
   }
-
-  float[] getMvp       ()
+  public float[]  getMvp      ()
   {
     float[] mvp = new float[16];
     mvpMatrix.get(mvp);
@@ -17,19 +25,7 @@ public class RenderMatrices
     return mvp;
   }
 
-  public void setModel            (Matrix4f modelMatrix)
-  {
-    this.modelMatrix = modelMatrix;
-  }
-  public void setViewMatrix       (Matrix4f viewMatrix)
-  {
-    this.viewMatrix = viewMatrix;
-  }
-  public void setProjectionMatrix (Matrix4f projectionMatrix)
-  {
-    this.projectionMatrix = projectionMatrix;
-  }
-  public void recalculate         ()
+  private void    recalculate ()
   {
     mvpMatrix
             .identity()

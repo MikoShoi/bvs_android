@@ -21,8 +21,7 @@ public class HttpConnection
   {
     init(context);
     this.listener = listener;
-
-    tempDirPath = new AppManager().getTempDirPath();
+    tempDirPath   = new AppManager().getTempDirPath();
   }
 
   public void uploadFile      (final String serverAddress, String absFilePath)

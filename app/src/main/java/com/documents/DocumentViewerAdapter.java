@@ -12,12 +12,12 @@ class DocumentViewerAdapter extends FragmentPagerAdapter
   }
 
   @Override
-  public Fragment getItem   (int position)
+  public Fragment getItem (int position)
   {
     return Document.newInstance( position );
   }
   @Override
-  public int      getCount  ()
+  public int      getCount()
   {
     return 2;
   }

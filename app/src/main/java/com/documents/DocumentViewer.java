@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.example.bruce.bvs.R;
 import com.example.bruce.bvs.databinding.DocumentViewerBinding;
-import com.example.mikotools.MikoError;
 
 public class DocumentViewer extends Fragment
 {
@@ -22,69 +21,62 @@ public class DocumentViewer extends Fragment
   }
 
   @Override
-  public void onCreate(Bundle savedInstanceState)
+  public void onCreate    (Bundle savedInstanceState)
   {
       super.onCreate(savedInstanceState);
   }
   @Override
-  public View onCreateView(LayoutInflater inflater
-          , ViewGroup container
-          , Bundle savedInstanceState)
+  public View onCreateView( LayoutInflater inflater
+                          , ViewGroup container
+                          , Bundle savedInstanceState )
   {
       DocumentViewerBinding layout
               = DataBindingUtil.inflate(inflater
                                       , R.layout.document_viewer
                                       , container
-                                      , false );
+                                      , false);
 
-      closeFab  = layout.fab;
-      viewPager = layout.viewPager;
-
-      setViewPager();
-      setFabOnClickListener();
+      setViewPager(layout.viewPager);
+      setFabOnClickListener(layout.fab);
 
       return layout.getRoot();
   }
-
   @Override
-  public void onAttach(Context context)
+  public void onAttach    (Context context)
   {
     super.onAttach(context);
 
     if (context instanceof DocumentViewerListener)
         listener = (DocumentViewerListener) context;
     else
-        throw new MikoError(this, "onAttach", "parent object does not implement needed interface");
+      throw new RuntimeException( "parent object must implement " +
+                                  "DocumentViewerListener interface" );
   }
   @Override
-  public void onDetach()
+  public void onDetach    ()
   {
     super.onDetach();
     listener = null;
   }
 
-  private void setViewPager           ()
+  private void setViewPager           (ViewPager viewPager)
   {
     DocumentViewerAdapter adapter = new DocumentViewerAdapter( getChildFragmentManager() );
     viewPager.setAdapter(adapter);
   }
-  private void setFabOnClickListener  ()
+  private void setFabOnClickListener  (FloatingActionButton fab)
   {
-    closeFab.setOnClickListener(new View.OnClickListener()
+    View.OnClickListener l = new View.OnClickListener()
     {
-        @Override
-        public void onClick(View v)
-        {
-            close();
-        }
-    });
-  }
-  private void close                  ()
-  {
-    listener.onDocumentsViewed();
+      @Override
+      public void onClick (View v)
+      {
+        listener.onDocumentsViewed();
+      }
+    };
+
+    fab.setOnClickListener(l);
   }
 
   private DocumentViewerListener  listener;
-  private FloatingActionButton    closeFab;
-  private ViewPager               viewPager;
 }

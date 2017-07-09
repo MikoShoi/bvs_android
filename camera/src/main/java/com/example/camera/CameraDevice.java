@@ -8,7 +8,7 @@ import android.view.SurfaceView;
 import android.widget.Toast;
 
 import com.example.mikotools.AppManager;
-import com.example.mikotools.MikoError;
+import com.example.mikotools.MikoLogger;
 
 import java.io.FileOutputStream;
 
@@ -34,9 +34,7 @@ class CameraDevice
       }
       catch (Exception e)
       {
-        throw new MikoError(this
-                          , "restart"
-                          , "error while restart cammera");
+        throw new RuntimeException("camera can not be restarted");
       }
     }
   }
@@ -99,21 +97,20 @@ class CameraDevice
           outStream.close();
 
           if ( cameraListener != null )
-              cameraListener.onPhotoCaptured(filePath);
+          {
+            cameraListener.onPhotoCaptured(filePath);
+          }
 
-          //--TODO: wysyłaj to natychmiast bez zapisywania do pliku!;
+          Toast.makeText(context, "Picture Saved", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {
-          throw new MikoError(this
-                            , "onPictureTaken"
-                            , "problem while file operations");
+          MikoLogger.log("problem while file operations");
         }
 
-        Toast.makeText( context, "Picture Saved", Toast.LENGTH_SHORT).show();
         restart();
-        }
-      };
+      }
+    };
   }
   private void    setAutoFocusCallback()
   {
@@ -140,9 +137,9 @@ class CameraDevice
   {
     String tempDirPath      = new AppManager().getTempDirPath()
             , uniqueName    = String.valueOf( System.currentTimeMillis() )
-            , fileEtension  = ".jpg";
+            , fileExtension = ".jpg";
 
-    return tempDirPath + "/" + uniqueName + fileEtension;
+    return tempDirPath + "/" + uniqueName + fileExtension;
   }
 
   private CameraListener  cameraListener  = null;
