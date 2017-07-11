@@ -48,6 +48,7 @@ public class Camera extends Fragment
 
     cameraListener = null;
   }
+
   @Override
   public void onResume()
   {

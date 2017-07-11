@@ -9,12 +9,22 @@ import java.io.File;
 
 public class AppManager
 {
-  public AppManager()
+  private AppManager()
   {
     tempDir = new File(getPublicDownloadDirPath() + "/bvsTempDir");
 
     if( !tempDir.exists() && !tempDir.mkdir() )
       throw new RuntimeException("can not create temp dir");
+  }
+
+  public static AppManager getInstance()
+  {
+    if (appManager == null)
+    {
+      appManager = new AppManager();
+    }
+
+    return appManager;
   }
 
   public  boolean isAppFirstTimeLaunch    (Context context)
@@ -50,4 +60,5 @@ public class AppManager
   }
 
   private final File tempDir;
+  private static AppManager appManager = null;
 }

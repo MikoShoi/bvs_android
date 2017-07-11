@@ -60,6 +60,22 @@ public class InstructionViewer extends Fragment
       listener = null;
   }
 
+  @Override
+  public void onResume ()
+  {
+    super.onResume();
+
+    System.out.println("\n\t ---- Instruction:onResume\n");
+  }
+
+  @Override
+  public void onPause ()
+  {
+    super.onPause();
+
+    System.out.println("\n\t ---- Documents:onPause\n");
+  }
+
   private void setViewPager                 ()
   {
     //--counting from zero for 4 pages, first one has number 0 and last one is 3

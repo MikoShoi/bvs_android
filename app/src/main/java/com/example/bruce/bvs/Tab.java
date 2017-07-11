@@ -8,7 +8,7 @@ enum Tab
     , VIEWER_3D
     , LOADER
     , WELCOME
-    , NO_CONNECTION;
+    , INTERNER_CONNECTION_UNAVAILABLE;
 
     public int index()
     {
@@ -24,7 +24,7 @@ enum Tab
                 return 3;
             case WELCOME:
                 return 4;
-            case NO_CONNECTION:
+            case INTERNER_CONNECTION_UNAVAILABLE:
                 return 5;
             default:
                 return 0;

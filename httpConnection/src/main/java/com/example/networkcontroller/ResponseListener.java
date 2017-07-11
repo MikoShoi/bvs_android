@@ -8,7 +8,7 @@ public interface ResponseListener
 {
     void onUploadedFile         (String serverAddress, Response response);
     void onDownloadedFile       (String serverAddress, String   absFilePath);
-    void onGetResponseReceived  (String serverAddress, Response response);
+    void onGETResponseReceived (String serverAddress, Response response);
     
     void onErrorOccurred        (ANError error);
 }

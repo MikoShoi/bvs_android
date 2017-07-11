@@ -135,7 +135,7 @@ class CameraDevice
   }
   private String  genUniqueAbsFilePath()
   {
-    String tempDirPath      = new AppManager().getTempDirPath()
+    String tempDirPath      = AppManager.getInstance().getTempDirPath()
             , uniqueName    = String.valueOf( System.currentTimeMillis() )
             , fileExtension = ".jpg";
 

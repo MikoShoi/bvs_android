@@ -21,7 +21,7 @@ public class HttpConnection
   {
     init(context);
     this.listener = listener;
-    tempDirPath   = new AppManager().getTempDirPath();
+    tempDirPath   = AppManager.getInstance().getTempDirPath();
   }
 
   public void uploadFile      (final String serverAddress, String absFilePath)
@@ -79,7 +79,7 @@ public class HttpConnection
                 @Override
                 public void onResponse(Response response)
                 {
-                    listener.onGetResponseReceived(serverAddress, response);
+                    listener.onGETResponseReceived(serverAddress, response);
                 }
 
                 @Override

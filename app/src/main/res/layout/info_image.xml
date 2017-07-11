@@ -1,6 +1,5 @@
 <layout>
     <FrameLayout
-        xmlns:app               = "http://schemas.android.com/apk/res-auto"
         xmlns:android           = "http://schemas.android.com/apk/res/android"
 
         android:layout_width    = "match_parent"
@@ -11,8 +10,7 @@
             android:layout_width        = "match_parent"
             android:layout_height       = "match_parent"
             android:adjustViewBounds    = "true"
-            android:scaleType           = "centerCrop"
-            app:srcCompat               = "@drawable/welcome"/>
+            android:scaleType           = "centerCrop"/>
     </FrameLayout>
 </layout>
 

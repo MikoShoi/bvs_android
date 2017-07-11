@@ -9,7 +9,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +32,9 @@ import com.infoScreens.InfoImage;
 import com.instructions.InstructionViewer;
 import com.instructions.InstructionViewerListener;
 
+import java.util.Collections;
+import java.util.List;
+
 import okhttp3.Response;
 
 public class MainActivity
@@ -41,6 +43,7 @@ public class MainActivity
                     , DocumentViewerListener
                     , CameraListener
                     , ResponseListener
+                    , FragmentManager.OnBackStackChangedListener
 {
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +58,7 @@ public class MainActivity
     menu            = mainActivity.menu;
     drawer          = mainActivity.drawer;
     fragmentManager = getSupportFragmentManager();
+    fragmentManager.addOnBackStackChangedListener(this);
 
     configSlidingMenu();
 
@@ -65,7 +69,7 @@ public class MainActivity
       httpConnection.sendGetRequest(serverAddress);
     }
     else
-      moveTo(Tab.NO_CONNECTION);
+      moveTo(Tab.INTERNER_CONNECTION_UNAVAILABLE);
   }
   private boolean isNetworkConnectionAvailable()
   {
@@ -75,7 +79,6 @@ public class MainActivity
 
     return (isWifiTurnOn || isMobileTurnOn);
   }
-
   @Override
   public void onInstructionsViewed  ()
   {
@@ -86,7 +89,6 @@ public class MainActivity
   {
     onBackPressed();
   }
-
   @Override
   public void onShootingFinished    ()
   {
@@ -99,7 +101,6 @@ public class MainActivity
   {
     httpConnection.uploadFile(serverAddress + addImageEndpoint, absoluteFilePath);
   }
-
   @Override
   public void onUploadedFile        (String serverAddress, Response response)
   {
@@ -108,14 +109,15 @@ public class MainActivity
   @Override
   public void onDownloadedFile      (String serverAddress, final String absFilePath)
   {
-    moveTo( Viewer3D.newInstance(absFilePath), "viewer3D", true );
+
+    moveTo( Viewer3D.newInstance(absFilePath) );
   }
   @Override
-  public void onGetResponseReceived (String serverAddress, Response response)
+  public void onGETResponseReceived (String serverAddress, Response response)
   {
     if ( serverAddress.equals(this.serverAddress) )
     {
-      moveTo( new AppManager().isAppFirstTimeLaunch(this)
+      moveTo( AppManager.getInstance().isAppFirstTimeLaunch(this)
               ? Tab.INSTRUCTIONS
               : Tab.CAMERA );
     }
@@ -123,65 +125,107 @@ public class MainActivity
   @Override
   public void onErrorOccurred       (ANError       error)
   {
-    moveTo(Tab.NO_CONNECTION);
+    moveTo(Tab.INTERNER_CONNECTION_UNAVAILABLE);
   }
-
   @Override
-  public void onBackPressed         ()
+  public void onBackStackChanged ()
   {
-    if ( fragmentManager.getBackStackEntryCount() > 0 )
+    List<Fragment> fragments = fragmentManager.getFragments();
+
+    if ( fragments == null )
     {
-      fragmentManager.popBackStack();
+      return;
+    }
+    else if ( fragments.contains(null) )
+    {
+      fragments.removeAll( Collections.singleton(null) );
+    }
+
+    int indicesCount    = fragments.size()
+      , lastFIndex      = indicesCount  - 1
+      , prevFIndex      = lastFIndex    - 1;
+
+    if ( indicesCount < 3)
+    {
+      backStackIndex = 0;
+    }
+    else if ( !isInfoGraphic(fragments.get(prevFIndex)) )
+    {
+      backStackIndex = prevFIndex;
     }
     else
     {
-      super.onBackPressed();
+      for (int i = lastFIndex; i >= 0; i--)
+      {
+        if ( !isInfoGraphic(fragments.get(i)) )
+          backStackIndex = i;
+      }
     }
   }
+  private boolean isInfoGraphic(Fragment fragment)
+  {
+    String  f   = fragment.getClass().getName()
+          , ia  = InfoAnimation.class.getName()
+          , ii  = InfoImage.class.getName();
+
+    return ( f.equals(ia) || f.equals(ii) );
+  }
+  @Override
+  public void onBackPressed         ()
+  {
+    if (backStackIndex > 0)
+    {
+      fragmentManager.popBackStack(backStackIndex, 0);
+    }
+    else
+    {
+      closeApp();
+    }
+  }
+
   private void moveTo               (Tab tab)
   {
     switch (tab)
     {
       case WELCOME:
-        moveTo(InfoImage.newInstance(     R.drawable.welcome),        tab.name(), false);
+        moveTo( InfoImage.newInstance(
+                R.drawable.welcome_h
+              , R.drawable.welcome_v ) );
         break;
-      case NO_CONNECTION:
-        moveTo(InfoImage.newInstance(     R.drawable.no_connection),  tab.name(), false);
+      case INTERNER_CONNECTION_UNAVAILABLE:
+        moveTo( InfoImage.newInstance(
+                R.drawable.internet_connection_unavailable_h
+              , R.drawable.internet_connection_unavailable_v) );
         break;
       case LOADER:
-        moveTo(InfoAnimation.newInstance( R.raw.loading
-                                        , R.string.loaderDescription)
-              , tab.name()
-              , false);
+        moveTo( InfoAnimation.newInstance(
+                R.raw.loading
+              , R.string.loaderDescription) );
         break;
       case INSTRUCTIONS:
-        moveTo(new InstructionViewer(), tab.name(), true);
+        moveTo( new InstructionViewer() );
         break;
       case DOCUMENTS:
-        moveTo(new DocumentViewer(),    tab.name(), true);
+        moveTo( new DocumentViewer() );
         break;
       case CAMERA:
-        moveTo(new Camera(),            tab.name(), true);
+        moveTo( new Camera() );
         break;
-        default:
-          Log.i("MainActivity moveTo: ","Unsupported tab");
+      default:
+        Log.i("MainActivity moveTo: ","Unsupported tab");
     }
   }
-  private void moveTo               (Fragment fragment, String tag, boolean saveOnStack)
+  private void moveTo               (Fragment fragment)
   {
-    FragmentTransaction transaction = fragmentManager
+    String marker = fragment.getClass().getName();
+
+    fragmentManager
             .beginTransaction()
-            .replace( R.id.mainFrame
-                    , fragment
-                    , tag );
-
-    if (saveOnStack)
-    {
-      transaction.addToBackStack(tag);
-    }
-
-    transaction.commit();
+            .replace(R.id.mainFrame, fragment, marker)
+            .addToBackStack(marker)
+            .commit();
   }
+
   private void configSlidingMenu    ()
   {
     OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
@@ -214,18 +258,20 @@ public class MainActivity
   }
   private void closeApp             ()
   {
-    new AppManager().cleanTempDirContent();
+    AppManager.getInstance().cleanTempDirContent();
 
     finish();
     System.exit(0);
   }
 
-  private NavigationView  menu            = null;
-  private DrawerLayout    drawer          = null;
-  private HttpConnection  httpConnection  = null;
-  private FragmentManager fragmentManager = null;
+  private NavigationView  menu              = null;
+  private DrawerLayout    drawer            = null;
+  private HttpConnection  httpConnection    = null;
+  private FragmentManager fragmentManager   = null;
 
-  private final String    serverAddress     = "http://06535999.ngrok.io"
+  private int backStackIndex = 1;
+
+  private final String    serverAddress     = "http://184ab88a.ngrok.io"
                         , getModelEndpoint  = "/getModel"
                         , addImageEndpoint  = "/addImage";
 }
