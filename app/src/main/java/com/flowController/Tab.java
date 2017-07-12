@@ -1,6 +1,6 @@
-package com.example.bruce.bvs;
+package com.flowController;
 
-enum Tab
+public enum Tab
 {
     INSTRUCTIONS
     , DOCUMENTS

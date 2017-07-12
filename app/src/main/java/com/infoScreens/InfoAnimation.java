@@ -30,9 +30,9 @@ public class InfoAnimation extends Fragment
   }
 
   @Override
-  public View onCreateView( LayoutInflater inflater
-                          , ViewGroup container
-                          , Bundle savedInstanceState )
+  public View onCreateView( LayoutInflater  inflater
+                          , ViewGroup       container
+                          , Bundle          savedInstanceState )
   {
     InfoAnimationBinding infoAnimation
             = DataBindingUtil.inflate(inflater
@@ -56,6 +56,7 @@ public class InfoAnimation extends Fragment
 
     return infoAnimation.getRoot();
   }
+
   @Override
   public void onStart ()
   {
