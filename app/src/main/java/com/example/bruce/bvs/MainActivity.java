@@ -126,18 +126,15 @@ public class MainActivity
     {
       case WELCOME:
         flowController.moveTo( InfoImage.newInstance(
-                R.drawable.welcome_h
-              , R.drawable.welcome_v ) );
+                R.drawable.welcome ) );
         break;
       case INTERNET_CONNECTION_UNAVAILABLE:
         flowController.moveTo( InfoImage.newInstance(
-                R.drawable.internet_connection_unavailable_h
-              , R.drawable.internet_connection_unavailable_v) );
+                R.drawable.internet_connection_unavailable ) );
         break;
       case SERVER_CONNECTION_PROBLEM:
         flowController.moveTo( InfoImage.newInstance(
-                R.drawable.server_connection_problem_h
-              , R.drawable.server_connection_problem_v) );
+                R.drawable.server_connection_problem ) );
         break;
       case LOADER:
         flowController.moveTo( InfoAnimation.newInstance(
@@ -158,7 +155,7 @@ public class MainActivity
     }
   }
 
-  private void prepareMenu          (NavigationView menu, final DrawerLayout drawer)
+  private void prepareMenu          (final NavigationView menu, final DrawerLayout drawer)
   {
     OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
     {
@@ -178,7 +175,7 @@ public class MainActivity
         }
 
         drawer.closeDrawer(GravityCompat.START);
-        item.setChecked(false);
+        item.setCheckable(false);
 
         return true;
       }

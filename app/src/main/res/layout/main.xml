@@ -10,7 +10,7 @@
         android:layout_height       = "match_parent"
         android:fitsSystemWindows   = "true"
         android:background          = "@color/default_background_color"
-        tools:openDrawer            = "start" >
+        tools:openDrawer            = "start">
 
         <FrameLayout
             android:id              = "@+id/mainFrame"

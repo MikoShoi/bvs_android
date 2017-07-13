@@ -1,6 +1,6 @@
 package com.example.bruce.bvs;
 
-public enum Tab
+ enum Tab
 {
   INSTRUCTIONS
   , DOCUMENTS
@@ -9,5 +9,5 @@ public enum Tab
   , LOADER
   , WELCOME
   , INTERNET_CONNECTION_UNAVAILABLE
-  , SERVER_CONNECTION_PROBLEM;
+  , SERVER_CONNECTION_PROBLEM
 }
