@@ -13,8 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.androidnetworking.error.ANError;
+import com.documents.DocumentViewer;
 import com.documents.DocumentViewerListener;
 import com.example.bruce.bvs.databinding.MainBinding;
+import com.example.camera.Camera;
 import com.example.camera.CameraListener;
 import com.example.mikotools.AppManager;
 import com.example.mikotools.FileReader;
@@ -23,9 +25,9 @@ import com.example.networkcontroller.HttpConnection;
 import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
 import com.flowController.FlowController;
-import com.flowController.Tab;
 import com.infoScreens.InfoAnimation;
 import com.infoScreens.InfoImage;
+import com.instructions.InstructionViewer;
 import com.instructions.InstructionViewerListener;
 
 import okhttp3.Response;
@@ -41,7 +43,6 @@ public class MainActivity
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.main);
 
     MainBinding mainActivity = DataBindingUtil.setContentView(this, R.layout.main);
 
@@ -49,24 +50,24 @@ public class MainActivity
     prepareMenu(mainActivity.menu, mainActivity.drawer);
 
     flowController = new FlowController( getSupportFragmentManager() );
-    flowController.setFragmentsToSkip(InfoImage.class.getName()
+    flowController.addFragmentsToSkip(InfoImage.class.getName()
                                     , InfoAnimation.class.getName() );
 
     if( isNetworkConnectionAvailable() )
     {
-      flowController.moveTo(Tab.WELCOME);
+      moveTo(Tab.WELCOME);
 
       httpConnection = new HttpConnection(this, this);
       httpConnection.sendGetRequest(serverAddress);
     }
     else
-      flowController.moveTo(Tab.INTERNER_CONNECTION_UNAVAILABLE);
+      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
   }
 
   @Override
   public void onInstructionsViewed  ()
   {
-    flowController.moveTo(Tab.CAMERA);
+    moveTo(Tab.CAMERA);
   }
   @Override
   public void onDocumentsViewed     ()
@@ -77,7 +78,7 @@ public class MainActivity
   @Override
   public void onShootingFinished    ()
   {
-    flowController.moveTo(Tab.LOADER);
+    moveTo(Tab.LOADER);
 
     httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
   }
@@ -87,7 +88,6 @@ public class MainActivity
     httpConnection.uploadFile(serverAddress + addImageEndpoint, absoluteFilePath);
   }
   @Override
-
   public void onUploadedFile        (String serverAddress, Response response)
   {
     MikoLogger.log("onUploadedFile");
@@ -102,24 +102,60 @@ public class MainActivity
   {
     if ( serverAddress.equals(this.serverAddress) )
     {
-      boolean b = AppManager.getInstance().isAppFirstTimeLaunch(this);
-
-      flowController.moveTo( b ? Tab.INSTRUCTIONS : Tab.CAMERA );
+      moveTo( AppManager.getInstance().isAppFirstTimeLaunch(this)
+              ? Tab.INSTRUCTIONS
+              : Tab.CAMERA );
     }
   }
   @Override
   public void onErrorOccurred       (ANError       error)
   {
-    flowController.moveTo(Tab.INTERNER_CONNECTION_UNAVAILABLE);
+    moveTo(Tab.SERVER_CONNECTION_PROBLEM);
   }
-
   @Override
   public void onBackPressed         ()
   {
-    if ( flowController.canGoBack() )
-      flowController.goBack();
+    if ( flowController.canMoveBack() )
+      flowController.moveBack();
     else
       closeApp();
+  }
+  public void moveTo                (Tab tab)
+  {
+    switch (tab)
+    {
+      case WELCOME:
+        flowController.moveTo( InfoImage.newInstance(
+                R.drawable.welcome_h
+              , R.drawable.welcome_v ) );
+        break;
+      case INTERNET_CONNECTION_UNAVAILABLE:
+        flowController.moveTo( InfoImage.newInstance(
+                R.drawable.internet_connection_unavailable_h
+              , R.drawable.internet_connection_unavailable_v) );
+        break;
+      case SERVER_CONNECTION_PROBLEM:
+        flowController.moveTo( InfoImage.newInstance(
+                R.drawable.server_connection_problem_h
+              , R.drawable.server_connection_problem_v) );
+        break;
+      case LOADER:
+        flowController.moveTo( InfoAnimation.newInstance(
+                R.raw.loading
+              , R.string.loaderDescription) );
+        break;
+      case INSTRUCTIONS:
+        flowController.moveTo( new InstructionViewer() );
+        break;
+      case DOCUMENTS:
+        flowController.moveTo( new DocumentViewer() );
+        break;
+      case CAMERA:
+        flowController.moveTo( new Camera() );
+        break;
+      default:
+        MikoLogger.log("Unsupported tab");
+    }
   }
 
   private void prepareMenu          (NavigationView menu, final DrawerLayout drawer)
@@ -132,7 +168,7 @@ public class MainActivity
         switch (item.getItemId())
         {
           case R.id.nav_item_documents:
-            flowController.moveTo(Tab.DOCUMENTS);
+            moveTo(Tab.DOCUMENTS);
             break;
           case R.id.nav_item_quit:
             closeApp();
@@ -163,7 +199,7 @@ public class MainActivity
   {
     ConnectivityManager cm  = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     boolean isWifiTurnOn    = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()
-            , isMobileTurnOn  = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
+          , isMobileTurnOn  = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
 
     return (isWifiTurnOn || isMobileTurnOn);
   }

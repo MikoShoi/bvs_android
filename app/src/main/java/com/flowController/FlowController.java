@@ -4,144 +4,102 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 
-import com.documents.DocumentViewer;
 import com.example.bruce.bvs.R;
-import com.example.camera.Camera;
-import com.example.mikotools.MikoLogger;
-import com.infoScreens.InfoAnimation;
-import com.infoScreens.InfoImage;
-import com.instructions.InstructionViewer;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 public class FlowController
         implements OnBackStackChangedListener
 {
-  public FlowController(FragmentManager fm)
+  public FlowController(FragmentManager fragmentManager)
   {
-    this.fm = fm;
-    this.fm.addOnBackStackChangedListener(this);
+    this.fragmentManager = fragmentManager;
+    this.fragmentManager.addOnBackStackChangedListener(this);
   }
 
   @Override
-  public void onBackStackChanged ()
+  public void     onBackStackChanged  ()
   {
-    List<Fragment> fragments = fm.getFragments();
-    int indicesCount = getIndicesNumber(fragments);
+    List<Fragment> fragments = fragmentManager.getFragments();
 
-    if (indicesCount < 3)
+    if (fragments != null)
     {
-      backStackIndex = 0;
-    }
-    else
-    {
-      int prevFIndex      = indicesCount  - 2
-        , prevPrevFIndex  = prevFIndex    - 1;
-
-      if ( !isFragmentToSkip(fragments.get(prevFIndex)) )
-      {
-        backStackIndex = prevFIndex;
-      }
-      else
-      {
-        for (int i = prevPrevFIndex; i >= 0; i--)
-        {
-          if ( !isFragmentToSkip(fragments.get(i)) )
-          {
-            backStackIndex = i;
-          }
-        }
-      }
+      updateBackStackInfo(fragments);
     }
   }
 
-  public void     moveTo        (Tab tab)
+  public void     moveTo              (Fragment fragment)
   {
-    switch (tab)
-    {
-      case WELCOME:
-        moveTo( InfoImage.newInstance(
-                R.drawable.welcome_h
-              , R.drawable.welcome_v ) );
-        break;
-      case INTERNER_CONNECTION_UNAVAILABLE:
-        moveTo( InfoImage.newInstance(
-                R.drawable.internet_connection_unavailable_h
-              , R.drawable.internet_connection_unavailable_v) );
-        break;
-      case LOADER:
-        moveTo( InfoAnimation.newInstance(
-                R.raw.loading
-              , R.string.loaderDescription) );
-        break;
-      case INSTRUCTIONS:
-        moveTo( new InstructionViewer() );
-        break;
-      case DOCUMENTS:
-        moveTo( new DocumentViewer() );
-        break;
-      case CAMERA:
-        moveTo( new Camera() );
-        break;
-      default:
-        MikoLogger.log("Unsupported tab");
-    }
-  }
-  public void     moveTo        (Fragment fragment)
-  {
-    if ( currentFragment.getClass().getName() == fragment.getClass().getName() )
+    //-- get fragment info/"fingerprint"
+    String fragmentMarker = fragment.getClass().getName();
+
+    //-- if current fragment is the same fragment - do nothing
+    //-- else update current fragment marker and show this fragment
+    if ( currentFragmentMarker.equals(fragmentMarker) )
       return;
     else
-      currentFragment = fragment;
+      currentFragmentMarker = fragmentMarker;
 
-    String marker = fragment.getClass().getName();
-
-    fm.beginTransaction()
-      .replace(R.id.mainFrame, fragment, marker)
-      .addToBackStack(marker)
-      .commit();
+    fragmentManager.beginTransaction()
+                    .replace(R.id.mainFrame, fragment, fragmentMarker)
+                    .addToBackStack(fragmentMarker)
+                    .commit();
   }
-  public void     goBack        ()
+  public void     moveBack            ()
   {
-    fm.popBackStack(backStackIndex, 0);
+    fragmentManager.popBackStack(backStackIndex, 0);
   }
-  public boolean  canGoBack     ()
+  public boolean  canMoveBack         ()
   {
     return backStackIndex > 0;
   }
-  public void     setFragmentsToSkip (String ... fragmentClasses)
+  public void     addFragmentsToSkip  (String ... fragmentClasses)
   {
-    fragmentsToSkip = Arrays.asList(fragmentClasses);
+    if (fragmentsToSkip == null)
+      fragmentsToSkip = new Vector<>(fragmentClasses.length);
+
+    Collections.addAll(fragmentsToSkip, fragmentClasses);
   }
-  private int getIndicesNumber(List<Fragment> backStack)
+
+  private boolean canBeShown          (Fragment fragment)
   {
-    if ( backStack != null && !backStack.contains(null) )
+    //-- fragment can be shown if there is no list of fragments to skip
+    //-- or if list exist but the fragment is no in the list 
+
+    return  fragmentsToSkip == null
+        || !fragmentsToSkip.contains( fragment.getClass().getName() );
+  }
+  private void    updateBackStackInfo (List<Fragment> backStack)
+  {
+    int nullFragmentNumber  = Collections.frequency(backStack, null)
+      , backStackSize       = backStack.size() - nullFragmentNumber;
+
+    if (backStackSize >= 2)
     {
-      return backStack.size();
-    }
-    else if( backStack != null )
-    {
-      for (int i = backStack.size() - 1; i >= 0; i--)
+      backStackIndex = 0;
+
+      //-- iterating from the end of back stack
+      for (int i = backStackSize - 2; i >= 0; i--)
       {
-        if ( !isFragmentToSkip(backStack.get(i)) )
+        //-- find position of first fragment which can be shown
+        if ( canBeShown( backStack.get(i)) )
         {
-          return i + 1;
+          backStackIndex = i;
         }
       }
     }
+    else
+      backStackIndex = 0;
 
-    return 0;
-  }
-  private boolean isFragmentToSkip (Fragment fragment)
-  {
-    return (fragment == null)
-        || (fragmentsToSkip != null
-        &&  fragmentsToSkip.contains( fragment.getClass().getName() ) );
+    currentFragmentMarker = backStack.get(backStackSize - 1)
+                                      .getClass()
+                                      .getName();
   }
 
-  private FragmentManager fm = null;
-  private Fragment currentFragment = null;
-  private List<String> fragmentsToSkip = null;
-  private int backStackIndex = 1;
+  private FragmentManager fragmentManager = null;
+  private Vector<String> fragmentsToSkip = null;
+  private String currentFragmentMarker = "";
+  private int backStackIndex = 0;
 }

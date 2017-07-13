@@ -59,22 +59,6 @@ public class DocumentViewer extends Fragment
     listener = null;
   }
 
-  @Override
-  public void onResume ()
-  {
-    super.onResume();
-
-    System.out.println("\n\t ---- Documents:onResume\n");
-  }
-
-  @Override
-  public void onPause ()
-  {
-    super.onPause();
-
-    System.out.println("\n\t ---- DocumentViewer:onPause\n");
-  }
-
   private void setViewPager           (ViewPager viewPager)
   {
     DocumentViewerAdapter adapter = new DocumentViewerAdapter( getChildFragmentManager() );
