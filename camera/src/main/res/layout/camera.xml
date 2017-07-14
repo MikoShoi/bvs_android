@@ -1,39 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
 <layout>
     <RelativeLayout
-        xmlns:android           = "http://schemas.android.com/apk/res/android"
-        xmlns:app               = "http://schemas.android.com/apk/res-auto"
-        xmlns:tools             = "http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
 
+        android:id              = "@+id/layout"
         android:layout_width    = "match_parent"
-        android:layout_height   = "match_parent"
-        tools:context           = "com.example.camera.camera">
+        android:layout_height   = "match_parent">
 
-        <com.example.camera.CameraDevicePreview
-            android:id              = "@+id/cameraPreviewWindow"
-            android:layout_width    = "match_parent"
-            android:layout_height   = "match_parent"/>
+        <io.fotoapparat.view.CameraView
+            android:id              = "@+id/camera_view"
+            android:layout_width    = "wrap_content"
+            android:layout_height   = "wrap_content" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id                  = "@+id/info"
-            android:layout_width        = "wrap_content"
-            android:layout_height       = "wrap_content"
+            android:id                          = "@+id/capture"
+            android:layout_width                = "wrap_content"
+            android:layout_height               = "wrap_content"
+            android:layout_alignParentEnd       = "true"
+            android:layout_centerVertical       = "true"
+            android:clickable                   = "true"
+            android:padding                     = "40dp"
+            android:src                         = "@drawable/ic_camera_alt_white_48dp"
+            app:fabSize                         = "normal"
+            app:backgroundTint                  = "@color/mikoColor_1"
+            app:layout_constraintTop_toBottomOf = "@+id/done"/>
 
-            android:layout_alignBottom  = "@+id/cameraPreviewWindow"
-            android:layout_alignEnd     = "@+id/cameraPreviewWindow"
-            android:padding = "20dp"
-            android:clickable           = "true"
-            android:src                 = "@drawable/info_squared"
-            app:backgroundTint          = "@color/mikoColor_1"
-            app:fabSize                 = "normal"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id                          = "@+id/done"
+            android:layout_width                = "wrap_content"
+            android:layout_height               = "wrap_content"
+            android:layout_above                = "@+id/capture"
+            android:layout_alignEnd             = "@+id/capture"
+            android:clickable                   = "true"
+            android:padding                     = "40dp"
+            android:src                         = "@drawable/ic_done_white_48dp"
+            app:backgroundTint                  = "@color/mikoColor_1"
+            app:fabSize                         = "normal"/>
 
-        <include
-            layout                          = "@layout/camera_controls"
-            android:id                      = "@+id/controls"
-            android:layout_height           = "wrap_content"
-            android:layout_width            = "wrap_content"
-            android:layout_alignParentEnd   = "true"
-            android:layout_centerVertical   = "true"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id                          = "@+id/info"
+            android:layout_width                = "wrap_content"
+            android:layout_height               = "wrap_content"
+            android:layout_alignParentBottom    ="true"
+            android:layout_alignParentEnd       ="true"
+            android:padding                     = "20dp"
+            android:clickable                   = "true"
+            android:src                         = "@drawable/info_squared"
+            app:backgroundTint                  = "@color/mikoColor_1"
+            app:fabSize                         = "normal"/>
 
     </RelativeLayout>
 </layout>

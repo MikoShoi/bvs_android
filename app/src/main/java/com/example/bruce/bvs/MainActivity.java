@@ -53,15 +53,14 @@ public class MainActivity
     flowController.addFragmentsToSkip(InfoImage.class.getName()
                                     , InfoAnimation.class.getName() );
 
-    if( isNetworkConnectionAvailable() )
-    {
-      moveTo(Tab.WELCOME);
+    if (savedInstanceState == null)
+      startNewSession();
+  }
 
-      httpConnection = new HttpConnection(this, this);
-      httpConnection.sendGetRequest(serverAddress);
-    }
-    else
-      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
+  @Override
+  protected void onSaveInstanceState (Bundle outState)
+  {
+    super.onSaveInstanceState(outState);
   }
 
   @Override
@@ -200,11 +199,23 @@ public class MainActivity
 
     return (isWifiTurnOn || isMobileTurnOn);
   }
+  private void startNewSession      ()
+  {
+    if( isNetworkConnectionAvailable() )
+    {
+      moveTo(Tab.WELCOME);
+
+      httpConnection = new HttpConnection(this, this);
+      httpConnection.sendGetRequest(serverAddress);
+    }
+    else
+      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
+  }
 
   private HttpConnection  httpConnection    = null;
   private FlowController  flowController    = null;
 
-  private final String    serverAddress     = "http://b6230ff8.ngrok.io"
+  private final String    serverAddress     = "http://881316dc.ngrok.io"
                         , getModelEndpoint  = "/getModel"
                         , addImageEndpoint  = "/addImage";
 }
