@@ -1,4 +1,4 @@
-package com.example.camera;
+package com.camera;
 
 public interface CameraListener
 {

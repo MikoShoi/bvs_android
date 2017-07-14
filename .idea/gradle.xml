@@ -9,8 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/camera" />
-            <option value="$PROJECT_DIR$/httpConnection" />
             <option value="$PROJECT_DIR$/mikotools" />
             <option value="$PROJECT_DIR$/viewer3D" />
           </set>

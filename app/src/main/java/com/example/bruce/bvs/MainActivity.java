@@ -14,11 +14,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
+import com.camera.Camera;
+import com.camera.CameraListener;
 import com.documents.DocumentViewer;
 import com.documents.DocumentViewerListener;
 import com.example.bruce.bvs.databinding.MainBinding;
-import com.example.camera.Camera;
-import com.example.camera.CameraListener;
 import com.example.mikotools.AppManager;
 import com.example.mikotools.FileReader;
 import com.example.mikotools.MikoLogger;
@@ -114,7 +114,7 @@ public class MainActivity
     }
   }
   @Override
-  public void onErrorOccurred       (ANError       error)
+  public void onErrorOccurred       (ANError error)
   {
     moveTo(Tab.SERVER_CONNECTION_PROBLEM);
   }

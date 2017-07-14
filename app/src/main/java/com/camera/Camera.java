@@ -1,4 +1,4 @@
-package com.example.camera;
+package com.camera;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -12,7 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.camera.databinding.CameraBinding;
+import com.example.bruce.bvs.R;
+import com.example.bruce.bvs.databinding.CameraBinding;
 import com.example.mikotools.AppManager;
 import com.example.mikotools.MikoLogger;
 
@@ -168,7 +169,8 @@ public class Camera extends Fragment
       {
         final int timeDuration = 10000;   //milliseconds
 
-        String message = Html.fromHtml( getResources().getString(R.string.fabText) ).toString();
+        String fabText = getResources().getString(R.string.fabText);
+        String message = Html.fromHtml(fabText).toString();
 
         Snackbar s  = Snackbar.make(v, message, timeDuration);
         TextView tv = (TextView) s

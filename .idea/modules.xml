@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bvs_android.iml" filepath="$PROJECT_DIR$/bvs_android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/camera/camera.iml" filepath="$PROJECT_DIR$/camera/camera.iml" />
-      <module fileurl="file://$PROJECT_DIR$/httpConnection/httpConnection.iml" filepath="$PROJECT_DIR$/httpConnection/httpConnection.iml" />
       <module fileurl="file://$PROJECT_DIR$/mikotools/mikotools.iml" filepath="$PROJECT_DIR$/mikotools/mikotools.iml" />
       <module fileurl="file://$PROJECT_DIR$/viewer3D/viewer3D.iml" filepath="$PROJECT_DIR$/viewer3D/viewer3D.iml" />
     </modules>

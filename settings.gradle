@@ -1,1 +1,1 @@
-include ':app', ':camera', ':httpConnection', ':viewer3D', ':mikotools'
+include ':app', ':viewer3D', ':mikotools'
