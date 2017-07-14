@@ -11,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 import com.documents.DocumentViewer;
@@ -47,11 +48,9 @@ public class MainActivity
     MainBinding mainActivity = DataBindingUtil.setContentView(this, R.layout.main);
 
     FileReader.getInstance().setResources( getResources() );
-    prepareMenu(mainActivity.menu, mainActivity.drawer);
 
-    flowController = new FlowController( getSupportFragmentManager() );
-    flowController.addFragmentsToSkip(InfoImage.class.getName()
-                                    , InfoAnimation.class.getName() );
+    prepareMenu(mainActivity.menu, mainActivity.drawer);
+    prepareFlowController();
 
     if (savedInstanceState == null)
       startNewSession();
@@ -62,7 +61,6 @@ public class MainActivity
   {
     super.onSaveInstanceState(outState);
   }
-
   @Override
   public void onInstructionsViewed  ()
   {
@@ -73,23 +71,32 @@ public class MainActivity
   {
     onBackPressed();
   }
-
   @Override
   public void onShootingFinished    ()
   {
-    moveTo(Tab.LOADER);
-
-    httpConnection.downloadFile(serverAddress + getModelEndpoint, "model.off");
+    doneButtonClicked = true;
+  }
+  @Override
+  public void onCapturePhoto        ()
+  {
+    uploadRequestsNumber++;
   }
   @Override
   public void onPhotoCaptured       (String absoluteFilePath)
   {
-    httpConnection.uploadFile(serverAddress + addImageEndpoint, absoluteFilePath);
+    Toast.makeText(this, "Photo captured", Toast.LENGTH_SHORT).show();
+    httpConnection.uploadFile(serverAddress + "/addImage", absoluteFilePath);
   }
   @Override
   public void onUploadedFile        (String serverAddress, Response response)
   {
-    MikoLogger.log("onUploadedFile");
+    uploadResponsesNumber++;
+
+    if (doneButtonClicked && uploadRequestsNumber == uploadResponsesNumber)
+    {
+      moveTo(Tab.LOADER);
+      httpConnection.downloadFile(this.serverAddress + "/getModel", "model.off");
+    }
   }
   @Override
   public void onDownloadedFile      (String serverAddress, final String absFilePath)
@@ -154,7 +161,19 @@ public class MainActivity
     }
   }
 
-  private void prepareMenu          (final NavigationView menu, final DrawerLayout drawer)
+  private void    startNewSession       ()
+  {
+    if( isOnline() )
+    {
+      moveTo(Tab.WELCOME);
+
+      httpConnection = new HttpConnection(this, this);
+      httpConnection.sendGetRequest(serverAddress);
+    }
+    else
+      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
+  }
+  private void    prepareMenu           (final NavigationView menu, final DrawerLayout drawer)
   {
     OnNavigationItemSelectedListener l = new OnNavigationItemSelectedListener()
     {
@@ -184,14 +203,20 @@ public class MainActivity
 
     //TODO: repair. deselect sliding menu item
   }
-  private void closeApp             ()
+  private void    prepareFlowController ()
+  {
+    flowController = new FlowController( getSupportFragmentManager() );
+    flowController.addFragmentsToSkip(InfoImage.class.getName()
+                                    , InfoAnimation.class.getName() );
+  }
+  private void    closeApp              ()
   {
     AppManager.getInstance().cleanTempDirContent();
 
     finish();
     System.exit(0);
   }
-  private boolean isNetworkConnectionAvailable()
+  private boolean isOnline              ()
   {
     ConnectivityManager cm  = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     boolean isWifiTurnOn    = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()
@@ -199,23 +224,12 @@ public class MainActivity
 
     return (isWifiTurnOn || isMobileTurnOn);
   }
-  private void startNewSession      ()
-  {
-    if( isNetworkConnectionAvailable() )
-    {
-      moveTo(Tab.WELCOME);
 
-      httpConnection = new HttpConnection(this, this);
-      httpConnection.sendGetRequest(serverAddress);
-    }
-    else
-      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
-  }
+  private HttpConnection  httpConnection  = null;
+  private FlowController  flowController  = null;
 
-  private HttpConnection  httpConnection    = null;
-  private FlowController  flowController    = null;
-
-  private final String    serverAddress     = "http://881316dc.ngrok.io"
-                        , getModelEndpoint  = "/getModel"
-                        , addImageEndpoint  = "/addImage";
+  private final String serverAddress    = "http://d3760597.ngrok.io";
+  private boolean doneButtonClicked     = false;
+  private int     uploadRequestsNumber  = 0
+                , uploadResponsesNumber = 0;
 }

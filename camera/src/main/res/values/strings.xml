@@ -1,15 +1,7 @@
 <resources>
-    <string name="app_name">Camera</string>
     <string name="fabText">
-        "Select object you would like to reconstruct and take a several photos of it from different perspective.\n
-        In order to take photo, touch cameraDevice button. When you decided that's enough, click done button."
+        "Select object you would like to reconstruct and take a several photos
+        of it from different perspective.\n In order to take photo, touch
+        camera icon. When you decided that is enough, click done"
     </string>
-    <string name="fabInfoText">
-        <![CDATA[<html>
-            <p align="center">Select object you would like to reconstruct and take a several photos of it from
-            different perspective.\n In order to take photo, touch camera icon. When you
-            decided that is enough, click done .</p>
-        </html>]]>
-    </string>
-
 </resources>

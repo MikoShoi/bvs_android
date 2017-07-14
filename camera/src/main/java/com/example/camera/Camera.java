@@ -19,9 +19,11 @@ import com.example.mikotools.MikoLogger;
 import java.io.File;
 
 import io.fotoapparat.Fotoapparat;
+import io.fotoapparat.result.PendingResult;
 import io.fotoapparat.result.PhotoResult;
 import io.fotoapparat.view.CameraView;
 
+import static io.fotoapparat.parameter.selector.AspectRatioSelectors.aspectRatio;
 import static io.fotoapparat.parameter.selector.AspectRatioSelectors.standardRatio;
 import static io.fotoapparat.parameter.selector.FlashSelectors.off;
 import static io.fotoapparat.parameter.selector.FocusModeSelectors.autoFocus;
@@ -93,6 +95,7 @@ public class Camera extends Fragment
             .with( getActivity().getApplicationContext() )
             .into(cameraView)
             .photoSize(standardRatio(biggestSize()))
+            .previewSize(aspectRatio(1.6f, biggestSize()))
             .focusMode(firstAvailable(
                     continuousFocus(),
                     autoFocus(),
@@ -108,16 +111,28 @@ public class Camera extends Fragment
       @Override
       public void onClick(View v)
       {
+        //-- inform listener that capture button was clicked
+        cameraListener.onCapturePhoto();
+
         try
         {
           PhotoResult photoResult = fotoapparat.takePicture();
 
-          String  imagePath = genUniqueImageFilePath();
-          File    imageFile = new File(imagePath);
+          final String  imagePath = genUniqueImageFilePath();
+          final File    imageFile = new File(imagePath);
           if ( imageFile.createNewFile() )
           {
-            photoResult.saveToFile(imageFile);
-            cameraListener.onPhotoCaptured(imagePath);
+            photoResult
+                    .saveToFile(imageFile)
+                    .whenDone(new PendingResult.Callback<Void>()
+                    {
+                      @Override
+                      public void onResult (Void aVoid)
+                      {
+                        //-- inform listener that photo was captured and saved
+                        cameraListener.onPhotoCaptured(imagePath);
+                      }
+                    });
           }
           else
             MikoLogger.log("image file captured but not saved");
