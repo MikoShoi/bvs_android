@@ -15,11 +15,6 @@ import com.example.bruce.bvs.databinding.DocumentViewerBinding;
 
 public class DocumentViewer extends Fragment
 {
-  public DocumentViewer()
-  {
-      // Required empty public constructor
-  }
-
   @Override
   public void onCreate    (Bundle savedInstanceState)
   {

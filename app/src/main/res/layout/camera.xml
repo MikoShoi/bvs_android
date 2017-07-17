@@ -22,7 +22,7 @@
             android:padding                     = "40dp"
             android:src                         = "@drawable/ic_camera_alt_white_48dp"
             app:fabSize                         = "normal"
-            app:backgroundTint                  = "@color/mikoColor_1"
+            app:backgroundTint                  = "@color/mikoColor_7"
             app:layout_constraintTop_toBottomOf = "@+id/done"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -34,7 +34,7 @@
             android:clickable                   = "true"
             android:padding                     = "40dp"
             android:src                         = "@drawable/ic_done_white_48dp"
-            app:backgroundTint                  = "@color/mikoColor_1"
+            app:backgroundTint                  = "@color/mikoColor_7"
             app:fabSize                         = "normal"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -46,7 +46,7 @@
             android:padding                     = "20dp"
             android:clickable                   = "true"
             android:src                         = "@drawable/info_squared"
-            app:backgroundTint                  = "@color/mikoColor_1"
+            app:backgroundTint                  = "@color/mikoColor_7"
             app:fabSize                         = "normal"/>
 
     </RelativeLayout>

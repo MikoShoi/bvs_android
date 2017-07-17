@@ -37,8 +37,8 @@ public class InstructionViewer extends Fragment
     setViewPager();
     setBottomDots();
 
-    setSkipButtonOnClickListener();
-    setNextButtonOnClickListener();
+    prepareSkipButton();
+    prepareNextButton();
 
     return layout.getRoot();
   }
@@ -76,7 +76,7 @@ public class InstructionViewer extends Fragment
     System.out.println("\n\t ---- Documents:onPause\n");
   }
 
-  private void setViewPager                 ()
+  private void setViewPager             ()
   {
     //--counting from zero for 4 pages, first one has number 0 and last one is 3
     //--special counting method for simpler manipulate arrays
@@ -93,7 +93,7 @@ public class InstructionViewer extends Fragment
         CURRENT_PAGE_NUMBER = position;
 
         setBottomDots();
-        setButtonsAppearanceForPage( CURRENT_PAGE_NUMBER == LAST_PAGE_NUMBER );
+        prepareButtonsAppearance( CURRENT_PAGE_NUMBER == LAST_PAGE_NUMBER );
       }
       @Override
       public void onPageSelected          (int position)
@@ -110,7 +110,7 @@ public class InstructionViewer extends Fragment
     viewPager.setAdapter(adapter);
     viewPager.addOnPageChangeListener(l);
   }
-  private void setNextButtonOnClickListener ()
+  private void prepareNextButton        ()
   {
     View.OnClickListener l = new View.OnClickListener()
     {
@@ -126,7 +126,7 @@ public class InstructionViewer extends Fragment
 
     nextButton.setOnClickListener(l);
   }
-  private void setSkipButtonOnClickListener ()
+  private void prepareSkipButton        ()
   {
     View.OnClickListener l = new View.OnClickListener()
     {
@@ -139,16 +139,16 @@ public class InstructionViewer extends Fragment
 
     skipButton.setOnClickListener(l);
   }
-  private void setButtonsAppearanceForPage  (boolean lastPage)
+  private void prepareButtonsAppearance (boolean lastPage)
   {
     nextButton.setText      ( lastPage ? R.string.start : R.string.next );
     skipButton.setVisibility( lastPage ? View.GONE : View.VISIBLE);
   }
-  private void goToNextPage                 ()
+  private void goToNextPage             ()
   {
     viewPager.setCurrentItem(CURRENT_PAGE_NUMBER + 1);
   }
-  private void setBottomDots                ()
+  private void setBottomDots            ()
   {
     TextView dots[] = new TextView[NUMBER_OF_PAGES];
     int dotsNumber = dots.length;
@@ -180,4 +180,3 @@ public class InstructionViewer extends Fragment
             , LAST_PAGE_NUMBER
             , CURRENT_PAGE_NUMBER;
 }
-//-- TODO: improve

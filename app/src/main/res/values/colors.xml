@@ -12,6 +12,12 @@
     <color name="mikoColor_4">#ECF0F1</color>
     <color name="mikoColor_5">#E74C3C</color>
 
+    <color name="mikoColor_6">#F2F2E3</color>
+    <color name="mikoColor_7">#FDBD69</color>
+    <color name="mikoColor_8">#FA6957</color>
+    <color name="mikoColor_9">#60A589</color>
+    <color name="mikoColor_0">#554141</color>
+
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>

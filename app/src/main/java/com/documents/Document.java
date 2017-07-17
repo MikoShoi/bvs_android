@@ -57,12 +57,12 @@ public class Document extends Fragment
         documentUrl = "file:///android_asset/about.html";
         break;
       case 1:
-        documentUrl = "file:///android_asset/privacy_policy.html";
+        documentUrl = "file:///android_asset/license.html";
         break;
       default:
       {
         documentUrl = "file:///android_asset/default.html";
-        MikoLogger.log("can not load document");
+        MikoLogger.log("unsupported page number");
       }
     }
 

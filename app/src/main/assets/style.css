@@ -10,8 +10,9 @@ header					{
 	width: 100%;
 	padding-top:3%;
 	padding-bottom: 3%;
-	color: #F5F5F5;
-	background-color: #E74C3C;
+	color: #F2F2E3;
+	background-color: #FA6957
+;
 	font-size: 160%;
 	text-indent: 2%;
 	display:inline-block;
@@ -21,7 +22,7 @@ header					{
 div		{
 	width: 96%;
 	margin: auto;
-	padding-top: 10%;
+	padding-top: 12%;
 	font-size: 80%;
 	text-align: justify;
 	position: relative;

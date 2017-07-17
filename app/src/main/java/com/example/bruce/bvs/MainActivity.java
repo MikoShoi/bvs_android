@@ -36,9 +36,9 @@ import okhttp3.Response;
 public class MainActivity
         extends AppCompatActivity
         implements InstructionViewerListener
-                  , DocumentViewerListener
-                  , CameraListener
                   , ResponseListener
+                  , CameraListener
+                  , DocumentViewerListener
 {
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -52,8 +52,10 @@ public class MainActivity
     prepareMenu(mainActivity.menu, mainActivity.drawer);
     prepareFlowController();
 
-    if (savedInstanceState == null)
-      startNewSession();
+    moveTo(Tab.WELCOME);
+
+//    if (savedInstanceState == null)
+//      startNewSession();
   }
 
   @Override
@@ -116,7 +118,7 @@ public class MainActivity
   @Override
   public void onErrorOccurred       (ANError error)
   {
-    moveTo(Tab.SERVER_CONNECTION_PROBLEM);
+    moveTo(Tab.INFO_PROBLEM_SERVER);
   }
   @Override
   public void onBackPressed         ()
@@ -134,13 +136,13 @@ public class MainActivity
         flowController.moveTo( InfoImage.newInstance(
                 R.drawable.welcome ) );
         break;
-      case INTERNET_CONNECTION_UNAVAILABLE:
+      case INFO_PROBLEM_OFFLINE:
         flowController.moveTo( InfoImage.newInstance(
-                R.drawable.internet_connection_unavailable ) );
+                R.drawable.problem_offline ) );
         break;
-      case SERVER_CONNECTION_PROBLEM:
+      case INFO_PROBLEM_SERVER:
         flowController.moveTo( InfoImage.newInstance(
-                R.drawable.server_connection_problem ) );
+                R.drawable.problem_server ) );
         break;
       case LOADER:
         flowController.moveTo( InfoAnimation.newInstance(
@@ -171,7 +173,7 @@ public class MainActivity
       httpConnection.sendGetRequest(serverAddress);
     }
     else
-      moveTo(Tab.INTERNET_CONNECTION_UNAVAILABLE);
+      moveTo(Tab.INFO_PROBLEM_OFFLINE);
   }
   private void    prepareMenu           (final NavigationView menu, final DrawerLayout drawer)
   {
