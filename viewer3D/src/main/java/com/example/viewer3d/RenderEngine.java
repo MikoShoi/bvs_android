@@ -17,7 +17,7 @@ class RenderEngine
   @Override
   public void onSurfaceCreated  (GL10 gl, EGLConfig config)
   {
-    GLES30.glClearColor (1.0f, 1.0f, 1.0f, 1.0f);
+    GLES30.glClearColor (0.96f, 0.96f, 0.96f, 1.0f);
 //    GLES30.glEnable     (GLES30.GL_CULL_FACE);
 //    GLES30.glCullFace   (GLES30.GL_FRONT);
   }

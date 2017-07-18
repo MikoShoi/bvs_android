@@ -1,12 +1,14 @@
-package com.example.networkcontroller;
+package com.httpConnection;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.DownloadListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
 import com.example.mikotools.AppManager;
 
 import java.io.File;
@@ -17,20 +19,30 @@ import okhttp3.Response;
 
 public class HttpConnection
 {
-  public HttpConnection(Context context, ResponseListener listener)
+  public HttpConnection(@NonNull Context context, @NonNull ResponseListener listener)
   {
     init(context);
     this.listener = listener;
     tempDirPath   = AppManager.getInstance().getTempDirPath();
   }
 
-  public void uploadFile      (final String serverAddress, String absFilePath)
+  public void uploadFile      (final String serverAddress, final String absFilePath)
   {
     AndroidNetworking
             .upload             ( serverAddress )
             .addMultipartFile   ( "image", new File(absFilePath) )
             .setPriority        (Priority.IMMEDIATE)
             .build              ( )
+            .setUploadProgressListener(new UploadProgressListener()
+            {
+              @Override
+              public void onProgress (long bytesUploaded, long totalBytes)
+              {
+                float a = (float) bytesUploaded / totalBytes;
+
+                listener.onUploadProgressChanged( absFilePath, a);
+              }
+            })
             .getAsOkHttpResponse( new OkHttpResponseListener()
             {
                 @Override
@@ -40,7 +52,7 @@ public class HttpConnection
                 }
 
                 @Override
-                public void onError(ANError anError)
+                public void onError   (ANError anError)
                 {
                     listener.onErrorOccurred(anError);
                 }
@@ -92,7 +104,7 @@ public class HttpConnection
 
   private void init           (Context context)
   {
-    final int timeout = 60;
+    final int timeout = 30;
 
     OkHttpClient okHttpClient = new OkHttpClient()
             .newBuilder     ()
@@ -106,6 +118,6 @@ public class HttpConnection
 //    AndroidNetworking.enableLogging(HttpLoggingInterceptor.Level.HEADERS);
   }
 
-  private String           tempDirPath;
-  private ResponseListener listener;
+  private String           tempDirPath  = "";
+  private ResponseListener listener     = null;
 }

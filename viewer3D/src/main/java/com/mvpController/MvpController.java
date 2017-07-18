@@ -79,6 +79,8 @@ public class MvpController implements SurfaceChangeListener
                     0.0f, 0.0f, 0.0f,
                     0.0f, 1.0f, 0.0f)
             .scale(params.radius);
+
+    informThatCameraHasChanged();
   }
   private void informThatCameraHasChanged ()
   {

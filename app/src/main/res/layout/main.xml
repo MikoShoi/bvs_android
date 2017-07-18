@@ -9,7 +9,6 @@
         android:layout_width        = "match_parent"
         android:layout_height       = "match_parent"
         android:fitsSystemWindows   = "true"
-        android:background          = "@color/mikoColor_6"
         tools:openDrawer            = "start">
 
         <FrameLayout
@@ -23,10 +22,10 @@
             android:layout_height       = "match_parent"
             android:layout_gravity      = "start"
             android:fitsSystemWindows   = "true"
-            android:background          = "@color/mikoColor_6"
-
+            android:background          = "#FFFFFF"
             app:menu                    = "@menu/menu_structure"
             app:headerLayout            = "@layout/menu_header" />
 
     </android.support.v4.widget.DrawerLayout>
+
 </layout>

@@ -65,7 +65,7 @@ class Finger
     float shiftTime     = updateDate - lastUpdateDate
         , velocity      = shift().length() / shiftTime
         , velocityOrder = Math.getExponent(velocity)
-        , moveThreshold = -27;
+        , moveThreshold = -25;
 
     return velocityOrder > moveThreshold;
   }

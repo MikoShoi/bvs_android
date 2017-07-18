@@ -17,6 +17,7 @@ public class GestureAnalyser
   @Override
   public void onOneFingerMove   ( Finger finger )
   {
+    finger.isMoving();
     Vector2f dragVector = finger.shift();
     listener.onDrag(dragVector.x, dragVector.y);
   }
@@ -32,7 +33,7 @@ public class GestureAnalyser
 
     if (fingersChanged)
     {
-      //-- fingers changed mean that one of fingers
+      //-- fingers changed mean that one of them
       //-- suddenly is in completely different place
 
       prevFingerToFingerVector  = new Vector2f(0, 0);
@@ -82,7 +83,7 @@ public class GestureAnalyser
       return TwoFingersGestureType.UNKNOWN;
     }
   }
-  private void scaleHandle()
+  private void scaleHandle          ()
   {
     if ( previousTwoFingersGesture != TwoFingersGestureType.SCALE )
     {
@@ -102,7 +103,7 @@ public class GestureAnalyser
 
     listener.onScale(currentPinchDistance);
   }
-  private void zRotateHandle()
+  private void zRotateHandle        ()
   {
     listener.onZRotate( fingerToFingerVector.angle(prevFingerToFingerVector) );
   }
@@ -110,15 +111,15 @@ public class GestureAnalyser
   {
     Finger movingFinger = ff.isMoving() ? ff : sf;
 
-    Vector2f movingFingerShift = movingFinger.shift();
-    float xShift    = movingFingerShift.x
-        , yShift    = movingFingerShift.y
-        , xDistance = Math.abs(xShift)
-        , yDistance = Math.abs(yShift)
-        , thresholdFactor = 5.0f;
+    Vector2f shift  = movingFinger.shift();
+    float thresholdFactor = 3.0f
+        , xShiftLength    = Math.abs(shift.x)
+        , yShiftLength    = Math.abs(shift.y);
 
-    boolean isMovingInXDirection = xDistance > yDistance * thresholdFactor
-          , isMovingInYDirection = yDistance > xDistance * thresholdFactor;
+    //-- finger is moving in X direction if shift in this direction
+    //-- is > than shift in Y direction * factor
+    boolean isMovingInXDirection = xShiftLength > yShiftLength * thresholdFactor
+          , isMovingInYDirection = yShiftLength > xShiftLength * thresholdFactor;
 
     if (isMovingInXDirection)
     {
@@ -131,7 +132,7 @@ public class GestureAnalyser
   }
 
   private GestureAnalyserListener listener = null;
-  private TwoFingersGestureType previousTwoFingersGesture = TwoFingersGestureType.UNDEFINED;
+  private TwoFingersGestureType   previousTwoFingersGesture = TwoFingersGestureType.UNDEFINED;
 
   private float currentPinchDistance  = 0
               , previousPinchDistance = 0;

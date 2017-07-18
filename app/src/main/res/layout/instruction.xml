@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout>
     <RelativeLayout
         xmlns:android           = "http://schemas.android.com/apk/res/android"
         android:id              = "@+id/layout"
@@ -7,43 +7,11 @@
         android:layout_height   = "match_parent"
         android:orientation     = "vertical">
 
-        <LinearLayout
-            android:layout_width            = "wrap_content"
-            android:layout_height           = "wrap_content"
-            android:layout_centerInParent   = "true"
-            android:gravity                 = "center_horizontal"
-            android:orientation             = "vertical">
+        <ImageView
+            android:id                  = "@+id/image"
+            android:layout_width        = "match_parent"
+            android:layout_height       = "match_parent"
+            android:scaleType           = "centerCrop"/>
 
-            <ImageView
-                android:id                  = "@+id/icon"
-                android:layout_width        = "@dimen/img_width_height"
-                android:layout_height       = "@dimen/img_width_height"
-                android:paddingBottom       = "10dp"
-                android:src                 = "@drawable/default_icon"
-                tools:ignore                = "ContentDescription"/>
-
-            <TextView
-                android:id                  = "@+id/header"
-                android:layout_width        = "wrap_content"
-                android:layout_height       = "wrap_content"
-                android:text                = "@string/default_title"
-                android:textColor           = "@android:color/white"
-                android:textSize            = "@dimen/slide_title"
-                android:textStyle           = "bold"
-                tools:ignore                = "ContentDescription"/>
-
-            <TextView
-                android:id                  = "@+id/description"
-                android:layout_width        = "wrap_content"
-                android:layout_height       = "wrap_content"
-                android:layout_marginTop    = "20dp"
-                android:paddingLeft         = "@dimen/desc_padding"
-                android:paddingRight        = "@dimen/desc_padding"
-                android:text                = "@string/default_description"
-                android:textAlignment       = "center"
-                android:textColor           = "@android:color/white"
-                android:textSize            = "@dimen/slide_desc"
-                tools:ignore                = "ContentDescription"/>
-        </LinearLayout>
     </RelativeLayout>
 </layout>

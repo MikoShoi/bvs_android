@@ -35,5 +35,7 @@ dependencies {
     compile 'io.fotoapparat.fotoapparat:library:1.1.0'
     compile 'com.amitshekhar.android:android-networking:1.0.0'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.android.support:percent:25.3.1'
+    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
     testCompile 'junit:junit:4.1'
 }

@@ -7,41 +7,45 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 import com.camera.Camera;
 import com.camera.CameraListener;
+import com.camera.PhotoUploadProgressListener;
 import com.documents.DocumentViewer;
 import com.documents.DocumentViewerListener;
 import com.example.bruce.bvs.databinding.MainBinding;
 import com.example.mikotools.AppManager;
 import com.example.mikotools.FileReader;
 import com.example.mikotools.MikoLogger;
-import com.example.networkcontroller.HttpConnection;
-import com.example.networkcontroller.ResponseListener;
 import com.example.viewer3d.Viewer3D;
 import com.flowController.FlowController;
+import com.httpConnection.HttpConnection;
+import com.httpConnection.ResponseListener;
 import com.infoScreens.InfoAnimation;
 import com.infoScreens.InfoImage;
 import com.instructions.InstructionViewer;
 import com.instructions.InstructionViewerListener;
 
+import java.util.Map;
+import java.util.Set;
+
 import okhttp3.Response;
 
 public class MainActivity
         extends AppCompatActivity
-        implements InstructionViewerListener
+        implements  InstructionViewerListener
                   , ResponseListener
                   , CameraListener
                   , DocumentViewerListener
 {
   @Override
-  protected void onCreate(Bundle savedInstanceState)
+  protected void onCreate           (Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
 
@@ -52,17 +56,15 @@ public class MainActivity
     prepareMenu(mainActivity.menu, mainActivity.drawer);
     prepareFlowController();
 
-    moveTo(Tab.WELCOME);
-
-//    if (savedInstanceState == null)
-//      startNewSession();
+    if (savedInstanceState == null)
+      startNewSession();
   }
-
   @Override
-  protected void onSaveInstanceState (Bundle outState)
+  protected void onSaveInstanceState(Bundle outState)
   {
     super.onSaveInstanceState(outState);
   }
+
   @Override
   public void onInstructionsViewed  ()
   {
@@ -86,7 +88,7 @@ public class MainActivity
   @Override
   public void onPhotoCaptured       (String absoluteFilePath)
   {
-    Toast.makeText(this, "Photo captured", Toast.LENGTH_SHORT).show();
+    uploadedFilesInfo.put( absoluteFilePath, Float.valueOf(0) );
     httpConnection.uploadFile(serverAddress + "/addImage", absoluteFilePath);
   }
   @Override
@@ -114,6 +116,21 @@ public class MainActivity
               ? Tab.INSTRUCTIONS
               : Tab.CAMERA );
     }
+  }
+  @Override
+  public void onUploadProgressChanged (String filePath, float percentage)
+  {
+    int sumOfProgresses = 0;
+
+    uploadedFilesInfo.put(filePath, percentage);
+    Set<Map.Entry<String, Float>> uploadedFiles = uploadedFilesInfo.entrySet();
+    for(Map.Entry<String, Float> uploadedFile : uploadedFiles)
+    {
+      sumOfProgresses += uploadedFile.getValue().floatValue() * 100.0f;
+    }
+
+    int midProgress = sumOfProgresses / uploadedFiles.size();
+    photoUploadProgressListener.onPhotoUploadProgressChanged(midProgress);
   }
   @Override
   public void onErrorOccurred       (ANError error)
@@ -156,7 +173,9 @@ public class MainActivity
         flowController.moveTo( new DocumentViewer() );
         break;
       case CAMERA:
-        flowController.moveTo( new Camera() );
+        Camera camera = new Camera();
+        photoUploadProgressListener = camera;
+        flowController.moveTo(camera);
         break;
       default:
         MikoLogger.log("Unsupported tab");
@@ -229,9 +248,11 @@ public class MainActivity
 
   private HttpConnection  httpConnection  = null;
   private FlowController  flowController  = null;
+  private PhotoUploadProgressListener photoUploadProgressListener = null;
 
-  private final String serverAddress    = "http://d3760597.ngrok.io";
+  private final String serverAddress    = "http://dfe0de0c.ngrok.io";
   private boolean doneButtonClicked     = false;
   private int     uploadRequestsNumber  = 0
                 , uploadResponsesNumber = 0;
+  private ArrayMap<String, Float> uploadedFilesInfo = new ArrayMap<>(0);
 }

@@ -10,6 +10,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.bruce.bvs.R;
@@ -33,7 +35,9 @@ import static io.fotoapparat.parameter.selector.FocusModeSelectors.fixed;
 import static io.fotoapparat.parameter.selector.Selectors.firstAvailable;
 import static io.fotoapparat.parameter.selector.SizeSelectors.biggestSize;
 
-public class Camera extends Fragment
+public class Camera
+        extends Fragment
+          implements PhotoUploadProgressListener
 {
   @Override
   public View onCreateView(LayoutInflater inflater
@@ -46,15 +50,16 @@ public class Camera extends Fragment
                                     , container
                                     , false);
 
-    prepareCamera(cameraBinding.cameraView);
+    progressBar = cameraBinding.progressBar;
+    progressBarLabel = cameraBinding.progressBarLabel;
 
+    prepareCamera(cameraBinding.cameraView);
     prepareCaptureButton(cameraBinding.capture);
     prepareDoneButton(cameraBinding.done);
     prepareInfoButton(cameraBinding.info);
 
     return cameraBinding.getRoot();
   }
-
   @Override
   public void onAttach    (Context context)
   {
@@ -87,6 +92,16 @@ public class Camera extends Fragment
     if (fotoapparat != null)
       fotoapparat.stop();
   }
+  @Override
+  public void onPhotoUploadProgressChanged (int progress)
+  {
+    boolean b = progress == 0 || progress == 100;
+
+    progressBarLabel.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
+
+    progressBar.setVisibility(b ? View.INVISIBLE : View.VISIBLE);
+    progressBar.setProgress(progress);
+  }
 
   private void    prepareCamera          (CameraView cameraView)
   {
@@ -110,7 +125,7 @@ public class Camera extends Fragment
     View.OnClickListener l = new View.OnClickListener()
     {
       @Override
-      public void onClick(View v)
+      public void onClick(final View v)
       {
         //-- inform listener that capture button was clicked
         cameraListener.onCapturePhoto();
@@ -132,6 +147,19 @@ public class Camera extends Fragment
                       {
                         //-- inform listener that photo was captured and saved
                         cameraListener.onPhotoCaptured(imagePath);
+
+                        Snackbar snackbar = Snackbar.make(v, "captured", Snackbar.LENGTH_SHORT);
+
+                        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
+                        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
+                        parentParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+
+                        TextView tv = (TextView) snackbar
+                                .getView()
+                                .findViewById(android.support.design.R.id.snackbar_text);
+                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                        snackbar.show();
                       }
                     });
           }
@@ -178,7 +206,6 @@ public class Camera extends Fragment
                 .findViewById(android.support.design.R.id.snackbar_text);
 
         tv.setMaxLines(5);
-//        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         s.show();
       }
@@ -195,8 +222,10 @@ public class Camera extends Fragment
     return tempDirPath + "/" + uniqueName + fileExtension;
   }
 
-  private Fotoapparat     fotoapparat     = null;
-  private CameraListener  cameraListener  = null;
+  private ProgressBar     progressBar       = null;
+  private TextView        progressBarLabel  = null;
+  private Fotoapparat     fotoapparat       = null;
+  private CameraListener  cameraListener    = null;
 }
 
 

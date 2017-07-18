@@ -20,8 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:backgroundTint="@android:color/transparent"
-            app:srcCompat="@drawable/ic_close_black_48dp"/>
+            app:srcCompat="@drawable/close"
+            app:backgroundTint="@android:color/transparent"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

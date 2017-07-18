@@ -20,9 +20,9 @@
             android:layout_centerVertical       = "true"
             android:clickable                   = "true"
             android:padding                     = "40dp"
-            android:src                         = "@drawable/ic_camera_alt_white_48dp"
+            android:src                         = "@drawable/capture"
+            app:backgroundTint                  = "@color/mikoColor_decorative"
             app:fabSize                         = "normal"
-            app:backgroundTint                  = "@color/mikoColor_7"
             app:layout_constraintTop_toBottomOf = "@+id/done"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -33,8 +33,8 @@
             android:layout_alignEnd             = "@+id/capture"
             android:clickable                   = "true"
             android:padding                     = "40dp"
-            android:src                         = "@drawable/ic_done_white_48dp"
-            app:backgroundTint                  = "@color/mikoColor_7"
+            android:src                         = "@drawable/done"
+            app:backgroundTint                  = "@color/mikoColor_decorative"
             app:fabSize                         = "normal"/>
 
         <android.support.design.widget.FloatingActionButton
@@ -45,9 +45,32 @@
             android:layout_alignParentEnd       ="true"
             android:padding                     = "20dp"
             android:clickable                   = "true"
-            android:src                         = "@drawable/info_squared"
-            app:backgroundTint                  = "@color/mikoColor_7"
+            android:src                         = "@drawable/help"
+            app:backgroundTint                  = "@color/mikoColor_decorative"
             app:fabSize                         = "normal"/>
+
+        <TextView
+            android:id                          = "@+id/progressBarLabel"
+            android:layout_width                = "match_parent"
+            android:layout_height               = "wrap_content"
+            android:layout_alignParentTop       = "true"
+            android:background                  = "#F5F5F5"
+            android:textColor                   = "#000000"
+            android:fontFamily                  = "sans-serif-thin"
+            android:padding                     = "2dp"
+            android:text                        = "data upload"
+            android:textAlignment               = "center"
+            android:visibility                  = "invisible"
+            android:textSize                    = "12sp"/>
+
+        <ProgressBar
+            android:id                          = "@+id/progressBar"
+            android:layout_width                = "match_parent"
+            android:layout_height               = "wrap_content"
+            android:layout_below                = "@+id/progressBarLabel"
+            android:background                  = "#F5F5F5"
+            android:visibility                  = "invisible"
+            style                               = "@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"/>
 
     </RelativeLayout>
 </layout>
